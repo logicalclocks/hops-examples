@@ -1,2 +1,2 @@
 # examples
-Code examples on imlementing jobs for Hops
+Code examples on implementing jobs for Hops.
