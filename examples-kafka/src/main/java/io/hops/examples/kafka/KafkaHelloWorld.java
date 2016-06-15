@@ -71,14 +71,14 @@ public class KafkaHelloWorld {
         //Produce Kafka messages to topic
         HopsKafkaProducer hopsKafkaProducer = new HopsKafkaProducer(topicName,
                 false, numberOfMessages);
-        Map<String, Object> message = null;
+        Map<String, Object> message;
         for (int i = 0; i < numberOfMessages; i++) {
         message = new HashMap<>();
         message.put("firstname", "Henrik" + i);
         message.put("lastname", "Larsson" + i);
         message.put("team", "Sweden");
         hopsKafkaProducer.produce(message);
-          System.out.println("Record:");
+        System.out.println("KafkaHelloWorld sending message:"+message);
       }
       } else {
         //Consume kafka messages from topic
