@@ -5,7 +5,7 @@
     <groupId>io.hops</groupId>
     <artifactId>hops-examples</artifactId>
     <version>0.1</version>
-    <relativePath>../../examples</relativePath>
+    <relativePath>../../..</relativePath>
   </parent>
 
   <groupId>io.hops</groupId>
