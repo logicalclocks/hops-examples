@@ -20,7 +20,7 @@ public class KafkaHelloWorld {
     int numberOfMessages = 30;
 
     //Check user args
-        /*
+    /*
      * USAGES: 1. topicname numberOfMessages type(producer/consumer)
      * IF TYPE IS NOT PROVIDED, application will do both
      * EXAMPLE: weather 30 producer
@@ -55,7 +55,7 @@ public class KafkaHelloWorld {
       hopsKafkaConsumer.start();
       //Produce Kafka messages to topic
       HopsKafkaProducer hopsKafkaProducer = new HopsKafkaProducer(topicName,
-              false, numberOfMessages);
+              numberOfMessages);
       Map<String, Object> message;
       for (int i = 0; i < numberOfMessages; i++) {
         message = new HashMap<>();
@@ -64,31 +64,29 @@ public class KafkaHelloWorld {
         message.put("team", "Sweden");
         hopsKafkaProducer.produce(message);
         //Thread.sleep(250);
-        System.out.println("KafkaHelloWorld sending message:"+message);
+        System.out.println("KafkaHelloWorld sending message:" + message);
       }
-    } else {
-      if (type.equals("producer")) {
-        //Produce Kafka messages to topic
-        HopsKafkaProducer hopsKafkaProducer = new HopsKafkaProducer(topicName,
-                false, numberOfMessages);
-        Map<String, Object> message;
-        for (int i = 0; i < numberOfMessages; i++) {
+    } else if (type.equals("producer")) {
+      //Produce Kafka messages to topic
+      HopsKafkaProducer hopsKafkaProducer = new HopsKafkaProducer(topicName,
+              numberOfMessages);
+      Map<String, Object> message;
+      for (int i = 0; i < numberOfMessages; i++) {
         message = new HashMap<>();
         message.put("firstname", "Henrik" + i);
         message.put("lastname", "Larsson" + i);
         message.put("team", "Sweden");
         hopsKafkaProducer.produce(message);
-        System.out.println("KafkaHelloWorld sending message:"+message);
+        System.out.println("KafkaHelloWorld sending message:" + message);
       }
-      } else {
-        //Consume kafka messages from topic
-        HopsKafkaConsumer hopsKafkaConsumer = new HopsKafkaConsumer(topicName);
-        hopsKafkaConsumer.start();
-        //Keep thread alive
-        //THIS WILL CAUSE THE JOB TO HANG. USER HAS TO MANUALLY STOP THE JOB.
-        while (true) {
-          Thread.sleep(1000);
-        }
+    } else {
+      //Consume kafka messages from topic
+      HopsKafkaConsumer hopsKafkaConsumer = new HopsKafkaConsumer(topicName);
+      hopsKafkaConsumer.start();
+      //Keep thread alive
+      //THIS WILL CAUSE THE JOB TO HANG. USER HAS TO MANUALLY STOP THE JOB.
+      while (true) {
+        Thread.sleep(1000);
       }
     }
     Thread.sleep(8000);

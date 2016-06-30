@@ -5,10 +5,8 @@
     <groupId>io.hops</groupId>
     <artifactId>hops-examples</artifactId>
     <version>0.1</version>
-    <relativePath>../../examples</relativePath>
   </parent>
 
-  <groupId>io.hops</groupId>
   <artifactId>hops-spark</artifactId>
   <version>0.1</version>
   <packaging>jar</packaging>
