@@ -31,7 +31,7 @@ import java.util.Random;
  */
 public class IterateExample {
 
-	private static final int BOUND = 100;
+	private static int BOUND = 100;
 
 	// *************************************************************************
 	// PROGRAM
@@ -42,7 +42,9 @@ public class IterateExample {
 		// Checking input parameters
 		final ParameterTool params = ParameterTool.fromArgs(args);
 		System.out.println("  Usage: IterateExample --input <path> --output <path>");
-
+    if (params.has("bound")) {
+      BOUND = Integer.parseInt(params.get("bound"));
+    }
 		// set up input for the stream of integer pairs
 
 		// obtain execution environment and set setBufferTimeout to 1 to enable
@@ -62,7 +64,7 @@ public class IterateExample {
 			System.out.println("Use --input to specify file input.");
 			inputStream = env.addSource(new RandomFibonacciSource());
 		}
-
+    
 		// create an iterative data stream from the input with 5 second timeout
 		IterativeStream<Tuple5<Integer, Integer, Integer, Integer, Integer>> it = inputStream.map(new InputMap())
 				.iterate(5000);
