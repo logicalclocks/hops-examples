@@ -1,8 +1,10 @@
 package io.hops.examples.kafka;
 
-import io.hops.kafka.HopsKafkaConsumer;
-import io.hops.kafka.HopsKafkaProducer;
-import io.hops.kafka.HopsKafkaUtil;
+import io.hops.kafkautil.HopsKafkaConsumer;
+import io.hops.kafkautil.HopsKafkaProcess;
+import io.hops.kafkautil.HopsKafkaProducer;
+import io.hops.kafkautil.HopsKafkaUtil;
+import io.hops.kafkautil.KafkaProcessType;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.spark.SparkConf;
@@ -47,15 +49,17 @@ public class KafkaHelloWorld {
 
     //Setup the HopsKafkaUtil
     HopsKafkaUtil hopsKafkaUtil = HopsKafkaUtil.getInstance();
-    hopsKafkaUtil.setup(topicName);
+    hopsKafkaUtil.setup();
 
     if (type == null) {
       //Consume kafka messages from topic
-      HopsKafkaConsumer hopsKafkaConsumer = new HopsKafkaConsumer(topicName);
-      hopsKafkaConsumer.start();
+      HopsKafkaConsumer hopsKafkaConsumer = HopsKafkaUtil.getInstance().
+              getHopsKafkaConsumer(topicName);
+      hopsKafkaConsumer.consume();
       //Produce Kafka messages to topic
-      HopsKafkaProducer hopsKafkaProducer = new HopsKafkaProducer(topicName,
-              numberOfMessages);
+      HopsKafkaProducer hopsKafkaProducer = HopsKafkaUtil.getInstance().
+              getHopsKafkaProducer(topicName);
+
       Map<String, Object> message;
       for (int i = 0; i < numberOfMessages; i++) {
         message = new HashMap<>();
@@ -68,8 +72,8 @@ public class KafkaHelloWorld {
       }
     } else if (type.equals("producer")) {
       //Produce Kafka messages to topic
-      HopsKafkaProducer hopsKafkaProducer = new HopsKafkaProducer(topicName,
-              numberOfMessages);
+       HopsKafkaProducer hopsKafkaProducer = HopsKafkaUtil.getInstance().
+              getHopsKafkaProducer(topicName);
       Map<String, Object> message;
       for (int i = 0; i < numberOfMessages; i++) {
         message = new HashMap<>();
@@ -81,8 +85,8 @@ public class KafkaHelloWorld {
       }
     } else {
       //Consume kafka messages from topic
-      HopsKafkaConsumer hopsKafkaConsumer = new HopsKafkaConsumer(topicName);
-      hopsKafkaConsumer.start();
+       HopsKafkaConsumer hopsKafkaConsumer = HopsKafkaUtil.getInstance().
+              getHopsKafkaConsumer(topicName);
       //Keep thread alive
       //THIS WILL CAUSE THE JOB TO HANG. USER HAS TO MANUALLY STOP THE JOB.
       while (true) {
