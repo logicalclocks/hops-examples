@@ -5,6 +5,15 @@ JobManager and TaskManager logs are displayed in the *Jobs* tab in HopsWorks. Fo
 ```
 DataStream<Tuple2<Tuple2<Integer, Integer>, Integer>> numbers = step.select("output")
 				.map(new OutputMap());
+numbers.print();
+```
+the DataStream output will be available in the HopsWorks Job Execution Logs. 
+
+In case you would like this output to be written to a particular file in your Data Sets, you can do the following
+
+```
+DataStream<Tuple2<Tuple2<Integer, Integer>, Integer>> numbers = step.select("output")
+				.map(new OutputMap());
 numbers.writeAsText("absolute_path_to_file");
 ```
 
