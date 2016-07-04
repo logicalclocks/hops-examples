@@ -91,7 +91,9 @@ public class IterateExample {
 			System.out.println("Printing result to stdout. Use --output to specify output path.");
 			numbers.print();
 		}
-
+    if(params.has("hdfs_output")){
+      numbers.writeAsText(params.get("hdfs_output"));
+    }//hdfs://10.0.2.15:8020/Projects/projectA/Resources/test.out");
 		// execute the program
 		env.execute("Streaming Iteration Example");
 	}
