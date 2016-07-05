@@ -14,6 +14,10 @@ import org.apache.flink.streaming.api.functions.source.SourceFunction;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FSDataOutputStream;
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.Path;
 
 /**
  * Example illustrating iterations in Flink streaming.
@@ -91,9 +95,19 @@ public class IterateExample {
 			System.out.println("Printing result to stdout. Use --output to specify output path.");
 			numbers.print();
 		}
-    if(params.has("hdfs_output")){
-      numbers.writeAsText(params.get("hdfs_output"));
+    if(params.has("flink_hdfs_output")){
+      numbers.writeAsText(params.get("flink_hdfs_output"));
     }//hdfs://10.0.2.15:8020/Projects/projectA/Resources/test.out");
+    
+     if(params.has("hdfs_output")){
+      Configuration hdConf = new Configuration();
+      Path hdPath = new org.apache.hadoop.fs.Path(params.get("hdfs_output"));
+      FileSystem hdfs = hdPath.getFileSystem(hdConf);
+      FSDataOutputStream stream = hdfs.create(hdPath);
+      stream.write("My first Flink program on Hops!".getBytes());
+      stream.close();
+    }
+    
 		// execute the program
 		env.execute("Streaming Iteration Example");
 	}
