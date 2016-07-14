@@ -1,10 +1,8 @@
 package io.hops.examples.kafka;
 
 import io.hops.kafkautil.HopsKafkaConsumer;
-import io.hops.kafkautil.HopsKafkaProcess;
 import io.hops.kafkautil.HopsKafkaProducer;
 import io.hops.kafkautil.HopsKafkaUtil;
-import io.hops.kafkautil.KafkaProcessType;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.spark.SparkConf;
@@ -67,9 +65,12 @@ public class KafkaHelloWorld {
         message.put("lastname", "Larsson" + i);
         message.put("team", "Sweden");
         hopsKafkaProducer.produce(message);
-        //Thread.sleep(250);
+        Thread.sleep(250);
         System.out.println("KafkaHelloWorld sending message:" + message);
       }
+      Thread.sleep(8000);
+      hopsKafkaConsumer.stopConsuming();
+      
     } else if (type.equals("producer")) {
       //Produce Kafka messages to topic
        HopsKafkaProducer hopsKafkaProducer = HopsKafkaUtil.getInstance().
