@@ -17,9 +17,6 @@
  */
 package io.hops.examples.beam.batch;
 
-import java.util.ArrayList;
-import java.util.List;
-import org.apache.beam.runners.spark.SparkPipelineRunner;
 import org.apache.beam.sdk.Pipeline;
 import org.apache.beam.sdk.io.TextIO;
 import org.apache.beam.sdk.options.Default;
@@ -27,7 +24,6 @@ import org.apache.beam.sdk.options.DefaultValueFactory;
 import org.apache.beam.sdk.options.Description;
 import org.apache.beam.sdk.options.PipelineOptions;
 import org.apache.beam.sdk.options.PipelineOptionsFactory;
-import org.apache.beam.sdk.runners.PipelineRunner;
 import org.apache.beam.sdk.transforms.Aggregator;
 import org.apache.beam.sdk.transforms.Count;
 import org.apache.beam.sdk.transforms.DoFn;
@@ -39,11 +35,6 @@ import org.apache.beam.sdk.transforms.Sum;
 import org.apache.beam.sdk.util.gcsfs.GcsPath;
 import org.apache.beam.sdk.values.KV;
 import org.apache.beam.sdk.values.PCollection;
-import org.apache.spark.SparkConf;
-import org.apache.spark.api.java.JavaRDD;
-import org.apache.spark.api.java.JavaSparkContext;
-import org.apache.spark.api.java.function.Function;
-import org.apache.spark.api.java.function.Function2;
 
 /**
  * An example that counts words in Shakespeare and includes Beam best practices.
@@ -199,9 +190,7 @@ public class WordCount {
   public static void main(String[] args) {
     WordCountOptions options = PipelineOptionsFactory.fromArgs(args)/*.withValidation()*/
       .as(WordCountOptions.class);
-    Pipeline p = Pipeline.create(options);
-    JavaSparkContext jsc = null;
-    
+    Pipeline p = Pipeline.create(options);    
     // Concepts #2 and #3: Our pipeline applies the composite CountWords transform, and passes the
     // static FormatAsTextFn() to the ParDo transform.
     p.apply(TextIO.Read.named("ReadLines").from(options.getInputFile()))
