@@ -9,7 +9,7 @@
 
   <artifactId>hops-beam</artifactId>
   <version>0.1</version>
-  <packaging>jar</packaging>
+  <!--<packaging>jar</packaging>-->
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>1.7</maven.compiler.source>
@@ -43,16 +43,20 @@
           </execution>
         </executions>
       </plugin>
-
     </plugins>
-
   </build>
+
   <dependencies>
-     <dependency>
+    <dependency>
       <groupId>org.apache.beam</groupId>
       <artifactId>beam-runners-flink_2.10</artifactId>
       <version>0.1.0-incubating</version>
       <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.beam</groupId>
+      <artifactId>beam-runners-spark</artifactId>
+      <version>0.1.0-incubating</version>
     </dependency>
   </dependencies>
   <name>HopsBeam</name>
