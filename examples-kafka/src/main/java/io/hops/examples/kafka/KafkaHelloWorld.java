@@ -47,7 +47,7 @@ public class KafkaHelloWorld {
 
     //Setup the HopsKafkaUtil
     HopsKafkaUtil hopsKafkaUtil = HopsKafkaUtil.getInstance();
-    hopsKafkaUtil.setup();
+    hopsKafkaUtil.setup("http://localhost:8080", "localhost");
 
     if (type == null) {
       //Consume kafka messages from topic
@@ -58,7 +58,7 @@ public class KafkaHelloWorld {
       HopsKafkaProducer hopsKafkaProducer = HopsKafkaUtil.getInstance().
               getHopsKafkaProducer(topicName);
 
-      Map<String, Object> message;
+      Map<String, String> message;
       for (int i = 0; i < numberOfMessages; i++) {
         message = new HashMap<>();
         message.put("firstname", "Henrik" + i);
@@ -69,13 +69,14 @@ public class KafkaHelloWorld {
         System.out.println("KafkaHelloWorld sending message:" + message);
       }
       Thread.sleep(8000);
-      hopsKafkaConsumer.stopConsuming();
+      hopsKafkaProducer.close();
+      hopsKafkaConsumer.close();
       
     } else if (type.equals("producer")) {
       //Produce Kafka messages to topic
-       HopsKafkaProducer hopsKafkaProducer = HopsKafkaUtil.getInstance().
+      HopsKafkaProducer hopsKafkaProducer = HopsKafkaUtil.getInstance().
               getHopsKafkaProducer(topicName);
-      Map<String, Object> message;
+      Map<String, String> message;
       for (int i = 0; i < numberOfMessages; i++) {
         message = new HashMap<>();
         message.put("firstname", "Henrik" + i);
@@ -86,7 +87,7 @@ public class KafkaHelloWorld {
       }
     } else {
       //Consume kafka messages from topic
-       HopsKafkaConsumer hopsKafkaConsumer = HopsKafkaUtil.getInstance().
+      HopsKafkaConsumer hopsKafkaConsumer = HopsKafkaUtil.getInstance().
               getHopsKafkaConsumer(topicName);
       //Keep thread alive
       //THIS WILL CAUSE THE JOB TO HANG. USER HAS TO MANUALLY STOP THE JOB.
