@@ -51,9 +51,14 @@ public class KafkaHelloWorld {
 
     if (type == null) {
       //Consume kafka messages from topic
-      HopsKafkaConsumer hopsKafkaConsumer = HopsKafkaUtil.getInstance().
+      final HopsKafkaConsumer hopsKafkaConsumer = HopsKafkaUtil.getInstance().
               getHopsKafkaConsumer(topicName);
-      hopsKafkaConsumer.consume();
+      Thread t = new Thread(){
+        public void run(){
+        hopsKafkaConsumer.consume();
+        }
+      };
+      t.start();
       //Produce Kafka messages to topic
       HopsKafkaProducer hopsKafkaProducer = HopsKafkaUtil.getInstance().
               getHopsKafkaProducer(topicName);
@@ -61,9 +66,9 @@ public class KafkaHelloWorld {
       Map<String, String> message;
       for (int i = 0; i < numberOfMessages; i++) {
         message = new HashMap<>();
-        message.put("firstname", "Henrik" + i);
-        message.put("lastname", "Larsson" + i);
-        message.put("team", "Sweden");
+        message.put("str1", "Henrik" + i);
+//        message.put("lastname", "Larsson" + i);
+//        message.put("team", "Sweden");
         hopsKafkaProducer.produce(message);
         Thread.sleep(250);
         System.out.println("KafkaHelloWorld sending message:" + message);
@@ -79,9 +84,9 @@ public class KafkaHelloWorld {
       Map<String, String> message;
       for (int i = 0; i < numberOfMessages; i++) {
         message = new HashMap<>();
-        message.put("firstname", "Henrik" + i);
-        message.put("lastname", "Larsson" + i);
-        message.put("team", "Sweden");
+        message.put("str1", "Henrik" + i);
+//        message.put("lastname", "Larsson" + i);
+//        message.put("team", "Sweden");
         hopsKafkaProducer.produce(message);
         System.out.println("KafkaHelloWorld sending message:" + message);
       }

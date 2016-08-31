@@ -119,7 +119,7 @@ public class FlinkKafkaExample {
 //     if(params.has("hdfs_output")){
     // execute the program
     env.execute("Streaming Iteration Example");
-    
+
     HopsKafkaUtil hopsKafkaUtil = HopsKafkaUtil.getInstance();
 
     System.out.println("KAFKA-ARGS:" + Arrays.toString(args));
@@ -157,38 +157,24 @@ public class FlinkKafkaExample {
         stream.write(("KafkaHelloWorld sending message:" + message).getBytes());
       }
 
-     
       stream.flush();
       stream.close();
       hopsKafkaProducer.close();
     } else {
-      FSDataOutputStream stream = null;
-
-      //Consume kafka messages from topic
-      HopsKafkaConsumer hopsKafkaConsumer = HopsKafkaUtil.getInstance().
+      final String path = args[2];
+      final HopsKafkaConsumer hopsKafkaConsumer = HopsKafkaUtil.getInstance().
               getHopsKafkaConsumer(args[0]);
-      try {
-        BlockingQueue<String> messages = new LinkedBlockingQueue<>();
-        hopsKafkaConsumer.consume(messages);
-        Configuration hdConf = new Configuration();
-        Path hdPath = new org.apache.hadoop.fs.Path(args[2]);
-        FileSystem hdfs = hdPath.getFileSystem(hdConf);
-        stream = hdfs.create(hdPath);
-        stream.write("My first Flink program on Hops!".getBytes());
-        while (true) {
-          String message = messages.take();
-          stream = hdfs.create(hdPath);
-          stream.write(("Consumer message:" + message).getBytes());
-          stream.flush();
-          stream.close();
+      Thread t = new Thread() {
+        public void run() {
+          hopsKafkaConsumer.consume(path);
         }
+      };
+      t.start();
+      Thread.sleep(45000);
+      hopsKafkaConsumer.close();
 
-      } finally {
-        
-        hopsKafkaConsumer.close();
-      }
     }
-   
+
   }
 
   // *************************************************************************
