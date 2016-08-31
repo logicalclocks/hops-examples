@@ -24,7 +24,7 @@
          <configuration>
           <archive>
             <manifest>
-              <mainClass>io.hops.examples.kafka.FlinkKafkaExample</mainClass>
+              <mainClass>io.hops.examples.kafka.FlinkKafkaStreamingExample</mainClass>
             </manifest>
           </archive>
         </configuration>
