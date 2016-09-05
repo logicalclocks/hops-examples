@@ -7,6 +7,8 @@ import org.apache.flink.api.common.restartstrategy.RestartStrategies;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.functions.source.SourceFunction;
+import org.apache.flink.streaming.connectors.fs.DateTimeBucketer;
+import org.apache.flink.streaming.connectors.fs.RollingSink;
 import org.apache.flink.streaming.util.serialization.SimpleStringSchema;
 
 /**
@@ -76,13 +78,20 @@ public class FlinkKafkaStreamingExample {
       env.getConfig().disableSysoutLogging();
       env.getConfig().setRestartStrategy(RestartStrategies.fixedDelayRestart(4,
               10000));
-      env.enableCheckpointing(5000); // create a checkpoint every 5 secodns
+      //env.enableCheckpointing(5000); // create a checkpoint every 5 secodns
       //env.getConfig().setGlobalJobParameters(parameterTool); // make parameters available in the web interface
 
       DataStream<String> messageStream = env
               .addSource(hopsKafkaUtil.getHopsFlinkKafkaConsumer(args[0],
                       new SimpleStringSchema()));
 
+      
+      RollingSink<String> rollingSink = new RollingSink<>("/Projects/Flink/Resources");
+      //Size of part file in bytes
+      rollingSink.setBatchSize(1024);
+      rollingSink.setBucketer(new DateTimeBucketer("yyyy-MM-dd--HHmm"));
+      messageStream.addSink(rollingSink);
+      
       // write kafka stream to standard out.
       messageStream.print();
 
