@@ -1,7 +1,6 @@
 package io.hops.examples.kafka;
 
 import io.hops.kafkautil.HopsKafkaUtil;
-import io.hops.kafkautil.flink.HopsAvroSchema;
 import io.hops.kafkautil.flink.HopsFlinkKafkaProducer;
 import java.util.Arrays;
 import java.util.Map;
@@ -60,8 +59,8 @@ public class FlinkKafkaStreamingExample {
                         throws Exception {
                   long i = 0;
                   while (this.running) {
-                    ctx.collect(new Tuple4("platform", "HopsWorks-" + i++,
-                            "program", "Flink Streaming"));
+                    ctx.collect(new Tuple4("platform", "HopsWorks",
+                            "program", "Flink Streaming - " + i++));
                     Thread.sleep(500);
                   }
                 }

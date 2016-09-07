@@ -66,9 +66,8 @@ public class KafkaHelloWorld {
       Map<String, String> message;
       for (int i = 0; i < numberOfMessages; i++) {
         message = new HashMap<>();
-        message.put("str1", "Henrik" + i);
-//        message.put("lastname", "Larsson" + i);
-//        message.put("team", "Sweden");
+        message.put("platform", "HopsWorks");
+        message.put("program", "SparkKafka-"+i);
         hopsKafkaProducer.produce(message);
         Thread.sleep(250);
         System.out.println("KafkaHelloWorld sending message:" + message);
