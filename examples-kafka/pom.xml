@@ -16,6 +16,13 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifest>
+              <mainClass>io.hops.examples.kafka.FlinkKafkaStreamingExample</mainClass>
+            </manifest>
+          </archive>
+        </configuration>
       </plugin>
     </plugins>
   </build>
@@ -30,6 +37,11 @@
       <groupId>io.hops</groupId>
       <artifactId>kafka-util</artifactId>
       <version>0.1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.flink</groupId>
+      <artifactId>flink-connector-filesystem_2.10</artifactId>
+      <version>1.0.3</version>
     </dependency>
   </dependencies>
   <name>HopsKafka</name>

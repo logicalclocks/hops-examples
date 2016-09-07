@@ -47,46 +47,51 @@ public class KafkaHelloWorld {
 
     //Setup the HopsKafkaUtil
     HopsKafkaUtil hopsKafkaUtil = HopsKafkaUtil.getInstance();
-    hopsKafkaUtil.setup();
+    hopsKafkaUtil.setup("http://localhost:8080", "localhost");
 
     if (type == null) {
       //Consume kafka messages from topic
-      HopsKafkaConsumer hopsKafkaConsumer = HopsKafkaUtil.getInstance().
+      final HopsKafkaConsumer hopsKafkaConsumer = HopsKafkaUtil.getInstance().
               getHopsKafkaConsumer(topicName);
-      hopsKafkaConsumer.consume();
+      Thread t = new Thread(){
+        public void run(){
+        hopsKafkaConsumer.consume();
+        }
+      };
+      t.start();
       //Produce Kafka messages to topic
       HopsKafkaProducer hopsKafkaProducer = HopsKafkaUtil.getInstance().
               getHopsKafkaProducer(topicName);
 
-      Map<String, Object> message;
+      Map<String, String> message;
       for (int i = 0; i < numberOfMessages; i++) {
         message = new HashMap<>();
-        message.put("firstname", "Henrik" + i);
-        message.put("lastname", "Larsson" + i);
-        message.put("team", "Sweden");
+        message.put("platform", "HopsWorks");
+        message.put("program", "SparkKafka-"+i);
         hopsKafkaProducer.produce(message);
         Thread.sleep(250);
         System.out.println("KafkaHelloWorld sending message:" + message);
       }
       Thread.sleep(8000);
-      hopsKafkaConsumer.stopConsuming();
+      hopsKafkaProducer.close();
+      hopsKafkaConsumer.close();
       
     } else if (type.equals("producer")) {
       //Produce Kafka messages to topic
-       HopsKafkaProducer hopsKafkaProducer = HopsKafkaUtil.getInstance().
+      HopsKafkaProducer hopsKafkaProducer = HopsKafkaUtil.getInstance().
               getHopsKafkaProducer(topicName);
-      Map<String, Object> message;
+      Map<String, String> message;
       for (int i = 0; i < numberOfMessages; i++) {
         message = new HashMap<>();
-        message.put("firstname", "Henrik" + i);
-        message.put("lastname", "Larsson" + i);
-        message.put("team", "Sweden");
+        message.put("str1", "Henrik" + i);
+//        message.put("lastname", "Larsson" + i);
+//        message.put("team", "Sweden");
         hopsKafkaProducer.produce(message);
         System.out.println("KafkaHelloWorld sending message:" + message);
       }
     } else {
       //Consume kafka messages from topic
-       HopsKafkaConsumer hopsKafkaConsumer = HopsKafkaUtil.getInstance().
+      HopsKafkaConsumer hopsKafkaConsumer = HopsKafkaUtil.getInstance().
               getHopsKafkaConsumer(topicName);
       //Keep thread alive
       //THIS WILL CAUSE THE JOB TO HANG. USER HAS TO MANUALLY STOP THE JOB.
