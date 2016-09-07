@@ -34,9 +34,9 @@ public class FlinkKafkaStreamingExample {
             Integer.parseInt(kafkaProps.get(
                     hopsKafkaUtil.KAFKA_PROJECTID_ENV_VAR)),
             parameterTool.get("topic"),
-            "localhost",
+            parameterTool.get("domain"),
             kafkaProps.get(hopsKafkaUtil.KAFKA_BROKERADDR_ENV_VAR),
-            "http://localhost:8080",
+            parameterTool.get("url"),
             kafkaProps.get(hopsKafkaUtil.KAFKA_K_CERTIFICATE_ENV_VAR),
             kafkaProps.get(hopsKafkaUtil.KAFKA_T_CERTIFICATE_ENV_VAR));
 
