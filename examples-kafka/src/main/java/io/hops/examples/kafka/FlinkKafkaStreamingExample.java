@@ -99,8 +99,12 @@ public class FlinkKafkaStreamingExample {
       RollingSink<String> rollingSink = new RollingSink<>(
               parameterTool.get("sink_path"));
       //Size of part file in bytes
-      rollingSink.setBatchSize(1024 * 1024);
-      rollingSink.setBucketer(new DateTimeBucketer("yyyy-MM-dd--HHmm"));
+      int batchSize = 8;
+      if(parameterTool.has("batch_size")){
+       batchSize = Integer.parseInt(parameterTool.get("batch_size")); 
+      }
+      rollingSink.setBatchSize(1024 *  batchSize);
+      rollingSink.setBucketer(new DateTimeBucketer("yyyy-MM-dd--HH"));
       messageStream.addSink(rollingSink);
 
       // write kafka stream to standard out.
