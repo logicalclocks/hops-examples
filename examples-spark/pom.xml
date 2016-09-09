@@ -10,6 +10,7 @@
   <artifactId>hops-spark</artifactId>
   <version>0.1</version>
   <packaging>jar</packaging>
+  <name>HopsSpark</name>
   
   <build>
     <plugins>
@@ -27,5 +28,4 @@
       <version>1.6.1</version>
     </dependency>
   </dependencies>
-  <name>HopsSpark</name>
 </project>
