@@ -14,8 +14,10 @@ import org.apache.flink.streaming.connectors.fs.DateTimeBucketer;
 import org.apache.flink.streaming.connectors.fs.RollingSink;
 
 /**
- *
- * @author teo
+ * A simple streaming application ths uses the Hops Kafka Utility to
+ * produce and consume streams from Kafka.
+ * 
+ * 
  */
 public class FlinkKafkaStreamingExample {
 
@@ -23,8 +25,14 @@ public class FlinkKafkaStreamingExample {
     ParameterTool parameterTool = ParameterTool.fromArgs(args);
     if (parameterTool.getNumberOfParameters() < 2 || !parameterTool.has("topic")) {
       System.out.println(
-              "Missing parameters!\nUsage: --topic <topic> --sink_path <rolling sink path>");
-      System.exit(1);
+              "Missing parameters!\nUsage: -topic <topic_name> -type <producer|consumer> "
+                      + "[-sink_path <rolling_sink path>]"
+                      + " [-batch_size <rolling_file_size>]"
+                      + " [-bucket_format <bucket_format>]");
+      throw new Exception("Missing parameters!\nUsage: -topic <topic_name> -type <producer|consumer> "
+                      + "[-sink_path <rolling_sink path>]"
+                      + " [-batch_size <rolling_file_size>]"
+                      + " [-bucket_format <bucket_format>]");
     }
     System.out.println("FlinkKafkaStreamingExample.Params:"+parameterTool.toMap().toString());
     HopsKafkaUtil hopsKafkaUtil = HopsKafkaUtil.getInstance();
@@ -34,9 +42,9 @@ public class FlinkKafkaStreamingExample {
             Integer.parseInt(kafkaProps.get(
                     hopsKafkaUtil.KAFKA_PROJECTID_ENV_VAR)),
             parameterTool.get("topic"),
-            parameterTool.get("domain"),
+            kafkaProps.get(hopsKafkaUtil.KAFKA_RESTENDPOINT),
             kafkaProps.get(hopsKafkaUtil.KAFKA_BROKERADDR_ENV_VAR),
-            parameterTool.get("url"),
+            kafkaProps.get(hopsKafkaUtil.KAFKA_RESTENDPOINT),
             kafkaProps.get(hopsKafkaUtil.KAFKA_K_CERTIFICATE_ENV_VAR),
             kafkaProps.get(hopsKafkaUtil.KAFKA_T_CERTIFICATE_ENV_VAR));
 
@@ -95,18 +103,24 @@ public class FlinkKafkaStreamingExample {
               .addSource(hopsKafkaUtil.getHopsFlinkKafkaConsumer(parameterTool.
                       get("topic"),
                       new HopsAvroSchema(parameterTool.get("topic"))));
-
-      RollingSink<String> rollingSink = new RollingSink<>(
-              parameterTool.get("sink_path"));
-      //Size of part file in bytes
-      int batchSize = 8;
-      if(parameterTool.has("batch_size")){
-       batchSize = Integer.parseInt(parameterTool.get("batch_size")); 
+      String dateTimeBucketerFormat = "yyyy-MM-dd--HH";
+      if(parameterTool.has("sink_path")){
+        if(parameterTool.has("bucket_format")){
+          if(parameterTool.has("bucket_format")){
+            dateTimeBucketerFormat = parameterTool.get("bucket_format");
+          }
+        }
+        RollingSink<String> rollingSink = new RollingSink<>(
+                parameterTool.get("sink_path"));
+        //Size of part file in bytes
+        int batchSize = 8;
+        if(parameterTool.has("batch_size")){
+         batchSize = Integer.parseInt(parameterTool.get("batch_size")); 
+        }
+        rollingSink.setBatchSize(1024 *  batchSize);
+        rollingSink.setBucketer(new DateTimeBucketer(dateTimeBucketerFormat));
+        messageStream.addSink(rollingSink);
       }
-      rollingSink.setBatchSize(1024 *  batchSize);
-      rollingSink.setBucketer(new DateTimeBucketer("yyyy-MM-dd--HH"));
-      messageStream.addSink(rollingSink);
-
       // write kafka stream to standard out.
       messageStream.print();
 
