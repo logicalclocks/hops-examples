@@ -4,14 +4,13 @@ HopsWorks allows users to create their own Apache Spark and Apache Flink program
 ## Flink & Kafka
 To help you get started, *FlinkKafkaStreamingExample* provides the code for a basic streaming Flink application. To use it you need to provide the following parameters in the folling way when creating a Flink job in HopsWorks:
 ```
-Usage: --topic <mytopic> --type <producer/consumer> --sink_path <path_to_dataset> --domain <domain> --url <url>
+Usage: -topic <topic_name> -type <producer|consumer> [-sink_path <rolling_sink path>] [-batch_size <rolling_file_size>] [-bucket_format <bucket_format>]
 ```
 * **Topic**: The name of the Kafka topic where the job will produce or consume.
 * **Type**: Defines if the the job is producing or consuming.
 * **Sink_path**: Used only by a Consumer job, itdefines the path to the Dataset in which the Flink RollingSink writes its files. The latter contain the consumed Avro records from Kafka. In this example, the RollingSink creates a new folder (Bucket) every minute.
-* **Domain**: The domain of your hopsworks installation. If running on hops.site, it should be set to "hops.site"
-* **URL**: The URL of your local HopsWorks installation. If running on hops.site, it should be set to "https://hops.site:443" 
 * **Batch_size**: Used only by a Consumer job, it defines the size of the file being written by the RollingSink. default is 32KB
+* **bucket_format**: Used only by a Consumer job, it defines the names and creation frequency of the folders under sink_path. For more information check [https://ci.apache.org/projects/flink/flink-docs-master/api/java/org/apache/flink/streaming/connectors/fs/DateTimeBucketer.html](DateTimeBucketer) 
 
 #### Example:
 (*A single space must exist between parameters*)
@@ -19,12 +18,13 @@ Usage: --topic <mytopic> --type <producer/consumer> --sink_path <path_to_dataset
 **Producer**
 
 ```
---topic mytopic --type producer --domain localhost --url http://localhost:8080
+-topic mytopic -type producer
+
 ```
 
 **Consumer** 
 ```
---topic mytopic --type consumer --sink_path /Projects/FlinkKafka/Resources --domain localhost --url http://localhost:8080 --batch_size 32
+-topic mytopic -type consumer -sink_path /Projects/FlinkKafka/SinkE -batch_size 16 -bucket_format yyyy-MM-dd--HH
 ```
 
 #### Avro Records
