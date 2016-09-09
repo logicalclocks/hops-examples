@@ -13,6 +13,19 @@ Usage: --topic <mytopic> --type <producer/consumer> --sink_path <path_to_dataset
 * **URL**: The URL of your local HopsWorks installation. If running on hops.site, it should be set to "https://hops.site:443" 
 * **Batch_size**: Used only by a Consumer job, it defines the size of the file being written by the RollingSink. default is 32KB
 
+#### Example:
+(*A single space must exist between parameters*)
+
+**Producer**
+
+```
+--topic mytopic --type producer --domain localhost --url http://localhost:8080
+```
+
+**Consumer** 
+```
+--topic mytopic --type consumer --sink_path /Projects/FlinkKafka/Resources --domain localhost --url http://localhost:8080 --batch_size 32
+```
 
 #### Avro Records
 This example streams Tuples of String <key,value> pairs which are then serialzied by the HopsAvroSchema class into Avro records and then sent to Kafka. The user needs to use a Tuple with twice as many fields as his schema (in this case Tuple4) which is done because the Tuple will contain both key and values of the record. **The Avro schema used in this example is the following**:
