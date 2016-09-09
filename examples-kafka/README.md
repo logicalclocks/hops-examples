@@ -6,11 +6,11 @@ To help you get started, *FlinkKafkaStreamingExample* provides the code for a ba
 ```
 Usage: -topic <topic_name> -type <producer|consumer> [-sink_path <rolling_sink path>] [-batch_size <rolling_file_size>] [-bucket_format <bucket_format>]
 ```
-* **Topic**: The name of the Kafka topic where the job will produce or consume.
-* **Type**: Defines if the the job is producing or consuming.
-* **Sink_path**: Used only by a Consumer job, itdefines the path to the Dataset in which the Flink RollingSink writes its files. The latter contain the consumed Avro records from Kafka. In this example, the RollingSink creates a new folder (Bucket) every minute.
-* **Batch_size**: Used only by a Consumer job, it defines the size of the file being written by the RollingSink. default is 32KB
-* **bucket_format**: Used only by a Consumer job, it defines the names and creation frequency of the folders under sink_path. For more information check [https://ci.apache.org/projects/flink/flink-docs-master/api/java/org/apache/flink/streaming/connectors/fs/DateTimeBucketer.html](DateTimeBucketer) 
+* **topic**: The name of the Kafka topic where the job will produce or consume.
+* **type**: Defines if the the job is producing or consuming.
+* **sink_path**: Used only by a Consumer job, itdefines the path to the Dataset in which the Flink RollingSink writes its files. The latter contain the consumed Avro records from Kafka. In this example, the RollingSink creates a new folder (Bucket) every minute.
+* **batch_size**: Used only by a Consumer job, it defines the size of the file being written by the RollingSink. default is 32KB
+* **bucket_format**: Used only by a Consumer job, it defines the names and creation frequency of the folders under sink_path. For more information see [DateTimeBucketer](https://ci.apache.org/projects/flink/flink-docs-master/api/java/org/apache/flink/streaming/connectors/fs/DateTimeBucketer.html) 
 
 #### Example:
 (*A single space must exist between parameters*)
