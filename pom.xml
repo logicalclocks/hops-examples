@@ -8,6 +8,7 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
+  <name>HopsExamples</name>
   
   <build>
     <plugins>
@@ -25,9 +26,19 @@
           <target>1.8</target>
         </configuration>
       </plugin>
+      
+      <plugin>
+	<artifactId>maven-scm-plugin</artifactId>
+	<version>1.8.1</version>
+	<configuration>
+          <connectionType>developerConnection</connectionType>
+          <scmVersion>branch-0.1</scmVersion>
+          <scmVersionType>branch</scmVersionType>
+	</configuration>
+      </plugin>
     </plugins>
   </build>
-    
+  
   <modules>
     <module>examples-kafka</module>
     <module>examples-spark</module>
@@ -35,5 +46,48 @@
     <module>examples-beam</module>
   </modules>
   
-  <name>HopsExamples</name>
+
+
+
+    <repositories>
+        <repository>
+            <id>sics-release</id>
+            <name>SICS Release Repository</name>
+            <url>http://kompics.sics.se/maven/repository</url>
+            <releases>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>sics-snapshot</id>
+            <name>SICS Snapshot Repository</name>
+            <url>http://kompics.sics.se/maven/snapshotrepository</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+            </snapshots>
+        </repository>
+    </repositories>  
+
+  <distributionManagement>
+    <repository>
+      <id>sics-release-repository</id>
+      <name>SICS Repository</name>
+      <url>scpexe://kompics.i.sics.se/home/maven/repository</url>
+    </repository>
+    <snapshotRepository>
+      <id>sics-snapshot-repository</id>
+      <name>SICS Snapshot Repository</name>
+      <url>scpexe://kompics.i.sics.se/home/maven/snapshotrepository</url>
+    </snapshotRepository>
+    <site>
+      <id>kompics-site</id>
+      <url>scpexe://kompics.i.sics.se/var/www/kompics/report/trunk</url>
+    </site>
+    <downloadUrl>http://kompics.i.sics.se/maven/repository</downloadUrl>
+  </distributionManagement>
+
 </project>
