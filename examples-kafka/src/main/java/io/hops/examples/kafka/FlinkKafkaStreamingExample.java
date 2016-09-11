@@ -1,7 +1,7 @@
 package io.hops.examples.kafka;
 
+import io.hops.kafkautil.HopsAvroSchema;
 import io.hops.kafkautil.HopsKafkaUtil;
-import io.hops.kafkautil.flink.HopsFlinkKafkaProducer;
 import java.util.Arrays;
 import java.util.Map;
 import org.apache.flink.api.common.restartstrategy.RestartStrategies;
@@ -16,8 +16,8 @@ import org.apache.flink.streaming.connectors.fs.RollingSink;
 /**
  * A simple streaming application ths uses the Hops Kafka Utility to
  * produce and consume streams from Kafka.
- * 
- * 
+ * <p>
+ * <p>
  */
 public class FlinkKafkaStreamingExample {
 
@@ -26,15 +26,17 @@ public class FlinkKafkaStreamingExample {
     if (parameterTool.getNumberOfParameters() < 2 || !parameterTool.has("topic")) {
       System.out.println(
               "Missing parameters!\nUsage: -topic <topic_name> -type <producer|consumer> "
-                      + "[-sink_path <rolling_sink path>]"
-                      + " [-batch_size <rolling_file_size>]"
-                      + " [-bucket_format <bucket_format>]");
-      throw new Exception("Missing parameters!\nUsage: -topic <topic_name> -type <producer|consumer> "
-                      + "[-sink_path <rolling_sink path>]"
-                      + " [-batch_size <rolling_file_size>]"
-                      + " [-bucket_format <bucket_format>]");
+              + "[-sink_path <rolling_sink path>]"
+              + " [-batch_size <rolling_file_size>]"
+              + " [-bucket_format <bucket_format>]");
+      throw new Exception(
+              "Missing parameters!\nUsage: -topic <topic_name> -type <producer|consumer> "
+              + "[-sink_path <rolling_sink path>]"
+              + " [-batch_size <rolling_file_size>]"
+              + " [-bucket_format <bucket_format>]");
     }
-    System.out.println("FlinkKafkaStreamingExample.Params:"+parameterTool.toMap().toString());
+    System.out.println("FlinkKafkaStreamingExample.Params:" + parameterTool.
+            toMap().toString());
     HopsKafkaUtil hopsKafkaUtil = HopsKafkaUtil.getInstance();
     Map<String, String> kafkaProps = hopsKafkaUtil.getKafkaProps(
             parameterTool.get("kafka_params"));
@@ -80,10 +82,9 @@ public class FlinkKafkaStreamingExample {
               });
 
       // write data into Kafka
-      HopsFlinkKafkaProducer producer = new HopsFlinkKafkaProducer(
+      messageStream.addSink(hopsKafkaUtil.getHopsFlinkKafkaProducer(
               parameterTool.get("topic"),
-              new HopsAvroSchema(parameterTool.get("topic")));
-      messageStream.addSink(producer);
+              hopsKafkaUtil.getHopsAvroSchema(parameterTool.get("topic"))));
 
       env.execute("Write into Kafka example");
     } else {
@@ -97,16 +98,16 @@ public class FlinkKafkaStreamingExample {
       //Get user parameters, excluding kafka ones set by HopsWorks
       // make parameters available in the web interface
       env.getConfig().setGlobalJobParameters(ParameterTool.fromArgs(
-              Arrays.copyOf(args, args.length-2))); 
-      
+              Arrays.copyOf(args, args.length - 2)));
+
       DataStream<String> messageStream = env
               .addSource(hopsKafkaUtil.getHopsFlinkKafkaConsumer(parameterTool.
                       get("topic"),
                       new HopsAvroSchema(parameterTool.get("topic"))));
       String dateTimeBucketerFormat = "yyyy-MM-dd--HH";
-      if(parameterTool.has("sink_path")){
-        if(parameterTool.has("bucket_format")){
-          if(parameterTool.has("bucket_format")){
+      if (parameterTool.has("sink_path")) {
+        if (parameterTool.has("bucket_format")) {
+          if (parameterTool.has("bucket_format")) {
             dateTimeBucketerFormat = parameterTool.get("bucket_format");
           }
         }
@@ -114,10 +115,10 @@ public class FlinkKafkaStreamingExample {
                 parameterTool.get("sink_path"));
         //Size of part file in bytes
         int batchSize = 8;
-        if(parameterTool.has("batch_size")){
-         batchSize = Integer.parseInt(parameterTool.get("batch_size")); 
+        if (parameterTool.has("batch_size")) {
+          batchSize = Integer.parseInt(parameterTool.get("batch_size"));
         }
-        rollingSink.setBatchSize(1024 *  batchSize);
+        rollingSink.setBatchSize(1024 * batchSize);
         rollingSink.setBucketer(new DateTimeBucketer(dateTimeBucketerFormat));
         messageStream.addSink(rollingSink);
       }
