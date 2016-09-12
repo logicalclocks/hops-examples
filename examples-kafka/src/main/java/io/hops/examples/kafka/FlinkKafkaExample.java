@@ -1,8 +1,8 @@
 package io.hops.examples.kafka;
 
-import io.hops.kafkautil.HopsKafkaConsumer;
-import io.hops.kafkautil.HopsKafkaProducer;
-import io.hops.kafkautil.HopsKafkaUtil;
+import io.hops.kafkautil.HopsConsumer;
+import io.hops.kafkautil.HopsProducer;
+import io.hops.kafkautil.KafkaUtil;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Map;
@@ -120,7 +120,7 @@ public class FlinkKafkaExample {
     // execute the program
     env.execute("Streaming Iteration Example");
 
-    HopsKafkaUtil hopsKafkaUtil = HopsKafkaUtil.getInstance();
+    KafkaUtil hopsKafkaUtil = KafkaUtil.getInstance();
 
     System.out.println("KAFKA-ARGS:" + Arrays.toString(args));
     Map<String, String> kafkaProps = hopsKafkaUtil.getKafkaProps(
@@ -147,8 +147,7 @@ public class FlinkKafkaExample {
       final FSDataOutputStream stream = hdfs.create(hdPath);
       stream.write("My first Flink program on Hops!".getBytes());
 
-      HopsKafkaProducer hopsKafkaProducer = hopsKafkaUtil.
-              getHopsKafkaProducer(args[0]);
+      HopsProducer hopsKafkaProducer = hopsKafkaUtil.getHopsProducer(args[0]);
       Map<String, String> message;
       for (int i = 0; i < 30; i++) {
         message = new HashMap<>();
@@ -162,8 +161,7 @@ public class FlinkKafkaExample {
       hopsKafkaProducer.close();
     } else {
       final String path = args[2];
-      final HopsKafkaConsumer hopsKafkaConsumer = HopsKafkaUtil.getInstance().
-              getHopsKafkaConsumer(args[0]);
+      final HopsConsumer hopsKafkaConsumer = KafkaUtil.getInstance().getHopsConsumer(args[0]);
       Thread t = new Thread() {
         public void run() {
           hopsKafkaConsumer.consume(path);
@@ -308,8 +306,8 @@ public class FlinkKafkaExample {
 //    String type = null;
 //    int numberOfMessages = 30;
 //
-//    //Setup the HopsKafkaUtil
-//    HopsKafkaUtil hopsKafkaUtil = HopsKafkaUtil.getInstance();
+//    //Setup the KafkaUtil
+//    KafkaUtil hopsKafkaUtil = KafkaUtil.getInstance();
 //    
 //    System.out.println("SYSPROPS-ARGS:"+Arrays.toString(args)) ;
 //    System.out.println("SYSPROPS-KAFKA_PROPS:"+args[args.length-1]) ;
@@ -379,7 +377,7 @@ public class FlinkKafkaExample {
 //    
 //		// write data into Kafka
 //		//messageStream.addSink(new FlinkKafkaProducer08<>(parameterTool.getRequired("topic"), new SimpleStringSchema(), parameterTool.getProperties()));
-//    messageStream.addSink(hopsKafkaUtil.getHopsFlinkKafkaProducer(topicName,
+//    messageStream.addSink(hopsKafkaUtil.getFlinkProducer(topicName,
 //            new SimpleStringSchema())) ;
 //    env.execute("Write into Kafka example");
 //
