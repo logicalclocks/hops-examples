@@ -43,7 +43,6 @@ public class FlinkKafkaStreamingExample {
             Integer.parseInt(kafkaProps.get(
                     kafkaUtil.KAFKA_PROJECTID_ENV_VAR)),
             parameterTool.get("topic"),
-            kafkaProps.get(kafkaUtil.KAFKA_RESTENDPOINT),
             kafkaProps.get(kafkaUtil.KAFKA_BROKERADDR_ENV_VAR),
             kafkaProps.get(kafkaUtil.KAFKA_RESTENDPOINT),
             kafkaProps.get(kafkaUtil.KAFKA_K_CERTIFICATE_ENV_VAR),

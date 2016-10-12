@@ -51,21 +51,23 @@ public class KafkaHelloWorld {
 
     if (type == null) {
       //Consume kafka messages from topic
-      final HopsConsumer hopsKafkaConsumer = KafkaUtil.getInstance().getHopsConsumer(topicName);
-      Thread t = new Thread(){
-        public void run(){
-        hopsKafkaConsumer.consume();
+      final HopsConsumer hopsKafkaConsumer = KafkaUtil.getInstance().
+              getHopsConsumer(topicName);
+      Thread t = new Thread() {
+        public void run() {
+          hopsKafkaConsumer.consume();
         }
       };
       t.start();
       //Produce Kafka messages to topic
-      HopsProducer hopsKafkaProducer = KafkaUtil.getInstance().getHopsProducer(topicName);
+      HopsProducer hopsKafkaProducer = KafkaUtil.getInstance().getHopsProducer(
+              topicName);
 
       Map<String, String> message;
       for (int i = 0; i < numberOfMessages; i++) {
         message = new HashMap<>();
         message.put("platform", "HopsWorks");
-        message.put("program", "SparkKafka-"+i);
+        message.put("program", "SparkKafka-" + i);
         hopsKafkaProducer.produce(message);
         Thread.sleep(250);
         System.out.println("KafkaHelloWorld sending message:" + message);
@@ -73,22 +75,27 @@ public class KafkaHelloWorld {
       Thread.sleep(8000);
       hopsKafkaProducer.close();
       hopsKafkaConsumer.close();
-      
+
     } else if (type.equals("producer")) {
       //Produce Kafka messages to topic
-      HopsProducer hopsKafkaProducer = KafkaUtil.getInstance().getHopsProducer(topicName);
+      HopsProducer hopsKafkaProducer = KafkaUtil.getInstance().getHopsProducer(
+              topicName);
+
       Map<String, String> message;
       for (int i = 0; i < numberOfMessages; i++) {
         message = new HashMap<>();
-        message.put("str1", "Henrik" + i);
-//        message.put("lastname", "Larsson" + i);
-//        message.put("team", "Sweden");
+        message.put("platform", "HopsWorks");
+        message.put("program", "SparkKafka-" + i);
         hopsKafkaProducer.produce(message);
+        Thread.sleep(250);
         System.out.println("KafkaHelloWorld sending message:" + message);
+
       }
+      hopsKafkaProducer.close();
     } else {
       //Consume kafka messages from topic
-      HopsConsumer hopsKafkaConsumer = KafkaUtil.getInstance().getHopsConsumer(topicName);
+      HopsConsumer hopsKafkaConsumer = KafkaUtil.getInstance().getHopsConsumer(
+              topicName);
       //Keep thread alive
       //THIS WILL CAUSE THE JOB TO HANG. USER HAS TO MANUALLY STOP THE JOB.
       while (true) {

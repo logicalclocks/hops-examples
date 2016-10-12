@@ -110,6 +110,7 @@ public class IterateExample {
     
 		// execute the program
 		env.execute("Streaming Iteration Example");
+    
 	}
 
 	// *************************************************************************
