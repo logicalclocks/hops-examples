@@ -1,5 +1,5 @@
 # Examples
-Sample applications for services supported by HOPS. Currently supported services are Spark, Flink and Kafka.
+Sample applications for services  by supported Hops. Currently supported services are Spark, Flink and Kafka.
 
 #Build
 ```
