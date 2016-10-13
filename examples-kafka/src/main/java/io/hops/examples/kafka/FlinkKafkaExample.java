@@ -104,7 +104,7 @@ public class FlinkKafkaExample {
     KafkaUtil hopsKafkaUtil = KafkaUtil.getInstance();
 
     System.out.println("KAFKA-ARGS:" + Arrays.toString(args));
-    Map<String, String> kafkaProps = hopsKafkaUtil.getKafkaProps(
+    Map<String, String> kafkaProps = hopsKafkaUtil.getFlinkKafkaProps(
             args[args.length - 1]);
     for (Map.Entry<String, String> entry : kafkaProps.entrySet()) {
       System.out.println("KAFKA-PROP:" + entry.getKey() + "," + entry.
@@ -301,7 +301,7 @@ public class FlinkKafkaExample {
 //     * EXAMPLE: weather 30 producer
 //     * weather consumer
 //     */
-//    Map<String, String> kafkaProps = hopsKafkaUtil.getKafkaProps(args[args.length-1]);
+//    Map<String, String> kafkaProps = hopsKafkaUtil.getFlinkKafkaProps(args[args.length-1]);
 //    if (args != null && args.length == 4 && args[1].equals("producer")) {
 //      topicName = args[0];
 //      type = args[1];

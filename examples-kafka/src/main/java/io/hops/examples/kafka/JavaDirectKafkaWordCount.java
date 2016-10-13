@@ -20,30 +20,27 @@ import com.twitter.bijection.Injection;
 import com.twitter.bijection.avro.GenericAvroCodecs;
 import io.hops.kafkautil.KafkaUtil;
 import io.hops.kafkautil.SchemaNotFoundException;
-import java.util.HashMap;
+import io.hops.kafkautil.spark.SparkConsumer;
 import java.util.HashSet;
 import java.util.Arrays;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 import scala.Tuple2;
 
-import kafka.serializer.StringDecoder;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericRecord;
-import org.apache.kafka.clients.CommonClientConfigs;
-import org.apache.kafka.clients.consumer.ConsumerConfig;
+import org.apache.avro.util.Utf8;
+import org.apache.hadoop.mapred.TextOutputFormat;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.apache.kafka.common.config.SslConfigs;
 
 import org.apache.spark.SparkConf;
+import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.function.*;
 import org.apache.spark.streaming.api.java.*;
 import org.apache.spark.streaming.Durations;
+import org.apache.spark.streaming.Time;
 
 /**
  * Consumes messages from one or more topics in Kafka and does wordcount.
@@ -53,60 +50,60 @@ import org.apache.spark.streaming.Durations;
  * <p>
  * Example:
  * $ bin/run-example streaming.JavaDirectKafkaWordCount
- * broker1-host:port,broker2-host:port \
  * topic1,topic2
+ * <p>
  */
 public final class JavaDirectKafkaWordCount {
 
   private static final Pattern SPACE = Pattern.compile(" ");
 
-  public static void main(String[] args) throws Exception {
+  public static void main(final String[] args) throws Exception {
     if (args.length < 2) {
-      System.err.println("Usage: JavaDirectKafkaWordCount <brokers> <topics>\n"
-              + "  <brokers> is a list of one or more Kafka brokers\n"
-              + "  <topics> is a list of one or more kafka topics to consume from\n\n");
+      System.err.println("Usage: JavaDirectKafkaWordCount <topics> <sink>\n"
+              + "  <topics> is a list of one or more kafka topics to consume from\n"
+              + "  <sink> location in hdfs to append streaming output om\n\n");
       System.exit(1);
     }
 
-//    StreamingExamples.setStreamingLogLevels();
-    final String topics = args[1];
+    final String topics = args[0];
 
     // Create context with a 2 seconds batch interval
     SparkConf sparkConf = new SparkConf().setAppName("JavaDirectKafkaWordCount");
     JavaStreamingContext jssc = new JavaStreamingContext(sparkConf, Durations.
             seconds(2));
-
     Set<String> topicsSet = new HashSet<>(Arrays.asList(topics.split(",")));
-    final KafkaUtil util = KafkaUtil.getInstance();
-    util.setup();
-    // Create direct kafka stream with brokers and topics
-    JavaInputDStream<ConsumerRecord<String, byte[]>> messages = util.
-            createDirectStream(jssc, topicsSet);
-    final String schemaStr = util.getSchema(topics);
+    //Get HopsWorks Kafka Utility instance
+    KafkaUtil kafkaUtil = KafkaUtil.getInstance();
+
+    SparkConsumer consumer = kafkaUtil.getSparkConsumer(jssc, topicsSet);
+    // Create direct kafka stream with topics
+    JavaInputDStream<ConsumerRecord<String, byte[]>> messages = consumer.
+            createDirectStream();
+    
+    //Get the schema for which to consume messages
+    final String avroSchema = kafkaUtil.getSchema(topics);
+    final StringBuilder line = new StringBuilder();
+    
+    
     // Get the lines, split them into words, count the words and print
     JavaDStream<String> lines = messages.map(
             new Function<ConsumerRecord<String, byte[]>, String>() {
       @Override
       public String call(ConsumerRecord<String, byte[]> record) throws
               SchemaNotFoundException {
-        try {
-          Schema.Parser parser = new Schema.Parser();
-          Schema schema = parser.parse(schemaStr);
+        line.setLength(0);
+        //Parse schema and generate Avro record
+        Schema.Parser parser = new Schema.Parser();
+        Schema schema = parser.parse(avroSchema);
+        Injection<GenericRecord, byte[]> recordInjection = GenericAvroCodecs.
+                toBinary(schema);
+        GenericRecord genericRecord = recordInjection.invert(record.value()).
+                get();
 
-          Injection<GenericRecord, byte[]> recordInjection = GenericAvroCodecs.
-                  toBinary(schema);
-          GenericRecord genericRecord = recordInjection.invert(record.value()).
-                  get();
-
-          String value = new String(record.value());
-          System.out.println("record:" + record.key() + "," + value);
-          System.out.println("genericRecord:" + genericRecord);
-          return new String(record.value());
-        } catch (Exception ex) {
-          Logger.getLogger(JavaDirectKafkaWordCount.class.getName()).
-                  log(Level.SEVERE, null, ex);
-        }
-        return "record";
+        line.append(((Utf8) genericRecord.get("platform")).toString()).
+                append(" ").
+                append(((Utf8) genericRecord.get("program")).toString());
+        return line.toString();
       }
     });
 
@@ -114,7 +111,6 @@ public final class JavaDirectKafkaWordCount {
             new FlatMapFunction<String, String>() {
       @Override
       public Iterator<String> call(String x) {
-        System.out.println("words:" + x);
         return Arrays.asList(SPACE.split(x)).iterator();
       }
     });
@@ -123,18 +119,39 @@ public final class JavaDirectKafkaWordCount {
             new PairFunction<String, String, Integer>() {
       @Override
       public Tuple2<String, Integer> call(String s) {
-        System.out.println("words-s:" + s);
         return new Tuple2<>(s, 1);
       }
-    }).reduceByKey(
-                    new Function2<Integer, Integer, Integer>() {
+    }).reduceByKey(new Function2<Integer, Integer, Integer>() {
               @Override
               public Integer call(Integer i1, Integer i2) {
                 return i1 + i2;
               }
             });
+
     wordCounts.print();
 
+    /*
+     * Based on Spark Design patterns
+     * http://spark.apache.org/docs/latest/streaming-programming-guide.html#output-operations-on-dstreams
+     */
+    wordCounts.foreachRDD(
+            new VoidFunction2<JavaPairRDD<String, Integer>, Time>() {
+      @Override
+      public void call(JavaPairRDD<String, Integer> rdd, Time time) throws
+              Exception {
+        //Keep the latest microbatch output in the file
+        rdd.repartition(1).saveAsHadoopFile(args[1], String.class, String.class,
+                TextOutputFormat.class);
+      }
+
+    });
+
+    /*
+     * Enable this to all the streaming outputs. It creates a folder for every
+     * microbatch slot
+     */
+//    wordCounts.saveAsHadoopFiles(args[1], "txt", String.class, String.class,
+//                    (Class) TextOutputFormat.class);
     // Start the computation
     jssc.start();
     jssc.awaitTermination();

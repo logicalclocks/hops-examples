@@ -18,7 +18,7 @@ public class KafkaHelloWorld {
     String topicName;
     String type = null;
     int numberOfMessages = 30;
-
+    boolean runForever = true;
     //Check user args
     /*
      * USAGES: 1. topicname numberOfMessages type(producer/consumer)
@@ -30,6 +30,10 @@ public class KafkaHelloWorld {
       topicName = args[0];
       type = args[1];
       numberOfMessages = Integer.parseInt(args[2]);
+      runForever = false;
+    } else if (args != null && args.length == 2 && args[1].equals("producer")) {
+      topicName = args[0];
+      type = args[1];
     } else if (args != null && args.length == 2 && args[1].equals("consumer")) {
       topicName = args[0];
       type = args[1];
@@ -42,12 +46,11 @@ public class KafkaHelloWorld {
 
     //Initialize sparkcontext to be picked up by yarn, and hopsworks
     //detects the app as succeeded      
-    SparkConf sparkConf = new SparkConf().setAppName("Kafka");
+    SparkConf sparkConf = new SparkConf().setAppName("Hops Kafka Producer");
     JavaSparkContext jsc = new JavaSparkContext(sparkConf);
 
     //Setup the KafkaUtil
     KafkaUtil hopsKafkaUtil = KafkaUtil.getInstance();
-    hopsKafkaUtil.setup("http://localhost:8080", "localhost");
 
     if (type == null) {
       //Consume kafka messages from topic
@@ -69,7 +72,7 @@ public class KafkaHelloWorld {
         message.put("platform", "HopsWorks");
         message.put("program", "SparkKafka-" + i);
         hopsKafkaProducer.produce(message);
-        Thread.sleep(250);
+        Thread.sleep(100);
         System.out.println("KafkaHelloWorld sending message:" + message);
       }
       Thread.sleep(8000);
@@ -82,12 +85,14 @@ public class KafkaHelloWorld {
               topicName);
 
       Map<String, String> message;
-      for (int i = 0; i < numberOfMessages; i++) {
+      int i=0;
+      while(runForever || i < numberOfMessages) {
         message = new HashMap<>();
         message.put("platform", "HopsWorks");
         message.put("program", "SparkKafka-" + i);
         hopsKafkaProducer.produce(message);
-        Thread.sleep(250);
+        Thread.sleep(100);
+        i++;
         System.out.println("KafkaHelloWorld sending message:" + message);
 
       }

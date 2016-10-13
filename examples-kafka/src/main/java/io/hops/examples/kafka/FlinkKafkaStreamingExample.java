@@ -37,7 +37,7 @@ public class FlinkKafkaStreamingExample {
     System.out.println("FlinkKafkaStreamingExample.Params:" + parameterTool.
             toMap().toString());
     KafkaUtil kafkaUtil = KafkaUtil.getInstance();
-    Map<String, String> kafkaProps = kafkaUtil.getKafkaProps(
+    Map<String, String> kafkaProps = kafkaUtil.getFlinkKafkaProps(
             parameterTool.get("kafka_params"));
     kafkaUtil.setup(kafkaProps.get(kafkaUtil.KAFKA_SESSIONID_ENV_VAR),
             Integer.parseInt(kafkaProps.get(
