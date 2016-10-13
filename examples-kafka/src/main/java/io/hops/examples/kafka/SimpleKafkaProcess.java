@@ -10,38 +10,38 @@ import org.apache.spark.api.java.JavaSparkContext;
 
 /**
  * Simple Kafka Producer for Hopsworks.
- * Usage: KafkaHelloWorld topicname isProducer numberOfMessages
+ * Usage: SimpleKafkaProcess <topic> <type(producer|consumer)> <messages>
+ * <topic> Name of the Kafka topic.
+ * <type> Type of the KAfka process, producer or consumer.
+ * <messages> (Optional) Number of messages to produce. If not provided,
+ * producer
+ * will send messages infinitely.
+ * Example:
+ * SimpleKafkaProcess mytopic producer 50
  */
-public class KafkaHelloWorld {
+public class SimpleKafkaProcess {
 
   public static void main(String[] args) throws Exception {
-    String topicName;
+    String topic = null;
     String type = null;
     int numberOfMessages = 30;
     boolean runForever = true;
     //Check user args
-    /*
-     * USAGES: 1. topicname numberOfMessages type(producer/consumer)
-     * IF TYPE IS NOT PROVIDED, application will do both
-     * EXAMPLE: weather 30 producer
-     * weather consumer
-     */
     if (args != null && args.length == 3 && args[1].equals("producer")) {
-      topicName = args[0];
+      topic = args[0];
       type = args[1];
       numberOfMessages = Integer.parseInt(args[2]);
       runForever = false;
     } else if (args != null && args.length == 2 && args[1].equals("producer")) {
-      topicName = args[0];
+      topic = args[0];
       type = args[1];
     } else if (args != null && args.length == 2 && args[1].equals("consumer")) {
-      topicName = args[0];
+      topic = args[0];
       type = args[1];
-    } else if (args != null && args.length == 1) {
-      topicName = args[0];
     } else {
-      throw new Exception(
+      System.err.println(
               "Wrong arguments. Usage: topicName isProducer(true/false)");
+      System.exit(1);
     }
 
     //Initialize sparkcontext to be picked up by yarn, and hopsworks
@@ -49,41 +49,14 @@ public class KafkaHelloWorld {
     SparkConf sparkConf = new SparkConf().setAppName("Hops Kafka Producer");
     JavaSparkContext jsc = new JavaSparkContext(sparkConf);
 
-    if (type == null) {
-      //Consume kafka messages from topic
-      final HopsConsumer hopsKafkaConsumer = KafkaUtil.getInstance().
-              getHopsConsumer(topicName);
-      Thread t = new Thread() {
-        public void run() {
-          hopsKafkaConsumer.consume();
-        }
-      };
-      t.start();
+    if (type.equals("producer")) {
       //Produce Kafka messages to topic
       HopsProducer hopsKafkaProducer = KafkaUtil.getInstance().getHopsProducer(
-              topicName);
+              topic);
 
       Map<String, String> message;
-      for (int i = 0; i < numberOfMessages; i++) {
-        message = new HashMap<>();
-        message.put("platform", "HopsWorks");
-        message.put("program", "SparkKafka-" + i);
-        hopsKafkaProducer.produce(message);
-        Thread.sleep(100);
-        System.out.println("KafkaHelloWorld sending message:" + message);
-      }
-      Thread.sleep(8000);
-      hopsKafkaProducer.close();
-      hopsKafkaConsumer.close();
-
-    } else if (type.equals("producer")) {
-      //Produce Kafka messages to topic
-      HopsProducer hopsKafkaProducer = KafkaUtil.getInstance().getHopsProducer(
-              topicName);
-
-      Map<String, String> message;
-      int i=0;
-      while(runForever || i < numberOfMessages) {
+      int i = 0;
+      while (runForever || i < numberOfMessages) {
         message = new HashMap<>();
         message.put("platform", "HopsWorks");
         message.put("program", "SparkKafka-" + i);
@@ -97,14 +70,14 @@ public class KafkaHelloWorld {
     } else {
       //Consume kafka messages from topic
       HopsConsumer hopsKafkaConsumer = KafkaUtil.getInstance().getHopsConsumer(
-              topicName);
+              topic);
       //Keep thread alive
       //THIS WILL CAUSE THE JOB TO HANG. USER HAS TO MANUALLY STOP THE JOB.
       while (true) {
         Thread.sleep(1000);
       }
     }
-    Thread.sleep(8000);
+    Thread.sleep(5000);
     //Stop Spark context
     jsc.stop();
 
