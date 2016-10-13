@@ -1,7 +1,22 @@
 # Running Kafka Examples
 HopsWorks allows users to create their own Apache Spark and Apache Flink programs to produce and consume Avro records from Kafka. Users can follow the examples available in this project, modify them and submit use them in their own Projects. Instructions on how to do this are available in the next sections. 
 
-## Flink & Kafka
+## Avro Schema
+Both Spark and Flink examples, make use of an Avro schema to produce and consume. The sample schema used is the following:
+```
+{
+    "fields": [
+        { "name": "platform", "type": "string" },
+        { "name": "program", "type": "string" }
+    ],
+    "name": "myrecord",
+    "type": "record"
+}
+```
+# Spark
+
+
+# Flink
 To help you get started, *FlinkKafkaStreamingExample* provides the code for a basic streaming Flink application. To use it you need to provide the following parameters in the folling way when creating a Flink job in HopsWorks:
 ```
 Usage: -topic <topic_name> -type <producer|consumer> [-sink_path <rolling_sink path>] [-batch_size <rolling_file_size>] [-bucket_format <bucket_format>]
