@@ -9,7 +9,7 @@ import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaSparkContext;
 
 /**
- * SparkPi for HopsKafka.
+ * Simple Kafka Producer for Hopsworks.
  * Usage: KafkaHelloWorld topicname isProducer numberOfMessages
  */
 public class KafkaHelloWorld {
@@ -48,9 +48,6 @@ public class KafkaHelloWorld {
     //detects the app as succeeded      
     SparkConf sparkConf = new SparkConf().setAppName("Hops Kafka Producer");
     JavaSparkContext jsc = new JavaSparkContext(sparkConf);
-
-    //Setup the KafkaUtil
-    KafkaUtil hopsKafkaUtil = KafkaUtil.getInstance();
 
     if (type == null) {
       //Consume kafka messages from topic

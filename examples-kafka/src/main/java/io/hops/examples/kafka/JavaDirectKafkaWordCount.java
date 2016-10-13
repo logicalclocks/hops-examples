@@ -44,13 +44,13 @@ import org.apache.spark.streaming.Time;
 
 /**
  * Consumes messages from one or more topics in Kafka and does wordcount.
- * Usage: JavaDirectKafkaWordCount <brokers> <topics>
- * <brokers> is a list of one or more Kafka brokers
- * <topics> is a list of one or more kafka topics to consume from
+ * Usage: JavaDirectKafkaWordCount <topics> <sink>
+ * <topics> a list of one or more kafka topics to consume fro
+ * <sink> location in hdfs to append streaming output
  * <p>
  * Example:
  * $ bin/run-example streaming.JavaDirectKafkaWordCount
- * topic1,topic2
+ * topic1,topic2 /Projects/MyProject/Resources/Data
  * <p>
  */
 public final class JavaDirectKafkaWordCount {
@@ -61,7 +61,7 @@ public final class JavaDirectKafkaWordCount {
     if (args.length < 2) {
       System.err.println("Usage: JavaDirectKafkaWordCount <topics> <sink>\n"
               + "  <topics> is a list of one or more kafka topics to consume from\n"
-              + "  <sink> location in hdfs to append streaming output om\n\n");
+              + "  <sink> location in hdfs to append streaming output.\n\n");
       System.exit(1);
     }
 
@@ -69,8 +69,13 @@ public final class JavaDirectKafkaWordCount {
 
     // Create context with a 2 seconds batch interval
     SparkConf sparkConf = new SparkConf().setAppName("JavaDirectKafkaWordCount");
-    JavaStreamingContext jssc = new JavaStreamingContext(sparkConf, Durations.
+    final JavaStreamingContext jssc = new JavaStreamingContext(sparkConf,
+            Durations.
             seconds(2));
+
+    //Use applicationId for sink folder
+    final String appId = jssc.sparkContext().getConf().getAppId();
+
     Set<String> topicsSet = new HashSet<>(Arrays.asList(topics.split(",")));
     //Get HopsWorks Kafka Utility instance
     KafkaUtil kafkaUtil = KafkaUtil.getInstance();
@@ -79,12 +84,11 @@ public final class JavaDirectKafkaWordCount {
     // Create direct kafka stream with topics
     JavaInputDStream<ConsumerRecord<String, byte[]>> messages = consumer.
             createDirectStream();
-    
+
     //Get the schema for which to consume messages
     final String avroSchema = kafkaUtil.getSchema(topics);
     final StringBuilder line = new StringBuilder();
-    
-    
+
     // Get the lines, split them into words, count the words and print
     JavaDStream<String> lines = messages.map(
             new Function<ConsumerRecord<String, byte[]>, String>() {
@@ -140,18 +144,20 @@ public final class JavaDirectKafkaWordCount {
       public void call(JavaPairRDD<String, Integer> rdd, Time time) throws
               Exception {
         //Keep the latest microbatch output in the file
-        rdd.repartition(1).saveAsHadoopFile(args[1], String.class, String.class,
+        rdd.repartition(1).saveAsHadoopFile(args[1] + "-" + appId, String.class,
+                String.class,
                 TextOutputFormat.class);
       }
 
     });
 
     /*
-     * Enable this to all the streaming outputs. It creates a folder for every
-     * microbatch slot
+     * Enable this to get all the streaming outputs. It creates a folder for
+     * every microbatch slot.
+     * ///////////////////////////////////////////////////////////////////////
+     * wordCounts.saveAsHadoopFiles(args[1], "txt", String.class,
+     * String.class, (Class) TextOutputFormat.class);
      */
-//    wordCounts.saveAsHadoopFiles(args[1], "txt", String.class, String.class,
-//                    (Class) TextOutputFormat.class);
     // Start the computation
     jssc.start();
     jssc.awaitTermination();
