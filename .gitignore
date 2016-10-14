@@ -1,3 +1,5 @@
 /target/
 /examples-kafka/target/
 /examples-spark/target/
+/examples-flink (copy)/target/
+/examples-beam/target/
