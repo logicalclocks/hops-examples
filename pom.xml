@@ -28,48 +28,48 @@
       </plugin>
       
       <plugin>
-	<artifactId>maven-scm-plugin</artifactId>
-	<version>1.8.1</version>
-	<configuration>
+        <artifactId>maven-scm-plugin</artifactId>
+        <version>1.8.1</version>
+        <configuration>
           <connectionType>developerConnection</connectionType>
           <scmVersion>branch-0.1</scmVersion>
           <scmVersionType>branch</scmVersionType>
-	</configuration>
+        </configuration>
       </plugin>
     </plugins>
   </build>
   
   <modules>
-    <module>examples-spark</module>
-    <module>examples-flink</module>
-    <module>examples-beam</module>
+    <module>spark</module>
+    <module>flink</module>
+    <module>beam</module>
   </modules>
   
 
 
 
-    <repositories>
-        <repository>
-            <id>sics-release</id>
-            <name>SICS Release Repository</name>
-            <url>http://kompics.sics.se/maven/repository</url>
-            <releases>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-        <repository>
-            <id>sics-snapshot</id>
-            <name>SICS Snapshot Repository</name>
-            <url>http://kompics.sics.se/maven/snapshotrepository</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-            <snapshots>
-            </snapshots>
-        </repository>
-    </repositories>  
+  <repositories>
+    <repository>
+      <id>sics-release</id>
+      <name>SICS Release Repository</name>
+      <url>http://kompics.sics.se/maven/repository</url>
+      <releases>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+    <repository>
+      <id>sics-snapshot</id>
+      <name>SICS Snapshot Repository</name>
+      <url>http://kompics.sics.se/maven/snapshotrepository</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+      </snapshots>
+    </repository>
+  </repositories>  
 
   <distributionManagement>
     <repository>

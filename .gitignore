@@ -3,3 +3,6 @@
 /examples-spark/target/
 /examples-flink (copy)/target/
 /examples-beam/target/
+/spark/target/
+/flink/target/
+/beam/target/
