@@ -6,12 +6,16 @@ import io.hops.kafkautil.HopsProducer;
 import io.hops.kafkautil.KafkaUtil;
 import io.hops.kafkautil.SchemaNotFoundException;
 import io.hops.kafkautil.spark.SparkConsumer;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import joptsimple.internal.Strings;
 
@@ -25,6 +29,7 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaPairRDD;
+import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.api.java.function.*;
 import org.apache.spark.streaming.api.java.*;
 import org.apache.spark.streaming.Durations;
@@ -35,8 +40,8 @@ import org.apache.spark.streaming.Time;
  * produces
  * hello world messages to Kafka using Hops Kafka Producer. Streaming code based
  * on Spark JavaDirectKafkaWordCount.
- * Usage: StreamingExample <topics> <sink>
- * <topics> a list of one or more kafka topics to consume from
+ * Usage: StreamingExample <topics> <type> <sink>
+ * <topics> a list of comma separated kafka topics to consume from
  * <type> type of kafka process (producer|consumer)
  * <sink> location in hdfs to append streaming output
  * <p>
@@ -61,35 +66,52 @@ public final class StreamingExample {
     final String topics = args[0];
     final String type = args[1];
     // Create context with a 2 ; batch interval
-
+    Set<String> topicsSet = new HashSet<>(Arrays.asList(topics.split(",")));
     SparkConf sparkConf = new SparkConf().setAppName("StreamingExample");
-    final JavaStreamingContext jssc = new JavaStreamingContext(sparkConf,
-            Durations.
-            seconds(2));
-    HopsProducer hopsProducer = null;
-    if (Strings.isNullOrEmpty(type) && type.equalsIgnoreCase("producer")) {
-      //Produce Kafka messages to topic
-      hopsProducer = KafkaUtil.getInstance().getHopsProducer(
-              topics.split(",")[0]);
+    System.out.println("Topics:" + topicsSet);
+    final List<HopsProducer> hopsProducers = new ArrayList<>();
 
-      Map<String, String> message;
-      int i = 0;
+    if (!Strings.isNullOrEmpty(type) && type.equalsIgnoreCase("producer")) {
+      JavaSparkContext jsc = new JavaSparkContext(sparkConf);
+      //Create a producer for each topic
+      for (final String topic : topicsSet) {
+        new Thread() {
+          @Override
+          public void run() {
+            try {
+              HopsProducer hopsProducer = KafkaUtil.getInstance().
+                      getHopsProducer(
+                              topic);
+              hopsProducers.add(hopsProducer);
+              Map<String, String> message = new HashMap<>();
+              int i = 0;
+              //Produce Kafka messages to topic
+              while (true) {
+                message.put("platform", "HopsWorks");
+                message.put("program", "SparkKafka-"+topic+"-" + i);
+                hopsProducer.produce(message);
+                Thread.sleep(100);
+                i++;
+                System.out.println("KafkaHelloWorld sending message:" + message);
+              }
+            } catch (SchemaNotFoundException | InterruptedException ex) {
+              Logger.getLogger(StreamingExample.class.getName()).
+                      log(Level.SEVERE, null, ex);
+            }
+          }
+        }.start();
+      }//Keep application running
       while (true) {
-        message = new HashMap<>();
-        message.put("platform", "HopsWorks");
-        message.put("program", "SparkKafka-" + i);
-        hopsProducer.produce(message);
-        Thread.sleep(100);
-        i++;
-        System.out.println("KafkaHelloWorld sending message:" + message);
+        Thread.sleep(5000);
       }
 
     } else {
-
+      JavaStreamingContext jssc = new JavaStreamingContext(sparkConf,
+              Durations.
+              seconds(2));
       //Use applicationId for sink folder
       final String appId = jssc.sparkContext().getConf().getAppId();
 
-      Set<String> topicsSet = new HashSet<>(Arrays.asList(topics.split(",")));
       //Get HopsWorks Kafka Utility instance
       KafkaUtil kafkaUtil = KafkaUtil.getInstance();
 
@@ -99,7 +121,7 @@ public final class StreamingExample {
               createDirectStream();
 
       //Get the schema for which to consume messages
-      final String avroSchema = kafkaUtil.getSchema(topics);
+      final String avroSchema = kafkaUtil.getSchema(topics.split(",")[0]);
       final StringBuilder line = new StringBuilder();
 
       // Get the lines, split them into words, count the words and print
@@ -173,9 +195,12 @@ public final class StreamingExample {
        * String.class, (Class) TextOutputFormat.class);
        */
       // Start the computation
+      jssc.start();
+      jssc.awaitTermination();
     }
-    jssc.start();
-    jssc.awaitTermination();
-    hopsProducer.close();
+
+    for (HopsProducer hopsProducer : hopsProducers) {
+      hopsProducer.close();
+    }
   }
 }
