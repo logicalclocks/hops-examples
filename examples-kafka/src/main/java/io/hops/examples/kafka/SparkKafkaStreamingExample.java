@@ -44,16 +44,16 @@ import org.apache.spark.streaming.Time;
 
 /**
  * Consumes messages from one or more topics in Kafka and does wordcount.
- * Usage: JavaDirectKafkaWordCount <topics> <sink>
+ * Usage: SparkKafkaStreamingExample <topics> <sink>
  * <topics> a list of one or more kafka topics to consume fro
  * <sink> location in hdfs to append streaming output
  * <p>
- * Example:
- * $ bin/run-example streaming.JavaDirectKafkaWordCount
- * topic1,topic2 /Projects/MyProject/Resources/Data
- * <p>
+ Example:
+ $ bin/run-example streaming.SparkKafkaStreamingExample
+ topic1,topic2 /Projects/MyProject/Resources/Data
+ <p>
  */
-public final class JavaDirectKafkaWordCount {
+public final class SparkKafkaStreamingExample {
 
   private static final Pattern SPACE = Pattern.compile(" ");
 
