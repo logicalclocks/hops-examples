@@ -1,4 +1,4 @@
-package io.hops.examples.flink;
+package io.hops.examples.flink.kafka;
 
 import io.hops.kafkautil.HopsConsumer;
 import io.hops.kafkautil.HopsProducer;

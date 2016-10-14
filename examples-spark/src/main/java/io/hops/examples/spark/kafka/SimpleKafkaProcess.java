@@ -1,4 +1,4 @@
-package io.hops.examples.spark;
+package io.hops.examples.spark.kafka;
 
 import io.hops.kafkautil.HopsConsumer;
 import io.hops.kafkautil.HopsProducer;

@@ -20,7 +20,7 @@
         <configuration>
           <archive>
             <manifest>
-              <mainClass>io.hops.examples.flink.IterateExample</mainClass>
+              <mainClass>io.hops.examples.flink.kafka.StreamingExample</mainClass>
             </manifest>
           </archive>
         </configuration>

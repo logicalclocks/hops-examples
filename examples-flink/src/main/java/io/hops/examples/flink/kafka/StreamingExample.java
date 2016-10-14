@@ -1,4 +1,4 @@
-package io.hops.examples.flink;
+package io.hops.examples.flink.kafka;
 
 import io.hops.kafkautil.KafkaUtil;
 import java.util.Arrays;
@@ -18,7 +18,7 @@ import org.apache.flink.streaming.connectors.fs.RollingSink;
  * <p>
  * <p>
  */
-public class FlinkKafkaStreamingExample {
+public class StreamingExample {
 
   public static void main(String[] args) throws Exception {
     ParameterTool parameterTool = ParameterTool.fromArgs(args);
