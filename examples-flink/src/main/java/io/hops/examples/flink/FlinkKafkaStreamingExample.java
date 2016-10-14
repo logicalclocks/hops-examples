@@ -1,4 +1,4 @@
-package io.hops.examples.kafka;
+package io.hops.examples.flink;
 
 import io.hops.kafkautil.KafkaUtil;
 import java.util.Arrays;
