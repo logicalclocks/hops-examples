@@ -1,23 +1,26 @@
 # Spark & Kafka
 To help you get started, *StreamingExample* provides the code for a basic streaming Spark application. HopsWorks makes use of the latest Spark-Kafka experimental [API](http://spark.apache.org/docs/latest/streaming-kafka-0-10-integration.html). To run the example you need to provide the following parameters when creating a Spark job for Kafka in HopsWorks:
 ```
-Usage: <topics>  <type>(producer|consumer) [<sink>]
+Usage: <type>(producer|consumer) [<sink>]
 ```
-* **topics**: A comma separated list of Kafka topics where the job will produce or consume. When consuming from multiple topics using a single Spark directStream, all topics must use the same Avro schema. Create a new directStream for topic(s) that use different Avro schemas. 
 * **type**: Defines if the the job is producing/consuming to/from Kafka.
 * **sink**: Used only by a Consumer job, it defines the path to the Dataset or folder to which the Spark job appends its streaming output. The latter contain the consumed Avro records from Kafka. The name of the folder is suffixed with the YARN applicationId to deferantiate between multiple jobs writing to the same Dataset. In this example, the sink file contains data from the latest microbatch. The default microbatch period is set to two(2) seconds.
+
+
+**Topics** are provided via the HopsWorks Job UI. User checks the *Kafka* box and provides the topic names as comma separated value.When consuming from multiple topics using a single Spark directStream, all topics must use the same Avro schema. Create a new directStream for topic(s) that use different Avro schemas.
+
 
 ## Example:
 **Producer**
 
 ```
-mytopic,yourtopic producer
+producer
 
 ```
 
 **Consumer** 
 ```
-mytopic,yourtopic consumer /Projects/KafkaProject/Resources/Data
+consumer /Projects/KafkaProject/Resources/Data
 ```
 
 ## Avro Records
