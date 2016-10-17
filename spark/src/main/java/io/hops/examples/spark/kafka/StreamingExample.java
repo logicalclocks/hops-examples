@@ -40,9 +40,9 @@ import org.apache.spark.streaming.Time;
  * hello world messages to Kafka using Hops Kafka Producer. Streaming code based
  * on Spark JavaDirectKafkaWordCount.
  * Usage: StreamingExample <topics> <type> <sink>
- * <topics> a list of comma separated kafka topics to consume from
  * <type> type of kafka process (producer|consumer)
  * <sink> location in hdfs to append streaming output
+ * <topics> a list of comma separated kafka topics to consume from
  * <p>
  * Example:
  * $ bin/run-example streaming.StreamingExample
@@ -53,15 +53,15 @@ public final class StreamingExample {
 
   private static final Pattern SPACE = Pattern.compile(" ");
   //Get HopsWorks Kafka Utility instance
-  private static Map<String, Injection<GenericRecord, byte[]>> recordInjections
+  private static final Map<String, Injection<GenericRecord, byte[]>> recordInjections
           = KafkaUtil.getRecordInjections();
 
   public static void main(final String[] args) throws Exception {
     if (args.length < 1) {
-      System.err.println("Usage: StreamingExample <topics> <type> <sink>\n"
-              + "  <topics> is a list of one or more kafka topics to consume from\n"
+      System.err.println("Usage: StreamingExample <type> <sink> <topics> \n"
               + "  <type> type of kafka process (producer|consumer).\n"
-              + "  <sink> location in hdfs to append streaming output.\n\n");
+              + "  <sink> location in hdfs to append streaming output.\n"
+              + "  <topics> is a list of one or more kafka topics to consume from\n\n");
       System.exit(1);
     }
 
@@ -80,9 +80,7 @@ public final class StreamingExample {
           @Override
           public void run() {
             try {
-              SparkProducer sparkProducer = KafkaUtil.getInstance().
-                      getSparkProducer(
-                              topic);
+              SparkProducer sparkProducer = KafkaUtil.getSparkProducer(topic);
               sparkProducers.add(sparkProducer);
               Map<String, String> message = new HashMap<>();
               int i = 0;
@@ -108,8 +106,7 @@ public final class StreamingExample {
 
     } else {
       JavaStreamingContext jssc = new JavaStreamingContext(sparkConf,
-              Durations.
-              seconds(2));
+              Durations.seconds(2));
       //Use applicationId for sink folder
       final String appId = jssc.sparkContext().getConf().getAppId();
 
