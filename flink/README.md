@@ -1,8 +1,5 @@
-# Running Kafka Examples
-HopsWorks allows users to create their own Apache Spark and Apache Flink programs to produce and consume Avro records from Kafka. Users can follow the examples available in this project, modify them and submit use them in their own Projects. Instructions on how to do this are available in the next sections. 
-
-# Flink
-To help you get started, *FlinkKafkaStreamingExample* provides the code for a basic streaming Flink application. To use it you need to provide the following parameters in the folling way when creating a Flink job in HopsWorks:
+# Flink & Kafka
+To help you get started, *FlinkKafkaStreamingExample* provides the code for a basic streaming Flink application. To use it you need to provide the following parameters when creating a Flink job for Kafka in HopsWorks:
 ```
 Usage: -topic <topic_name> -type <producer|consumer> [-sink_path <rolling_sink path>] [-batch_size <rolling_file_size>] [-bucket_format <bucket_format>]
 ```
@@ -12,7 +9,7 @@ Usage: -topic <topic_name> -type <producer|consumer> [-sink_path <rolling_sink p
 * **batch_size**: Used only by a Consumer job, it defines the size of the file being written by the RollingSink. default is 32KB
 * **bucket_format**: Used only by a Consumer job, it defines the names and creation frequency of the folders under sink_path. For more information see [DateTimeBucketer](https://ci.apache.org/projects/flink/flink-docs-master/api/java/org/apache/flink/streaming/connectors/fs/DateTimeBucketer.html) 
 
-#### Example:
+## Example:
 (*A single space must exist between parameters*)
 
 **Producer**
@@ -27,7 +24,7 @@ Usage: -topic <topic_name> -type <producer|consumer> [-sink_path <rolling_sink p
 -topic mytopic -type consumer -sink_path /Projects/FlinkKafka/SinkE -batch_size 16 -bucket_format yyyy-MM-dd--HH
 ```
 
-#### Avro Records
+## Avro Records
 This example streams Tuples of String <key,value> pairs which are then serialzied by the HopsAvroSchema class into Avro records and then sent to Kafka. The user needs to use a Tuple with twice as many fields as his schema (in this case Tuple4) which is done because the Tuple will contain both key and values of the record. **The Avro schema used in this example is the following**:
 
 ```
@@ -78,7 +75,7 @@ numbers.writeAsText("hdfs://10.0.2.15:8020/Projects/myproject/Resources/test.out
 The path to an existing file can be easily found by clicking on this particular file in HopsWorks-DataSets and then easily copy the path by using the clipboard icon.
 
 
-##ApplicationLogs
+##Application Logs
 In case you want to print something to the *standard output* within your application, *do not use System.out*. Instead, use the following code example which utilizes an HDFS client to 
 write your output to HDFS. The file path must be set similarly to the Flink logs described above.
 ```
