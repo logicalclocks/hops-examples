@@ -1,7 +1,6 @@
 package io.hops.examples.spark.kafka;
 
 import com.twitter.bijection.Injection;
-import com.twitter.bijection.avro.GenericAvroCodecs;
 import io.hops.kafkautil.HopsProducer;
 import io.hops.kafkautil.KafkaUtil;
 import io.hops.kafkautil.SchemaNotFoundException;
@@ -22,7 +21,6 @@ import joptsimple.internal.Strings;
 
 import scala.Tuple2;
 
-import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericRecord;
 import org.apache.avro.util.Utf8;
 import org.apache.hadoop.mapred.TextOutputFormat;
@@ -54,9 +52,12 @@ import org.apache.spark.streaming.Time;
 public final class StreamingExample {
 
   private static final Pattern SPACE = Pattern.compile(" ");
+  //Get HopsWorks Kafka Utility instance
+  private static Map<String, Injection<GenericRecord, byte[]>> recordInjections
+          = KafkaUtil.getRecordInjections();
 
   public static void main(final String[] args) throws Exception {
-    if (args.length < 2) {
+    if (args.length < 1) {
       System.err.println("Usage: StreamingExample <topics> <type> <sink>\n"
               + "  <topics> is a list of one or more kafka topics to consume from\n"
               + "  <type> type of kafka process (producer|consumer).\n"
@@ -64,10 +65,9 @@ public final class StreamingExample {
       System.exit(1);
     }
 
-    final String topics = args[0];
-    final String type = args[1];
+    final String type = args[0];
     // Create context with a 2 ; batch interval
-    Set<String> topicsSet = new HashSet<>(Arrays.asList(topics.split(",")));
+    Set<String> topicsSet = new HashSet<>(KafkaUtil.getTopics());
     SparkConf sparkConf = new SparkConf().setAppName("StreamingExample");
     System.out.println("Topics:" + topicsSet);
     final List<HopsProducer> sparkProducers = new ArrayList<>();
@@ -89,7 +89,7 @@ public final class StreamingExample {
               //Produce Kafka messages to topic
               while (true) {
                 message.put("platform", "HopsWorks");
-                message.put("program", "SparkKafka-"+topic+"-" + i);
+                message.put("program", "SparkKafka-" + topic + "-" + i);
                 sparkProducer.produce(message);
                 Thread.sleep(100);
                 i++;
@@ -113,16 +113,12 @@ public final class StreamingExample {
       //Use applicationId for sink folder
       final String appId = jssc.sparkContext().getConf().getAppId();
 
-      //Get HopsWorks Kafka Utility instance
-      KafkaUtil kafkaUtil = KafkaUtil.getInstance();
-
-      SparkConsumer consumer = kafkaUtil.getSparkConsumer(jssc, topicsSet);
+      SparkConsumer consumer = KafkaUtil.getSparkConsumer(jssc, topicsSet);
       // Create direct kafka stream with topics
       JavaInputDStream<ConsumerRecord<String, byte[]>> messages = consumer.
               createDirectStream();
 
       //Get the schema for which to consume messages
-      final String avroSchema = kafkaUtil.getSchema(topics.split(",")[0]);
       final StringBuilder line = new StringBuilder();
 
       // Get the lines, split them into words, count the words and print
@@ -133,13 +129,11 @@ public final class StreamingExample {
                 SchemaNotFoundException {
           line.setLength(0);
           //Parse schema and generate Avro record
-          Schema.Parser parser = new Schema.Parser();
-          Schema schema = parser.parse(avroSchema);
-          Injection<GenericRecord, byte[]> recordInjection = GenericAvroCodecs.
-                  toBinary(schema);
-          GenericRecord genericRecord = recordInjection.invert(record.value()).
-                  get();
-
+          //For this example, we use a single schema so we get the first record
+          //of the recordInjections map. Otherwise do
+          //recordInjections.get("topic");
+          GenericRecord genericRecord = recordInjections.entrySet().iterator().
+                  next().getValue().invert(record.value()).get();
           line.append(((Utf8) genericRecord.get("platform")).toString()).
                   append(" ").
                   append(((Utf8) genericRecord.get("program")).toString());
@@ -180,7 +174,7 @@ public final class StreamingExample {
         public void call(JavaPairRDD<String, Integer> rdd, Time time) throws
                 Exception {
           //Keep the latest microbatch output in the file
-          rdd.repartition(1).saveAsHadoopFile(args[2] + "-" + appId,
+          rdd.repartition(1).saveAsHadoopFile(args[1] + "-" + appId,
                   String.class,
                   String.class,
                   TextOutputFormat.class);
@@ -194,6 +188,7 @@ public final class StreamingExample {
        * ///////////////////////////////////////////////////////////////////////
        * wordCounts.saveAsHadoopFiles(args[1], "txt", String.class,
        * String.class, (Class) TextOutputFormat.class);
+       * ///////////////////////////////////////////////////////////////////////
        */
       // Start the computation
       jssc.start();
