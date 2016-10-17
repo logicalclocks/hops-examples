@@ -6,6 +6,7 @@ import io.hops.kafkautil.HopsProducer;
 import io.hops.kafkautil.KafkaUtil;
 import io.hops.kafkautil.SchemaNotFoundException;
 import io.hops.kafkautil.spark.SparkConsumer;
+import io.hops.kafkautil.spark.SparkProducer;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Arrays;
@@ -69,7 +70,7 @@ public final class StreamingExample {
     Set<String> topicsSet = new HashSet<>(Arrays.asList(topics.split(",")));
     SparkConf sparkConf = new SparkConf().setAppName("StreamingExample");
     System.out.println("Topics:" + topicsSet);
-    final List<HopsProducer> hopsProducers = new ArrayList<>();
+    final List<HopsProducer> sparkProducers = new ArrayList<>();
 
     if (!Strings.isNullOrEmpty(type) && type.equalsIgnoreCase("producer")) {
       JavaSparkContext jsc = new JavaSparkContext(sparkConf);
@@ -79,17 +80,17 @@ public final class StreamingExample {
           @Override
           public void run() {
             try {
-              HopsProducer hopsProducer = KafkaUtil.getInstance().
-                      getHopsProducer(
+              SparkProducer sparkProducer = KafkaUtil.getInstance().
+                      getSparkProducer(
                               topic);
-              hopsProducers.add(hopsProducer);
+              sparkProducers.add(sparkProducer);
               Map<String, String> message = new HashMap<>();
               int i = 0;
               //Produce Kafka messages to topic
               while (true) {
                 message.put("platform", "HopsWorks");
                 message.put("program", "SparkKafka-"+topic+"-" + i);
-                hopsProducer.produce(message);
+                sparkProducer.produce(message);
                 Thread.sleep(100);
                 i++;
                 System.out.println("KafkaHelloWorld sending message:" + message);
@@ -199,7 +200,7 @@ public final class StreamingExample {
       jssc.awaitTermination();
     }
 
-    for (HopsProducer hopsProducer : hopsProducers) {
+    for (HopsProducer hopsProducer : sparkProducers) {
       hopsProducer.close();
     }
   }
