@@ -1,5 +1,6 @@
 package io.hops.examples.spark.kafka;
 
+import com.google.common.base.Strings;
 import com.twitter.bijection.Injection;
 import io.hops.kafkautil.HopsProducer;
 import io.hops.kafkautil.KafkaUtil;
@@ -17,7 +18,6 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
-import joptsimple.internal.Strings;
 
 import scala.Tuple2;
 
