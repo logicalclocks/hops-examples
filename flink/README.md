@@ -1,9 +1,8 @@
 # Flink & Kafka
-To help you get started, *FlinkKafkaStreamingExample* provides the code for a basic streaming Flink application. To use it you need to provide the following parameters when creating a Flink job for Kafka in HopsWorks:
+To help you get started, *StreamingExample* provides the code for a basic streaming Flink application. To use it you need to provide the following parameters when creating a Flink job for Kafka in HopsWorks:
 ```
-Usage: -topic <topic_name> -type <producer|consumer> [-sink_path <rolling_sink path>] [-batch_size <rolling_file_size>] [-bucket_format <bucket_format>]
+Usage: -type <producer|consumer> [-sink_path <rolling_sink path>] [-batch_size <rolling_file_size>] [-bucket_format <bucket_format>]
 ```
-* **topic**: The name of the Kafka topic where the job will produce or consume.
 * **type**: Defines if the the job is producing or consuming.
 * **sink_path**: Used only by a Consumer job, itdefines the path to the Dataset in which the Flink RollingSink writes its files. The latter contain the consumed Avro records from Kafka. In this example, the RollingSink creates a new folder (Bucket) every minute.
 * **batch_size**: Used only by a Consumer job, it defines the size of the file being written by the RollingSink. default is 32KB
@@ -15,14 +14,15 @@ Usage: -topic <topic_name> -type <producer|consumer> [-sink_path <rolling_sink p
 **Producer**
 
 ```
--topic mytopic -type producer
+-type producer
 
 ```
 
 **Consumer** 
 ```
--topic mytopic -type consumer -sink_path /Projects/FlinkKafka/SinkE -batch_size 16 -bucket_format yyyy-MM-dd--HH
+-type consumer -sink_path /Projects/FlinkKafka/SinkE -batch_size 16 -bucket_format yyyy-MM-dd--HH
 ```
+**Topic names are provided via the HopsWorks Jobs user interface, when creating the job.**
 
 ## Avro Records
 This example streams Tuples of String <key,value> pairs which are then serialzied by the HopsAvroSchema class into Avro records and then sent to Kafka. The user needs to use a Tuple with twice as many fields as his schema (in this case Tuple4) which is done because the Tuple will contain both key and values of the record. **The Avro schema used in this example is the following**:
@@ -39,11 +39,11 @@ This example streams Tuples of String <key,value> pairs which are then serialzie
 ```
 For Avro schemas with more fields, the application's SourceFunction should use a Tuple with the proper arity and the user should also update the definition of the *HopsAvroSchema* class accordingly. No other change is required by this class.
 #### Notes
-1. Currently Flink 1.0.3 is supported, however an upgrade to 1.1.2 is in the short-term roadmap. *Upgrading means the Avro mechanism in HopsWorks is bound to change in order to make use of the new classes available in the latest Apache Flink distribution.*
+1. Currently *Flink version 1.1.3* is supported.
 
-2. For examples on customizing logging for Flink jobs on HopsWorks see [here](https://github.com/hopshadoop/hops-kafka-examples/tree/master/examples-flink) 
+2. For examples on customizing logging for Flink jobs on HopsWorks see [here](https://github.com/hopshadoop/hops-kafka-examples/tree/master/examples-flink).
 
-3. *FlinkKafkaStreamingExample* makes use of the HopsWorks Kafka Utility available [here](https://github.com/hopshadoop/kafka-util). When running a Flink job, this utility is automatically available to your job, so there is no need to add it as an external library to your job.
+3. *StreamingExample* makes use of the HopsWorks Kafka Utility available [here](https://github.com/hopshadoop/kafka-util). When building this project, KafkaUtil is included in the assembled jar file. No external libraries need to be provided when creating a HopsWorks job.
 
 
 #Job Logging

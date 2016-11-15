@@ -22,32 +22,35 @@ public class StreamingExample {
 
   public static void main(String[] args) throws Exception {
     ParameterTool parameterTool = ParameterTool.fromArgs(args);
-    if (parameterTool.getNumberOfParameters() < 2 || !parameterTool.has("topic")) {
+    if (parameterTool.getNumberOfParameters() < 2 || !parameterTool.has("type")) {
       System.out.println(
-              "Missing parameters!\nUsage: -topic <topic_name> -type <producer|consumer> "
+              "Missing parameters!\nUsage: -type <producer|consumer> "
               + "[-sink_path <rolling_sink path>]"
               + " [-batch_size <rolling_file_size>]"
               + " [-bucket_format <bucket_format>]");
       throw new Exception(
-              "Missing parameters!\nUsage: -topic <topic_name> -type <producer|consumer> "
+              "Missing parameters!\nUsage: -type <producer|consumer> "
               + "[-sink_path <rolling_sink path>]"
               + " [-batch_size <rolling_file_size>]"
               + " [-bucket_format <bucket_format>]");
     }
     System.out.println("FlinkKafkaStreamingExample.Params:" + parameterTool.
             toMap().toString());
-    KafkaUtil kafkaUtil = KafkaUtil.getInstance();
-    Map<String, String> kafkaProps = kafkaUtil.getFlinkKafkaProps(
-            parameterTool.get("kafka_params"));
-    kafkaUtil.setup(kafkaProps.get(kafkaUtil.KAFKA_SESSIONID_ENV_VAR),
-            Integer.parseInt(kafkaProps.get(
-                    kafkaUtil.KAFKA_PROJECTID_ENV_VAR)),
-            parameterTool.get("topic"),
-            kafkaProps.get(kafkaUtil.KAFKA_BROKERADDR_ENV_VAR),
-            kafkaProps.get(kafkaUtil.KAFKA_RESTENDPOINT),
-            kafkaProps.get(kafkaUtil.KAFKA_K_CERTIFICATE_ENV_VAR),
-            kafkaProps.get(kafkaUtil.KAFKA_T_CERTIFICATE_ENV_VAR));
 
+    ////////////////////////////////////////////////////////////////////////////
+    //Hopsworks utility method to automatically set parameters for Kafka
+    Map<String, String> kafkaProps = KafkaUtil.getFlinkKafkaProps(
+            parameterTool.get("kafka_params"));
+    KafkaUtil.getInstance().setup(kafkaProps.get(
+            KafkaUtil.KAFKA_SESSIONID_ENV_VAR),
+            Integer.parseInt(kafkaProps.get(
+                    KafkaUtil.KAFKA_PROJECTID_ENV_VAR)),
+            kafkaProps.get(KafkaUtil.KAFKA_TOPICS_ENV_VAR),
+            kafkaProps.get(KafkaUtil.KAFKA_BROKERADDR_ENV_VAR),
+            kafkaProps.get(KafkaUtil.KAFKA_RESTENDPOINT),
+            kafkaProps.get(KafkaUtil.KAFKA_K_CERTIFICATE_ENV_VAR),
+            kafkaProps.get(KafkaUtil.KAFKA_T_CERTIFICATE_ENV_VAR));
+    ////////////////////////////////////////////////////////////////////////////
     if (parameterTool.get("type").equalsIgnoreCase("producer")) {
       StreamExecutionEnvironment env = StreamExecutionEnvironment.
               getExecutionEnvironment();
@@ -80,8 +83,9 @@ public class StreamingExample {
               });
 
       // write data into Kafka
-      messageStream.addSink(kafkaUtil.getFlinkProducer(parameterTool.get("topic")));
-
+      for (String topic : KafkaUtil.getTopics()) {
+        messageStream.addSink(KafkaUtil.getFlinkProducer(topic));
+      }
       env.execute("Write into Kafka example");
     } else {
 
@@ -96,30 +100,30 @@ public class StreamingExample {
       env.getConfig().setGlobalJobParameters(ParameterTool.fromArgs(
               Arrays.copyOf(args, args.length - 2)));
 
-      DataStream<String> messageStream = env
-              .addSource(kafkaUtil.getFlinkConsumer(parameterTool.
-                      get("topic")));
-      String dateTimeBucketerFormat = "yyyy-MM-dd--HH";
-      if (parameterTool.has("sink_path")) {
-        if (parameterTool.has("bucket_format")) {
+      for (String topic : KafkaUtil.getTopics()) {
+        DataStream<String> messageStream = env.addSource(KafkaUtil.
+                getFlinkConsumer(topic));
+        String dateTimeBucketerFormat = "yyyy-MM-dd--HH";
+        if (parameterTool.has("sink_path")) {
           if (parameterTool.has("bucket_format")) {
-            dateTimeBucketerFormat = parameterTool.get("bucket_format");
+            if (parameterTool.has("bucket_format")) {
+              dateTimeBucketerFormat = parameterTool.get("bucket_format");
+            }
           }
+          RollingSink<String> rollingSink = new RollingSink<>(
+                  parameterTool.get("sink_path"));
+          //Size of part file in bytes
+          int batchSize = 8;
+          if (parameterTool.has("batch_size")) {
+            batchSize = Integer.parseInt(parameterTool.get("batch_size"));
+          }
+          rollingSink.setBatchSize(1024 * batchSize);
+          rollingSink.setBucketer(new DateTimeBucketer(dateTimeBucketerFormat));
+          messageStream.addSink(rollingSink);
         }
-        RollingSink<String> rollingSink = new RollingSink<>(
-                parameterTool.get("sink_path"));
-        //Size of part file in bytes
-        int batchSize = 8;
-        if (parameterTool.has("batch_size")) {
-          batchSize = Integer.parseInt(parameterTool.get("batch_size"));
-        }
-        rollingSink.setBatchSize(1024 * batchSize);
-        rollingSink.setBucketer(new DateTimeBucketer(dateTimeBucketerFormat));
-        messageStream.addSink(rollingSink);
+        // write kafka stream to standard out.
+        messageStream.print();
       }
-      // write kafka stream to standard out.
-      messageStream.print();
-
       env.execute("Read from Kafka example");
     }
   }
