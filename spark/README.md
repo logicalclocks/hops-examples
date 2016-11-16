@@ -6,6 +6,7 @@ Usage: <type>(producer|consumer) [<sink>]
 * **type**: Defines if the the job is producing/consuming to/from Kafka.
 * **sink**: Used only by a Consumer job, it defines the path to the Dataset or folder to which the Spark job appends its streaming output. The latter contain the consumed Avro records from Kafka. The name of the folder is suffixed with the YARN applicationId to deferantiate between multiple jobs writing to the same Dataset. In this example, the sink file contains data from the latest microbatch. The default microbatch period is set to two(2) seconds.
 
+**MainClass** is io.hops.examples.spark.kafka.StreamingExample
 
 **Topics** are provided via the HopsWorks Job UI. User checks the *Kafka* box and provides the topic names as comma separated value.When consuming from multiple topics using a single Spark directStream, all topics must use the same Avro schema. Create a new directStream for topic(s) that use different Avro schemas.
 
