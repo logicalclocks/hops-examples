@@ -22,7 +22,7 @@ Usage: -type <producer|consumer> [-sink_path <rolling_sink path>] [-batch_size <
 ```
 -type consumer -sink_path /Projects/FlinkKafka/SinkE -batch_size 16 -bucket_format yyyy-MM-dd--HH
 ```
-**Topic names** are provided via the HopsWorks Jobs user interface, when creating the job. Multiple topic names can be provided by using the ":" character.
+**Topic names** are provided via the HopsWorks Jobs user interface, when creating the job.
 
 Example
 ```
