@@ -22,7 +22,12 @@ Usage: -type <producer|consumer> [-sink_path <rolling_sink path>] [-batch_size <
 ```
 -type consumer -sink_path /Projects/FlinkKafka/SinkE -batch_size 16 -bucket_format yyyy-MM-dd--HH
 ```
-**Topic names are provided via the HopsWorks Jobs user interface, when creating the job.**
+**Topic names** are provided via the HopsWorks Jobs user interface, when creating the job.
+
+Example
+```
+mytopic:yourtopic
+```
 
 ## Avro Records
 This example streams Tuples of String <key,value> pairs which are then serialzied by the HopsAvroSchema class into Avro records and then sent to Kafka. The user needs to use a Tuple with twice as many fields as his schema (in this case Tuple4) which is done because the Tuple will contain both key and values of the record. **The Avro schema used in this example is the following**:
