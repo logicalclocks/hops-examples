@@ -8,7 +8,7 @@ Usage: <type>(producer|consumer) [<sink>]
 
 **MainClass** is io.hops.examples.spark.kafka.StreamingExample
 
-**Topics** are provided via the HopsWorks Job UI. User checks the *Kafka* box and provides the topic names as comma separated value.When consuming from multiple topics using a single Spark directStream, all topics must use the same Avro schema. Create a new directStream for topic(s) that use different Avro schemas.
+**Topics** are provided via the HopsWorks Job UI. User checks the *Kafka* box and selects the topics from the drop-down menu. When consuming from multiple topics using a single Spark directStream, all topics must use the same Avro schema. Create a new directStream for topic(s) that use different Avro schemas.
 
 
 ## Example:
