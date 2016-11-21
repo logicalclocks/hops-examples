@@ -1,8 +1,8 @@
 package io.hops.examples.spark.kafka;
 
-import io.hops.hopsutil.HopsConsumer;
-import io.hops.hopsutil.HopsProducer;
-import io.hops.hopsutil.Util;
+import io.hops.util.HopsConsumer;
+import io.hops.util.HopsProducer;
+import io.hops.util.Util;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.spark.SparkConf;

@@ -2,11 +2,11 @@ package io.hops.examples.spark.kafka;
 
 import com.google.common.base.Strings;
 import com.twitter.bijection.Injection;
-import io.hops.hopsutil.HopsProducer;
-import io.hops.hopsutil.Util;
-import io.hops.hopsutil.SchemaNotFoundException;
-import io.hops.hopsutil.spark.SparkConsumer;
-import io.hops.hopsutil.spark.SparkProducer;
+import io.hops.util.HopsProducer;
+import io.hops.util.Util;
+import io.hops.util.SchemaNotFoundException;
+import io.hops.util.spark.SparkConsumer;
+import io.hops.util.spark.SparkProducer;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Arrays;
