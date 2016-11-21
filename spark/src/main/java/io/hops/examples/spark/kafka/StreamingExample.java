@@ -2,11 +2,11 @@ package io.hops.examples.spark.kafka;
 
 import com.google.common.base.Strings;
 import com.twitter.bijection.Injection;
-import io.hops.kafkautil.HopsProducer;
-import io.hops.kafkautil.KafkaUtil;
-import io.hops.kafkautil.SchemaNotFoundException;
-import io.hops.kafkautil.spark.SparkConsumer;
-import io.hops.kafkautil.spark.SparkProducer;
+import io.hops.hopsutil.HopsProducer;
+import io.hops.hopsutil.Util;
+import io.hops.hopsutil.SchemaNotFoundException;
+import io.hops.hopsutil.spark.SparkConsumer;
+import io.hops.hopsutil.spark.SparkProducer;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Arrays;
@@ -54,7 +54,7 @@ public final class StreamingExample {
   private static final Pattern SPACE = Pattern.compile(" ");
   //Get HopsWorks Kafka Utility instance
   private static final Map<String, Injection<GenericRecord, byte[]>> recordInjections
-          = KafkaUtil.getRecordInjections();
+          = Util.getRecordInjections();
 
   public static void main(final String[] args) throws Exception {
     if (args.length < 1) {
@@ -67,7 +67,7 @@ public final class StreamingExample {
 
     final String type = args[0];
     // Create context with a 2 ; batch interval
-    Set<String> topicsSet = new HashSet<>(KafkaUtil.getTopics());
+    Set<String> topicsSet = new HashSet<>(Util.getTopics());
     SparkConf sparkConf = new SparkConf().setAppName("StreamingExample");
     System.out.println("Topics:" + topicsSet);
     final List<HopsProducer> sparkProducers = new ArrayList<>();
@@ -80,7 +80,7 @@ public final class StreamingExample {
           @Override
           public void run() {
             try {
-              SparkProducer sparkProducer = KafkaUtil.getSparkProducer(topic);
+              SparkProducer sparkProducer = Util.getSparkProducer(topic);
               sparkProducers.add(sparkProducer);
               Map<String, String> message = new HashMap<>();
               int i = 0;
@@ -110,7 +110,7 @@ public final class StreamingExample {
       //Use applicationId for sink folder
       final String appId = jssc.sparkContext().getConf().getAppId();
 
-      SparkConsumer consumer = KafkaUtil.getSparkConsumer(jssc, topicsSet);
+      SparkConsumer consumer = Util.getSparkConsumer(jssc, topicsSet);
       // Create direct kafka stream with topics
       JavaInputDStream<ConsumerRecord<String, byte[]>> messages = consumer.
               createDirectStream();

@@ -1,6 +1,6 @@
 package io.hops.examples.flink.kafka;
 
-import io.hops.kafkautil.KafkaUtil;
+import io.hops.hopsutil.HopsUtil;
 import java.util.Arrays;
 import java.util.Map;
 import org.apache.flink.api.common.restartstrategy.RestartStrategies;
@@ -39,17 +39,15 @@ public class StreamingExample {
 
     ////////////////////////////////////////////////////////////////////////////
     //Hopsworks utility method to automatically set parameters for Kafka
-    Map<String, String> kafkaProps = KafkaUtil.getFlinkKafkaProps(
+    Map<String, String> kafkaProps = HopsUtil.getFlinkKafkaProps(
             parameterTool.get("kafka_params"));
-    KafkaUtil.getInstance().setup(kafkaProps.get(
-            KafkaUtil.KAFKA_SESSIONID_ENV_VAR),
-            Integer.parseInt(kafkaProps.get(
-                    KafkaUtil.KAFKA_PROJECTID_ENV_VAR)),
-            kafkaProps.get(KafkaUtil.KAFKA_TOPICS_ENV_VAR),
-            kafkaProps.get(KafkaUtil.KAFKA_BROKERADDR_ENV_VAR),
-            kafkaProps.get(KafkaUtil.KAFKA_RESTENDPOINT),
-            kafkaProps.get(KafkaUtil.KAFKA_K_CERTIFICATE_ENV_VAR),
-            kafkaProps.get(KafkaUtil.KAFKA_T_CERTIFICATE_ENV_VAR));
+    HopsUtil.getInstance().setup(kafkaProps.get(HopsUtil.KAFKA_SESSIONID_ENV_VAR),
+            Integer.parseInt(kafkaProps.get(HopsUtil.KAFKA_PROJECTID_ENV_VAR)),
+            kafkaProps.get(HopsUtil.KAFKA_TOPICS_ENV_VAR),
+            kafkaProps.get(HopsUtil.KAFKA_BROKERADDR_ENV_VAR),
+            kafkaProps.get(HopsUtil.KAFKA_RESTENDPOINT),
+            kafkaProps.get(HopsUtil.KAFKA_K_CERTIFICATE_ENV_VAR),
+            kafkaProps.get(HopsUtil.KAFKA_T_CERTIFICATE_ENV_VAR));
     ////////////////////////////////////////////////////////////////////////////
     if (parameterTool.get("type").equalsIgnoreCase("producer")) {
       StreamExecutionEnvironment env = StreamExecutionEnvironment.
@@ -83,8 +81,8 @@ public class StreamingExample {
               });
 
       // write data into Kafka
-      for (String topic : KafkaUtil.getTopics()) {
-        messageStream.addSink(KafkaUtil.getFlinkProducer(topic));
+      for (String topic : HopsUtil.getTopics()) {
+        messageStream.addSink(HopsUtil.getFlinkProducer(topic));
       }
       env.execute("Write into Kafka example");
     } else {
@@ -100,8 +98,8 @@ public class StreamingExample {
       env.getConfig().setGlobalJobParameters(ParameterTool.fromArgs(
               Arrays.copyOf(args, args.length - 2)));
 
-      for (String topic : KafkaUtil.getTopics()) {
-        DataStream<String> messageStream = env.addSource(KafkaUtil.
+      for (String topic : HopsUtil.getTopics()) {
+        DataStream<String> messageStream = env.addSource(HopsUtil.
                 getFlinkConsumer(topic));
         String dateTimeBucketerFormat = "yyyy-MM-dd--HH";
         if (parameterTool.has("sink_path")) {

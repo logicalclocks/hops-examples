@@ -1,8 +1,8 @@
 package io.hops.examples.spark.kafka;
 
-import io.hops.kafkautil.HopsConsumer;
-import io.hops.kafkautil.HopsProducer;
-import io.hops.kafkautil.KafkaUtil;
+import io.hops.hopsutil.HopsConsumer;
+import io.hops.hopsutil.HopsProducer;
+import io.hops.hopsutil.Util;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.spark.SparkConf;
@@ -51,7 +51,7 @@ public class SimpleKafkaProcess {
 
     if (type.equals("producer")) {
       //Produce Kafka messages to topic
-      HopsProducer hopsKafkaProducer = KafkaUtil.getInstance().getHopsProducer(
+      HopsProducer hopsKafkaProducer = Util.getInstance().getHopsProducer(
               topic);
 
       Map<String, String> message;
@@ -69,7 +69,7 @@ public class SimpleKafkaProcess {
       hopsKafkaProducer.close();
     } else {
       //Consume kafka messages from topic
-      HopsConsumer hopsKafkaConsumer = KafkaUtil.getInstance().getHopsConsumer(
+      HopsConsumer hopsKafkaConsumer = Util.getInstance().getHopsConsumer(
               topic);
       //Keep thread alive
       //THIS WILL CAUSE THE JOB TO HANG. USER HAS TO MANUALLY STOP THE JOB.
