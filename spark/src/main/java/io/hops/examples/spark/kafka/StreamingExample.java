@@ -3,7 +3,7 @@ package io.hops.examples.spark.kafka;
 import com.google.common.base.Strings;
 import com.twitter.bijection.Injection;
 import io.hops.util.HopsProducer;
-import io.hops.util.Util;
+import io.hops.util.HopsUtil;
 import io.hops.util.SchemaNotFoundException;
 import io.hops.util.spark.SparkConsumer;
 import io.hops.util.spark.SparkProducer;
@@ -39,14 +39,13 @@ import org.apache.spark.streaming.Time;
  * produces
  * hello world messages to Kafka using Hops Kafka Producer. Streaming code based
  * on Spark JavaDirectKafkaWordCount.
- * Usage: StreamingExample <topics> <type> <sink>
+ * Usage: StreamingExample <type> <sink>
  * <type> type of kafka process (producer|consumer)
  * <sink> location in hdfs to append streaming output
- * <topics> a list of comma separated kafka topics to consume from
  * <p>
  * Example:
  * $ bin/run-example streaming.StreamingExample
- * topic1,topic2 consumer /Projects/MyProject/Sink/Data
+ * consumer /Projects/MyProject/Sink/Data
  * <p>
  */
 public final class StreamingExample {
@@ -54,20 +53,19 @@ public final class StreamingExample {
   private static final Pattern SPACE = Pattern.compile(" ");
   //Get HopsWorks Kafka Utility instance
   private static final Map<String, Injection<GenericRecord, byte[]>> recordInjections
-          = Util.getRecordInjections();
+          = HopsUtil.getRecordInjections();
 
   public static void main(final String[] args) throws Exception {
     if (args.length < 1) {
       System.err.println("Usage: StreamingExample <type> <sink> <topics> \n"
               + "  <type> type of kafka process (producer|consumer).\n"
-              + "  <sink> location in hdfs to append streaming output.\n"
-              + "  <topics> is a list of one or more kafka topics to consume from\n\n");
+              + "  <sink> location in hdfs to append streaming output.\n\n");
       System.exit(1);
     }
 
     final String type = args[0];
     // Create context with a 2 ; batch interval
-    Set<String> topicsSet = new HashSet<>(Util.getTopics());
+    Set<String> topicsSet = new HashSet<>(HopsUtil.getTopics());
     SparkConf sparkConf = new SparkConf().setAppName("StreamingExample");
     System.out.println("Topics:" + topicsSet);
     final List<HopsProducer> sparkProducers = new ArrayList<>();
@@ -80,7 +78,7 @@ public final class StreamingExample {
           @Override
           public void run() {
             try {
-              SparkProducer sparkProducer = Util.getSparkProducer(topic);
+              SparkProducer sparkProducer = HopsUtil.getSparkProducer(topic);
               sparkProducers.add(sparkProducer);
               Map<String, String> message = new HashMap<>();
               int i = 0;
@@ -110,7 +108,7 @@ public final class StreamingExample {
       //Use applicationId for sink folder
       final String appId = jssc.sparkContext().getConf().getAppId();
 
-      SparkConsumer consumer = Util.getSparkConsumer(jssc, topicsSet);
+      SparkConsumer consumer = HopsUtil.getSparkConsumer(jssc, topicsSet);
       // Create direct kafka stream with topics
       JavaInputDStream<ConsumerRecord<String, byte[]>> messages = consumer.
               createDirectStream();

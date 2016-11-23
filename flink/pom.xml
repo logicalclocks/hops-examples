@@ -14,17 +14,6 @@
   
   <build>
     <plugins>
-<!--      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <configuration>
-          <archive>
-            <manifest>
-              <mainClass>io.hops.examples.flink.kafka.StreamingExample</mainClass>
-            </manifest>
-          </archive>
-        </configuration>
-      </plugin>-->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-shade-plugin</artifactId>
@@ -41,11 +30,6 @@
                   <mainClass>io.hops.examples.flink.kafka.StreamingExample</mainClass>
                 </transformer>
               </transformers>
-<!--              <artifactSet>
-                <excludes>
-                  <exclude>org.apache.flink:*</exclude>
-                </excludes>
-              </artifactSet>-->
             </configuration>
           </execution>
         </executions>
@@ -107,7 +91,7 @@
     </dependency>
     <dependency>
       <groupId>io.hops</groupId>
-      <artifactId>hopsworks-util</artifactId>
+      <artifactId>hops-util</artifactId>
       <version>0.1</version>
     </dependency>
   </dependencies>

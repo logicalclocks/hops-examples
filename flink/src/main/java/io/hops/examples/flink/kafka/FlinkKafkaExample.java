@@ -2,7 +2,7 @@ package io.hops.examples.flink.kafka;
 
 import io.hops.util.HopsConsumer;
 import io.hops.util.HopsProducer;
-import io.hops.util.Util;
+import io.hops.util.HopsUtil;
 import java.util.Arrays;
 import java.util.Map;
 import org.apache.flink.api.common.functions.MapFunction;
@@ -101,7 +101,7 @@ public class FlinkKafkaExample {
     // execute the program
     env.execute("Streaming Iteration Example");
 
-    Util hopsKafkaUtil = Util.getInstance();
+    HopsUtil hopsKafkaUtil = HopsUtil.getInstance();
 
     System.out.println("KAFKA-ARGS:" + Arrays.toString(args));
     Map<String, String> kafkaProps = hopsKafkaUtil.getFlinkKafkaProps(
@@ -142,7 +142,7 @@ public class FlinkKafkaExample {
       hopsKafkaProducer.close();
     } else {
       final String path = args[2];
-      final HopsConsumer hopsKafkaConsumer = Util.getInstance().getHopsConsumer(args[0]);
+      final HopsConsumer hopsKafkaConsumer = HopsUtil.getInstance().getHopsConsumer(args[0]);
       Thread t = new Thread() {
         public void run() {
           hopsKafkaConsumer.consume(path);

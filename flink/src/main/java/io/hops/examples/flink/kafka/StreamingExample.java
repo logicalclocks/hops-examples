@@ -1,8 +1,7 @@
 package io.hops.examples.flink.kafka;
 
-import io.hops.util.Util;
+import io.hops.util.HopsUtil;
 import java.util.Arrays;
-import java.util.Map;
 import org.apache.flink.api.common.restartstrategy.RestartStrategies;
 import org.apache.flink.api.java.tuple.Tuple4;
 import org.apache.flink.api.java.utils.ParameterTool;
@@ -39,15 +38,8 @@ public class StreamingExample {
 
     ////////////////////////////////////////////////////////////////////////////
     //Hopsworks utility method to automatically set parameters for Kafka
-    Map<String, String> kafkaProps = Util.getFlinkKafkaProps(
-            parameterTool.get("kafka_params"));
-    Util.getInstance().setup(kafkaProps.get(Util.KAFKA_SESSIONID_ENV_VAR),
-            Integer.parseInt(kafkaProps.get(Util.KAFKA_PROJECTID_ENV_VAR)),
-            kafkaProps.get(Util.KAFKA_TOPICS_ENV_VAR),
-            kafkaProps.get(Util.KAFKA_BROKERADDR_ENV_VAR),
-            kafkaProps.get(Util.KAFKA_RESTENDPOINT),
-            kafkaProps.get(Util.KAFKA_K_CERTIFICATE_ENV_VAR),
-            kafkaProps.get(Util.KAFKA_T_CERTIFICATE_ENV_VAR));
+   HopsUtil.getInstance().setup(HopsUtil.getFlinkKafkaProps(parameterTool.get(
+            HopsUtil.KAFKA_FLINK_PARAMS)));
     ////////////////////////////////////////////////////////////////////////////
     if (parameterTool.get("type").equalsIgnoreCase("producer")) {
       StreamExecutionEnvironment env = StreamExecutionEnvironment.
@@ -81,8 +73,8 @@ public class StreamingExample {
               });
 
       // write data into Kafka
-      for (String topic : Util.getTopics()) {
-        messageStream.addSink(Util.getFlinkProducer(topic));
+      for (String topic : HopsUtil.getTopics()) {
+        messageStream.addSink(HopsUtil.getFlinkProducer(topic));
       }
       env.execute("Write into Kafka example");
     } else {
@@ -98,8 +90,8 @@ public class StreamingExample {
       env.getConfig().setGlobalJobParameters(ParameterTool.fromArgs(
               Arrays.copyOf(args, args.length - 2)));
 
-      for (String topic : Util.getTopics()) {
-        DataStream<String> messageStream = env.addSource(Util.
+      for (String topic : HopsUtil.getTopics()) {
+        DataStream<String> messageStream = env.addSource(HopsUtil.
                 getFlinkConsumer(topic));
         String dateTimeBucketerFormat = "yyyy-MM-dd--HH";
         if (parameterTool.has("sink_path")) {

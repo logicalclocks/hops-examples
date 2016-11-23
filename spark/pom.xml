@@ -36,7 +36,7 @@
       <artifactId>spark-core_2.11</artifactId>
       <version>2.0.2</version>
       <exclusions>
-        <exclusion>  <!-- declare the exclusion here -->
+        <exclusion> 
           <groupId>org.apache.hadoop</groupId>
           <artifactId>hadoop-client</artifactId>
         </exclusion>
@@ -59,7 +59,7 @@
     </dependency>
     <dependency>
       <groupId>io.hops</groupId>
-      <artifactId>hopsworks-util</artifactId>
+      <artifactId>hops-util</artifactId>
       <version>0.1</version>
     </dependency>
   </dependencies>
