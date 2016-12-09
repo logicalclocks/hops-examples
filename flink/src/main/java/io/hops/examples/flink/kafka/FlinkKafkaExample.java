@@ -86,41 +86,13 @@ public class FlinkKafkaExample {
             .map(new OutputMap());
 
     // emit results
-//		if (params.has("output")) {
-//			numbers.writeAsText(params.get("output"));
-//		} else {
     System.out.println(
             "Printing result to stdout. Use --output to specify output path.");
     numbers.print();
-//		}
-//    if(params.has("flink_hdfs_output")){
-//      numbers.writeAsText(params.get("flink_hdfs_output"));
-//    }//hdfs://10.0.2.15:8020/Projects/projectA/Resources/test.out");
-
-//     if(params.has("hdfs_output")){
     // execute the program
     env.execute("Streaming Iteration Example");
 
-    HopsUtil hopsKafkaUtil = HopsUtil.getInstance();
-
-    System.out.println("KAFKA-ARGS:" + Arrays.toString(args));
-    Map<String, String> kafkaProps = hopsKafkaUtil.getFlinkKafkaProps(
-            args[args.length - 1]);
-    for (Map.Entry<String, String> entry : kafkaProps.entrySet()) {
-      System.out.println("KAFKA-PROP:" + entry.getKey() + "," + entry.
-              getValue());
-    }
-    hopsKafkaUtil.setup(kafkaProps.get(hopsKafkaUtil.KAFKA_SESSIONID_ENV_VAR),
-            Integer.parseInt(kafkaProps.get(
-                    hopsKafkaUtil.KAFKA_PROJECTID_ENV_VAR)),
-            args[0],
-            "localhost",
-            kafkaProps.get(hopsKafkaUtil.KAFKA_BROKERADDR_ENV_VAR),
-            "http://localhost:8080",
-            "/srv/glassfish/domain1/config/" + kafkaProps.get(
-                    hopsKafkaUtil.KAFKA_K_CERTIFICATE_ENV_VAR),
-            "/srv/glassfish/domain1/config/" + kafkaProps.get(
-                    hopsKafkaUtil.KAFKA_T_CERTIFICATE_ENV_VAR));
+    HopsUtil.getInstance().setup(HopsUtil.getFlinkKafkaProps(args[args.length - 1]));
     if (args[1].equalsIgnoreCase("producer")) {
       Configuration hdConf = new Configuration();
       Path hdPath = new org.apache.hadoop.fs.Path(args[2]);
@@ -128,7 +100,7 @@ public class FlinkKafkaExample {
       final FSDataOutputStream stream = hdfs.create(hdPath);
       stream.write("My first Flink program on Hops!".getBytes());
 
-      HopsProducer hopsKafkaProducer = hopsKafkaUtil.getHopsProducer(args[0]);
+      HopsProducer hopsKafkaProducer = HopsUtil.getHopsProducer(args[0]);
       Map<String, String> message;
       for (int i = 0; i < 30; i++) {
         message = new HashMap<>();
@@ -142,7 +114,7 @@ public class FlinkKafkaExample {
       hopsKafkaProducer.close();
     } else {
       final String path = args[2];
-      final HopsConsumer hopsKafkaConsumer = HopsUtil.getInstance().getHopsConsumer(args[0]);
+      final HopsConsumer hopsKafkaConsumer = HopsUtil.getHopsConsumer(args[0]);
       Thread t = new Thread() {
         public void run() {
           hopsKafkaConsumer.consume(path);
