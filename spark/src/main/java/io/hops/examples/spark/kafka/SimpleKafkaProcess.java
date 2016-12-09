@@ -3,8 +3,12 @@ package io.hops.examples.spark.kafka;
 import io.hops.util.HopsConsumer;
 import io.hops.util.HopsProducer;
 import io.hops.util.HopsUtil;
+import java.net.InetSocketAddress;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import org.apache.kafka.common.Cluster;
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaSparkContext;
 
@@ -50,6 +54,15 @@ public class SimpleKafkaProcess {
     JavaSparkContext jsc = new JavaSparkContext(sparkConf);
 
     if (type.equals("producer")) {
+      List<InetSocketAddress> brokers = new ArrayList<>();
+      InetSocketAddress broker = new InetSocketAddress("10.0.2.15", 9091);
+      brokers.add(broker);
+      Cluster cluster = Cluster.bootstrap(brokers);
+      System.out.println("Topics:"+cluster.topics());
+      System.out.println("Get availablePartitionsForTopic:"+topic+", "+cluster.availablePartitionsForTopic(topic));
+      System.out.println("Get availablePartitionsForTopic:"+topic+", "+cluster.availablePartitionsForTopic("yourtopic"));
+      
+      
       //Produce Kafka messages to topic
       HopsProducer hopsKafkaProducer = HopsUtil.getInstance().getHopsProducer(
               topic);

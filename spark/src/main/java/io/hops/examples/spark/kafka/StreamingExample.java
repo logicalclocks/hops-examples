@@ -108,7 +108,10 @@ public final class StreamingExample {
       //Use applicationId for sink folder
       final String appId = jssc.sparkContext().getConf().getAppId();
 
-      SparkConsumer consumer = HopsUtil.getSparkConsumer(jssc, topicsSet);
+      //Get consumer groups
+      List<String> consumerGroups = HopsUtil.getConsumerGroups();
+      SparkConsumer consumer = HopsUtil.getSparkConsumer(jssc, topicsSet,
+              consumerGroups.get(0));
       // Create direct kafka stream with topics
       JavaInputDStream<ConsumerRecord<String, byte[]>> messages = consumer.
               createDirectStream();
