@@ -27,7 +27,7 @@
             <configuration>
               <transformers>
                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                  <mainClass>io.hops.examples.flink.kafka.StreamingExample</mainClass>
+                  <mainClass>io.hops.examples.flink.IterateExample</mainClass>
                 </transformer>
               </transformers>
             </configuration>

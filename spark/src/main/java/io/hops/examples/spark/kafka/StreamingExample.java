@@ -7,6 +7,7 @@ import io.hops.util.HopsUtil;
 import io.hops.util.SchemaNotFoundException;
 import io.hops.util.spark.SparkConsumer;
 import io.hops.util.spark.SparkProducer;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Arrays;
@@ -23,6 +24,9 @@ import scala.Tuple2;
 
 import org.apache.avro.generic.GenericRecord;
 import org.apache.avro.util.Utf8;
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.mapred.TextOutputFormat;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 
@@ -87,7 +91,7 @@ public final class StreamingExample {
                 message.put("platform", "HopsWorks");
                 message.put("program", "SparkKafka-" + topic + "-" + i);
                 sparkProducer.produce(message);
-                Thread.sleep(100);
+                Thread.sleep(1000);
                 i++;
                 System.out.println("KafkaHelloWorld sending message:" + message);
               }
@@ -190,11 +194,37 @@ public final class StreamingExample {
        */
       // Start the computation
       jssc.start();
-      jssc.awaitTermination();
+//      jssc.awaitTermination();
+      // check every 10s for shutdown hdfs file
+      int checkIntervalMillis = 10000;
+      boolean isStopped = false;
+      while (!isStopped) {
+        isStopped = jssc.awaitTerminationOrTimeout(checkIntervalMillis);
+        if (!isStopped && isShutdownRequested()) {
+          boolean stopSparkContext = true;
+          boolean stopGracefully = true;
+          jssc.stop(stopSparkContext, stopGracefully);
+        }
+      }
+
     }
 
     for (HopsProducer hopsProducer : sparkProducers) {
       hopsProducer.close();
     }
+  }
+
+  public static boolean isShutdownRequested() {
+    try {
+      Configuration hdConf = new Configuration();
+      Path hdPath = new org.apache.hadoop.fs.Path(
+              "hdfs://10.0.2.15:8020/Projects/projectB/Resources/market.txt");
+      FileSystem hdfs = hdPath.getFileSystem(hdConf);
+      return hdfs.exists(hdPath);
+    } catch (IOException ex) {
+      Logger.getLogger(StreamingExample.class.getName()).log(Level.SEVERE, null,
+              ex);
+    }
+    return false;
   }
 }

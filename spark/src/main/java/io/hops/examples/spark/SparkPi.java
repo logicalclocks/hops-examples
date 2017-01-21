@@ -2,6 +2,7 @@ package io.hops.examples.spark;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
@@ -15,6 +16,7 @@ import org.apache.spark.api.java.function.Function2;
 public class SparkPi {
 
   public static void main(String[] args) throws Exception {
+    Logger logger = Logger.getLogger("SparkPi");
     SparkConf sparkConf = new SparkConf().setAppName("HopsSparkPi");
     JavaSparkContext jsc = new JavaSparkContext(sparkConf);
 
@@ -42,7 +44,7 @@ public class SparkPi {
     });
 
     System.out.println("Pi is roughly " + 4.0 * count / n);
-
+    logger.info("Pi is roughly" + 4.0 * count / n);
     jsc.stop();
   }
 
