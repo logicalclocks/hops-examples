@@ -24,6 +24,8 @@ Usage: -type <producer|consumer> [-sink_path <rolling_sink path>] [-batch_size <
 ```
 **Topic names** are provided via the HopsWorks Jobs user interface, when creating the job.
 
+**Consumer groups** are provided via the HopsWorks Job UI. User provides a comma-separated list of the groups that shall be available within the application. 
+
 Example
 ```
 mytopic:yourtopic

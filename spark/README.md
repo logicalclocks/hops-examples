@@ -10,6 +10,7 @@ Usage: <type>(producer|consumer) [<sink>]
 
 **Topics** are provided via the HopsWorks Job UI. User checks the *Kafka* box and selects the topics from the drop-down menu. When consuming from multiple topics using a single Spark directStream, all topics must use the same Avro schema. Create a new directStream for topic(s) that use different Avro schemas.
 
+**Consumer groups** are provided via the HopsWorks Job UI. User provides a comma-separated list of the groups that shall be available within the application. 
 
 ## Example:
 **Producer**
