@@ -194,18 +194,18 @@ public final class StreamingExample {
        */
       // Start the computation
       jssc.start();
-//      jssc.awaitTermination();
+      jssc.awaitTermination();
       // check every 10s for shutdown hdfs file
-      int checkIntervalMillis = 10000;
-      boolean isStopped = false;
-      while (!isStopped) {
-        isStopped = jssc.awaitTerminationOrTimeout(checkIntervalMillis);
-        if (!isStopped && isShutdownRequested()) {
-          boolean stopSparkContext = true;
-          boolean stopGracefully = true;
-          jssc.stop(stopSparkContext, stopGracefully);
-        }
-      }
+      int checkIntervalMillis = 3000;
+//      boolean isStopped = false;
+//      while (!isStopped) {
+//        isStopped = jssc.awaitTerminationOrTimeout(checkIntervalMillis);
+//        if (!isStopped && isShutdownRequested()) {
+//          boolean stopSparkContext = true;
+//          boolean stopGracefully = true;
+//          jssc.stop(stopSparkContext, stopGracefully);
+//        }
+//      }
 
     }
 
@@ -216,11 +216,12 @@ public final class StreamingExample {
 
   public static boolean isShutdownRequested() {
     try {
+      System.out.println("isshutdownrequested:"+HopsUtil.getProjectName());
       Configuration hdConf = new Configuration();
       Path hdPath = new org.apache.hadoop.fs.Path(
-              "hdfs://10.0.2.15:8020/Projects/projectB/Resources/market.txt");
+              "/Projects/"+HopsUtil.getProjectName()+"/Resources/.marker-producer-appId.txt");
       FileSystem hdfs = hdPath.getFileSystem(hdConf);
-      return hdfs.exists(hdPath);
+      return !hdfs.exists(hdPath);
     } catch (IOException ex) {
       Logger.getLogger(StreamingExample.class.getName()).log(Level.SEVERE, null,
               ex);
