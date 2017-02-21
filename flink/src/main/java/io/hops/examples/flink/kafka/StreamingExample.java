@@ -38,7 +38,7 @@ public class StreamingExample {
 
     ////////////////////////////////////////////////////////////////////////////
     //Hopsworks utility method to automatically set parameters for Kafka
-   HopsUtil.getInstance().setup(HopsUtil.getFlinkKafkaProps(parameterTool.get(
+   HopsUtil.setup(HopsUtil.getFlinkKafkaProps(parameterTool.get(
             HopsUtil.KAFKA_FLINK_PARAMS)));
     ////////////////////////////////////////////////////////////////////////////
     if (parameterTool.get("type").equalsIgnoreCase("producer")) {

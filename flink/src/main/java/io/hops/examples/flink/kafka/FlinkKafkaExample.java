@@ -92,7 +92,7 @@ public class FlinkKafkaExample {
     // execute the program
     env.execute("Streaming Iteration Example");
 
-    HopsUtil.getInstance().setup(HopsUtil.getFlinkKafkaProps(args[args.length - 1]));
+    HopsUtil.setup(HopsUtil.getFlinkKafkaProps(args[args.length - 1]));
     if (args[1].equalsIgnoreCase("producer")) {
       Configuration hdConf = new Configuration();
       Path hdPath = new org.apache.hadoop.fs.Path(args[2]);

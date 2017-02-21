@@ -64,8 +64,7 @@ public class SimpleKafkaProcess {
       
       
       //Produce Kafka messages to topic
-      HopsProducer hopsKafkaProducer = HopsUtil.getInstance().getHopsProducer(
-              topic);
+      HopsProducer hopsKafkaProducer = HopsUtil.getHopsProducer(topic);
 
       Map<String, String> message;
       int i = 0;
@@ -82,8 +81,7 @@ public class SimpleKafkaProcess {
       hopsKafkaProducer.close();
     } else {
       //Consume kafka messages from topic
-      HopsConsumer hopsKafkaConsumer = HopsUtil.getInstance().getHopsConsumer(
-              topic);
+      HopsConsumer hopsKafkaConsumer = HopsUtil.getHopsConsumer(topic);
       //Keep thread alive
       //THIS WILL CAUSE THE JOB TO HANG. USER HAS TO MANUALLY STOP THE JOB.
       while (true) {
