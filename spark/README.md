@@ -10,7 +10,7 @@ Usage: <type>(producer|consumer) [<sink>]
 
 **Topics** are provided via the HopsWorks Job UI. User checks the *Kafka* box and selects the topics from the drop-down menu. When consuming from multiple topics using a single Spark directStream, all topics must use the same Avro schema. Create a new directStream for topic(s) that use different Avro schemas.
 
-**Consumer groups** are provided via the HopsWorks Job UI. User provides a comma-separated list of the groups that shall be available within the application. 
+**Consumer groups** are an advanced option for consumer jobs. A default one is set by HopsWorks and a user can add further ones via the Jobservice UI. 
 
 ## Example:
 **Producer**
@@ -41,4 +41,4 @@ This example produces String <key,value> pairs which are converted by HopsWorks 
 
 ## Libraries
 
-*StreamingExample* makes use of the HopsWorks Kafka Utility available [here](https://github.com/hopshadoop/kafka-util). Add this library to your job when creating it in HopsWorks.
+*StreamingExample* makes use of the HopsWorks Kafka Utility available [here](https://github.com/hopshadoop/kafka-util). This library is automatically provided by HopsWorks. If the user wants to implement a custom functionality, thens it must be added the job when creating it in HopsWorks.
