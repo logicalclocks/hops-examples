@@ -20,7 +20,7 @@
         <configuration>
           <archive>
             <manifest>
-              <mainClass>io.hops.examples.spark.kafka.StreamingExample</mainClass>
+              <mainClass>io.hops.examples.spark.kafka.StreamingKafkaElastic</mainClass>
             </manifest>
           </archive>
         </configuration>
@@ -68,11 +68,6 @@
       <groupId>org.apache.spark</groupId>
       <artifactId>spark-sql_2.11</artifactId>
       <version>2.1.0</version>
-    </dependency>
-    <dependency>
-      <groupId>org.elasticsearch</groupId>
-      <artifactId>elasticsearch-spark_2.11</artifactId>
-      <version>2.4.1</version>
     </dependency>
     <dependency>
       <groupId>io.hops</groupId>

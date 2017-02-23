@@ -151,15 +151,7 @@ public final class StreamingExample {
         }
       });
 
-      words.foreachRDD(
-          new VoidFunction2<JavaRDD<String>, Time>() {
-
-        @Override
-        public void call(JavaRDD<String> t1, Time t2) throws Exception {
-          throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        }
-
-      });
+     
 
       JavaPairDStream<String, Integer> wordCounts = words.mapToPair(
           new PairFunction<String, String, Integer>() {
