@@ -1,6 +1,5 @@
 package io.hops.examples.spark.kafka;
 
-import io.hops.util.HopsProducer;
 import io.hops.util.HopsUtil;
 import io.hops.util.SchemaNotFoundException;
 import io.hops.util.spark.SparkConsumer;
@@ -23,12 +22,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
-import scala.Tuple2;
-
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.mapred.TextOutputFormat;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.common.serialization.StringDeserializer;
 
@@ -36,6 +32,11 @@ import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.function.*;
+import org.apache.spark.sql.Dataset;
+import org.apache.spark.sql.Row;
+import org.apache.spark.sql.SQLContext;
+import org.apache.spark.sql.SaveMode;
+import org.apache.spark.sql.SparkSession;
 import org.apache.spark.streaming.api.java.*;
 import org.apache.spark.streaming.Durations;
 import org.apache.spark.streaming.Time;
@@ -66,6 +67,8 @@ public final class StreamingKafkaElastic {
 
     JavaStreamingContext jssc = new JavaStreamingContext(sparkConf,
         Durations.seconds(10));
+
+    SparkSession session = SparkSession.builder().config(sparkConf).getOrCreate();
     //Use applicationId for sink folder
     final String appId = jssc.sparkContext().getConf().getAppId();
 
@@ -131,7 +134,7 @@ public final class StreamingKafkaElastic {
           Locale currentLocale = Locale.getDefault();
           SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", currentLocale);
           timestamp = format.format(result);
-          
+
         } catch (Exception e) {
           System.out.println("Error while parsing log, setting default index parameters");
           message = jsonLog.getString("message");
@@ -193,7 +196,31 @@ public final class StreamingKafkaElastic {
       }
     });
 
-    jsons.print();
+    //jsons.print();
+    //Convert json to DataFrame and then store it as parquet
+    JavaDStream<LogEntry> logEntries = jsons.map(
+        new Function<JSONObject, LogEntry>() {
+      @Override
+      public LogEntry call(JSONObject json) throws SchemaNotFoundException, MalformedURLException, ProtocolException,
+          IOException {
+        LogEntry logEntry = new LogEntry();
+        logEntry.setMessage(json.getString("message"));
+        logEntry.setPriority(json.getString("priority"));
+        return logEntry;
+      }
+    });
+
+   logEntries.print();
+
+    logEntries.foreachRDD(
+        new VoidFunction2<JavaRDD<LogEntry>, Time>() {
+      @Override
+      public void call(JavaRDD<LogEntry> rdd, Time time) throws
+          Exception {
+        Dataset<Row> row = session.createDataFrame(rdd, LogEntry.class);
+        row.write().mode(SaveMode.Append).parquet("/Projects/yanzi2/Resources/Parquet");
+      }
+    });
 
 //    JavaDStream<String> words = lines.flatMap(
 //        new FlatMapFunction<String, String>() {
