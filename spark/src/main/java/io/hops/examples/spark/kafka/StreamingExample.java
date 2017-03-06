@@ -32,7 +32,6 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaPairRDD;
-import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.api.java.function.*;
 import org.apache.spark.streaming.api.java.*;
@@ -196,18 +195,18 @@ public final class StreamingExample {
        */
       // Start the computation
       jssc.start();
-      jssc.awaitTermination();
+//      jssc.awaitTermination();
       // check every 10s for shutdown hdfs file
       int checkIntervalMillis = 3000;
-//      boolean isStopped = false;
-//      while (!isStopped) {
-//        isStopped = jssc.awaitTerminationOrTimeout(checkIntervalMillis);
-//        if (!isStopped && isShutdownRequested()) {
-//          boolean stopSparkContext = true;
-//          boolean stopGracefully = true;
-//          jssc.stop(stopSparkContext, stopGracefully);
-//        }
-//      }
+      boolean isStopped = false;
+      while (!isStopped) {
+        isStopped = jssc.awaitTerminationOrTimeout(checkIntervalMillis);
+        if (!isStopped && isShutdownRequested()) {
+          boolean stopSparkContext = true;
+          boolean stopGracefully = true;
+          jssc.stop(stopSparkContext, stopGracefully);
+        }
+      }
 
     }
 

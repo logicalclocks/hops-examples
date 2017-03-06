@@ -22,63 +22,50 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
-import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.fs.FileSystem;
-import org.apache.hadoop.fs.Path;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.common.serialization.StringDeserializer;
-
 import org.apache.spark.SparkConf;
-import org.apache.spark.api.java.JavaPairRDD;
+
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.function.*;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
-import org.apache.spark.sql.SQLContext;
 import org.apache.spark.sql.SaveMode;
 import org.apache.spark.sql.SparkSession;
-import org.apache.spark.streaming.api.java.*;
 import org.apache.spark.streaming.Durations;
+import org.apache.spark.streaming.api.java.*;
 import org.apache.spark.streaming.Time;
 import org.json.JSONObject;
 
 /**
- * Consumes messages from one or more topics in Kafka and does wordcount,
- * produces
- * hello world messages to Kafka using Hops Kafka Producer. Streaming code based
- * on Spark JavaDirectKafkaWordCount.
- * Usage: StreamingExample <type> <sink>
- * <type> type of kafka process (producer|consumer)
+ * Consumes log messages from one or more topics in Kafka, generates a json to elasticsearch index and archives data
+ * in Parquet format in HDFS.
+ * <p>
+ * Usage: StreamingKafkaElastic <sink>
  * <sink> location in hdfs to append streaming output
  * <p>
- * Example:
- * $ bin/run-example streaming.StreamingExample
- * consumer /Projects/MyProject/Sink/Data
+ * Example: /Projects/MyProject/Sink/Data
  * <p>
  */
 public final class StreamingKafkaElastic {
 
-  private static Logger LOGGER = Logger.getLogger(StreamingKafkaElastic.class.getName());
+  private static final Logger LOG = Logger.getLogger(StreamingKafkaElastic.class.getName());
   private static final Pattern NEWLINE = Pattern.compile("\n");
 
   public static void main(final String[] args) throws Exception {
 
-    SparkConf sparkConf = new SparkConf().setAppName("StreamingExample");
+    SparkConf sparkConf = new SparkConf().setAppName("aaa");
+    JavaStreamingContext jssc = new JavaStreamingContext(sparkConf, Durations.seconds(10));
 
-    JavaStreamingContext jssc = new JavaStreamingContext(sparkConf,
-        Durations.seconds(10));
-
-    SparkSession session = SparkSession.builder().config(sparkConf).getOrCreate();
     //Use applicationId for sink folder
     final String appId = jssc.sparkContext().getConf().getAppId();
-
+    SparkSession sparkSession = SparkSession.builder().config(sparkConf).getOrCreate();
     //Get consumer groups
     Properties props = new Properties();
     props.put("value.deserializer", StringDeserializer.class.getName());
     SparkConsumer consumer = HopsUtil.getSparkConsumer(jssc, props);
     // Create direct kafka stream with topics
-    JavaInputDStream<ConsumerRecord<String, String>> messages = consumer.
-        createDirectStream();
+    JavaInputDStream<ConsumerRecord<String, String>> messages = consumer.createDirectStream();
 
     // Get the lines, split them into words, count the words and print
     JavaDStream<String> records = messages.map(
@@ -88,8 +75,7 @@ public final class StreamingKafkaElastic {
         return record.value();
       }
     });
-    //records.print();
-
+    records.print();
     JavaDStream<String> lines = records.flatMap(
         new FlatMapFunction<String, String>() {
       @Override
@@ -111,11 +97,9 @@ public final class StreamingKafkaElastic {
 
     //lines.print();
     //Convert line to JSON
-    JavaDStream<JSONObject> jsons = lines.map(
-        new Function<String, JSONObject>() {
+    JavaDStream<JSONObject> jsons = lines.map(new Function<String, JSONObject>() {
       @Override
-      public JSONObject call(String line) throws SchemaNotFoundException, MalformedURLException, ProtocolException,
-          IOException {
+      public JSONObject call(String line) throws SchemaNotFoundException, MalformedURLException, ProtocolException {
         JSONObject jsonLog = new JSONObject(line);
         JSONObject index = new JSONObject();
         String message, priority, logger, thread, timestamp;
@@ -136,7 +120,7 @@ public final class StreamingKafkaElastic {
           timestamp = format.format(result);
 
         } catch (Exception e) {
-          System.out.println("Error while parsing log, setting default index parameters");
+          LOG.info("Error while parsing log, setting default index parameters");
           message = jsonLog.getString("message");
           priority = "parse error";
           logger = "parse error";
@@ -159,12 +143,12 @@ public final class StreamingKafkaElastic {
         index.put("project", HopsUtil.getProjectName());
         index.put("method", "?");
         index.put("jobname", HopsUtil.getJobName());
-        System.out.println("hops index:" + index.toString());
+        LOG.log(Level.INFO, "hops index:{0}", index.toString());
         URL obj;
         HttpURLConnection conn = null;
         BufferedReader br = null;
         try {
-          System.out.println("elastic url:" + "http://10.0.2.15:9200/" + HopsUtil.getProjectName() + "/logs");
+          LOG.log(Level.INFO, "elastic url:" + "http://10.0.2.15:9200/" + HopsUtil.getProjectName() + "/logs");
           obj = new URL("http://10.0.2.15:9200/" + HopsUtil.getProjectName() + "/logs");
           conn = (HttpURLConnection) obj.openConnection();
           conn.setDoOutput(true);
@@ -172,7 +156,6 @@ public final class StreamingKafkaElastic {
           try (OutputStreamWriter out = new OutputStreamWriter(conn.getOutputStream())) {
             out.write(index.toString());
           }
-
           br = new BufferedReader(new InputStreamReader(
               (conn.getInputStream())));
 
@@ -181,25 +164,30 @@ public final class StreamingKafkaElastic {
           while ((output = br.readLine()) != null) {
             outputBuilder.append(output);
           }
-          System.out.println("output:" + output);
+          LOG.log(Level.INFO, "output:{0}", output);
+
+        } catch (IOException ex) {
+          LOG.log(Level.SEVERE, ex.toString(), ex);
         } finally {
           if (conn != null) {
             conn.disconnect();
           }
           obj = null;
           if (br != null) {
-            br.close();
+            try {
+              br.close();
+            } catch (IOException ex) {
+              LOG.log(Level.SEVERE, ex.toString(), ex);
+            }
           }
         }
 
         return index;
       }
     });
-
     //jsons.print();
     //Convert json to DataFrame and then store it as parquet
-    JavaDStream<LogEntry> logEntries = jsons.map(
-        new Function<JSONObject, LogEntry>() {
+    JavaDStream<LogEntry> logEntries = jsons.map(new Function<JSONObject, LogEntry>() {
       @Override
       public LogEntry call(JSONObject json) throws SchemaNotFoundException, MalformedURLException, ProtocolException,
           IOException {
@@ -210,59 +198,15 @@ public final class StreamingKafkaElastic {
       }
     });
 
-   logEntries.print();
-
-    logEntries.foreachRDD(
-        new VoidFunction2<JavaRDD<LogEntry>, Time>() {
+    logEntries.print();
+    logEntries.foreachRDD(new VoidFunction2<JavaRDD<LogEntry>, Time>() {
       @Override
       public void call(JavaRDD<LogEntry> rdd, Time time) throws
           Exception {
-        Dataset<Row> row = session.createDataFrame(rdd, LogEntry.class);
-        row.write().mode(SaveMode.Append).parquet("/Projects/yanzi2/Resources/Parquet");
+        Dataset<Row> row = sparkSession.createDataFrame(rdd, LogEntry.class);
+        row.write().mode(SaveMode.Append).parquet("/Projects/" + HopsUtil.getProjectName() + "/Resources/Parquet");
       }
     });
-
-//    JavaDStream<String> words = lines.flatMap(
-//        new FlatMapFunction<String, String>() {
-//      @Override
-//      public Iterator<String> call(String x) {
-//        return Arrays.asList(SPACE.split(x)).iterator();
-//      }
-//    });
-//
-//   
-//    JavaPairDStream<String, Integer> wordCounts = words.mapToPair(
-//        new PairFunction<String, String, Integer>() {
-//      @Override
-//      public Tuple2<String, Integer> call(String s) {
-//        return new Tuple2<>(s, 1);
-//      }
-//    }).reduceByKey(new Function2<Integer, Integer, Integer>() {
-//          @Override
-//          public Integer call(Integer i1, Integer i2) {
-//            return i1 + i2;
-//          }
-//        });
-//
-//
-//    /*
-//     * Based on Spark Design patterns
-//     * http://spark.apache.org/docs/latest/streaming-programming-guide.html#output-operations-on-dstreams
-//     */
-//    wordCounts.foreachRDD(
-//        new VoidFunction2<JavaPairRDD<String, Integer>, Time>() {
-//      @Override
-//      public void call(JavaPairRDD<String, Integer> rdd, Time time) throws
-//          Exception {
-//        //Keep the latest microbatch output in the file
-//        rdd.repartition(1).saveAsHadoopFile(args[1] + "-" + appId,
-//            String.class,
-//            String.class,
-//            TextOutputFormat.class);
-//      }
-//
-//    });
-
     /*
      * Enable this to get all the streaming outputs. It creates a folder for
      * every microbatch slot.
@@ -273,22 +217,7 @@ public final class StreamingKafkaElastic {
      */
     // Start the computation
     jssc.start();
-    jssc.awaitTermination();
-
+    HopsUtil.shutdownGracefully(jssc);
   }
 
-  public static boolean isShutdownRequested() {
-    try {
-      System.out.println("isshutdownrequested:" + HopsUtil.getProjectName());
-      Configuration hdConf = new Configuration();
-      Path hdPath = new org.apache.hadoop.fs.Path(
-          "/Projects/" + HopsUtil.getProjectName() + "/Resources/.marker-producer-appId.txt");
-      FileSystem hdfs = hdPath.getFileSystem(hdConf);
-      return !hdfs.exists(hdPath);
-    } catch (IOException ex) {
-      Logger.getLogger(StreamingKafkaElastic.class.getName()).log(Level.SEVERE, null,
-          ex);
-    }
-    return false;
-  }
 }
