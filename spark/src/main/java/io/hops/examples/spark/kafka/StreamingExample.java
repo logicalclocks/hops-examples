@@ -102,10 +102,8 @@ public final class StreamingExample {
           }
         }.start();
       }//Keep application running
-      while (true) {
-        Thread.sleep(5000);
-      }
-
+      System.out.println("Before gracefully");
+      HopsUtil.shutdownGracefully(jsc);
     } else {
       JavaStreamingContext jssc = new JavaStreamingContext(sparkConf,
           Durations.seconds(2));
@@ -150,8 +148,6 @@ public final class StreamingExample {
         }
       });
 
-     
-
       JavaPairDStream<String, Integer> wordCounts = words.mapToPair(
           new PairFunction<String, String, Integer>() {
         @Override
@@ -195,38 +191,10 @@ public final class StreamingExample {
        */
       // Start the computation
       jssc.start();
-//      jssc.awaitTermination();
-      // check every 10s for shutdown hdfs file
-      int checkIntervalMillis = 3000;
-      boolean isStopped = false;
-      while (!isStopped) {
-        isStopped = jssc.awaitTerminationOrTimeout(checkIntervalMillis);
-        if (!isStopped && isShutdownRequested()) {
-          boolean stopSparkContext = true;
-          boolean stopGracefully = true;
-          jssc.stop(stopSparkContext, stopGracefully);
-        }
-      }
-
+      HopsUtil.shutdownGracefully(jssc);
     }
-
     for (HopsProducer hopsProducer : sparkProducers) {
       hopsProducer.close();
     }
-  }
-
-  public static boolean isShutdownRequested() {
-    try {
-      System.out.println("isshutdownrequested:" + HopsUtil.getProjectName());
-      Configuration hdConf = new Configuration();
-      Path hdPath = new org.apache.hadoop.fs.Path(
-          "/Projects/" + HopsUtil.getProjectName() + "/Resources/.marker-producer-appId.txt");
-      FileSystem hdfs = hdPath.getFileSystem(hdConf);
-      return !hdfs.exists(hdPath);
-    } catch (IOException ex) {
-      Logger.getLogger(StreamingExample.class.getName()).log(Level.SEVERE, null,
-          ex);
-    }
-    return false;
   }
 }

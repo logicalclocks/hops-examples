@@ -199,7 +199,7 @@ public final class StreamingKafkaElastic {
     });
 
     logEntries.print();
-    logEntries.foreachRDD(new VoidFunction2<JavaRDD<LogEntry>, Time>() {
+    logEntries.repartition(1).foreachRDD(new VoidFunction2<JavaRDD<LogEntry>, Time>() {
       @Override
       public void call(JavaRDD<LogEntry> rdd, Time time) throws
           Exception {
