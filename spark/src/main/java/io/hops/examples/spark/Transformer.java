@@ -102,9 +102,9 @@ public class Transformer {
                 Integer.parseInt(row.get(12).trim()),
                 Integer.parseInt(row.get(13).trim()));
           } catch (RuntimeException e) {
-            LOG.log(Level.SEVERE, "Error while reading row from file:" + e.getMessage());
+            //LOG.log(Level.SEVERE, "Error while reading row from file:" + e.getMessage());
           } catch (Exception e) {
-            LOG.log(Level.SEVERE, "Error while reading row from file:" + e.getMessage());
+            //LOG.log(Level.SEVERE, "Error while reading row from file:" + e.getMessage());
           }
           if (csvMessage == null) {
             csvMessage = new CSVMessage(0, 0, "0", "0", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
