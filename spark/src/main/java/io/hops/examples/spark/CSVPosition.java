@@ -6,10 +6,10 @@ import java.io.Serializable;
  *
  * <p>
  */
-public class CSVEntry implements Serializable {
+public class CSVPosition implements Serializable {
 
-  private int positionMessageId;
-  private int vehicleId;
+  private long positionMessageId;
+  private long vehicleId;
   private double lat;
   private double lon;
   private int speed;
@@ -18,7 +18,7 @@ public class CSVEntry implements Serializable {
   private String timePosition;
   private String timeSave;
 
-  public CSVEntry(int positionMessageId, int vehicleId, double lat, double lon, int speed, int heading,
+  public CSVPosition(long positionMessageId, long vehicleId, double lat, double lon, int speed, int heading,
       String timeMessage, String timePosition, String timeSave) {
     this.positionMessageId = positionMessageId;
     this.vehicleId = vehicleId;
@@ -31,19 +31,19 @@ public class CSVEntry implements Serializable {
     this.timeSave = timeSave;
   }
 
-  public int getPositionMessageId() {
+  public long getPositionMessageId() {
     return positionMessageId;
   }
 
-  public void setPositionMessageId(int positionMessageId) {
+  public void setPositionMessageId(long positionMessageId) {
     this.positionMessageId = positionMessageId;
   }
 
-  public int getVehicleId() {
+  public long getVehicleId() {
     return vehicleId;
   }
 
-  public void setVehicleId(int vehicleId) {
+  public void setVehicleId(long vehicleId) {
     this.vehicleId = vehicleId;
   }
 
