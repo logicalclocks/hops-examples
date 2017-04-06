@@ -7,7 +7,6 @@ import io.hops.util.HopsUtil;
 import io.hops.util.SchemaNotFoundException;
 import io.hops.util.spark.SparkConsumer;
 import io.hops.util.spark.SparkProducer;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Arrays;
@@ -24,9 +23,6 @@ import scala.Tuple2;
 
 import org.apache.avro.generic.GenericRecord;
 import org.apache.avro.util.Utf8;
-import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.fs.FileSystem;
-import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.mapred.TextOutputFormat;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 
