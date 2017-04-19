@@ -98,7 +98,7 @@ public final class StreamingKafkaElastic {
       public LogEntry call(JSONObject json) throws SchemaNotFoundException, MalformedURLException, ProtocolException,
           IOException {
         LogEntry logEntry
-            = new LogEntry(json.getString("message"), json.getString("priority"), json.getString("logger_name"), json.
+            = new LogEntry(json.getString("message").replace("\n\t", "\n").replace("\n", "---"), json.getString("priority"), json.getString("logger_name"), json.
                 getString("thread"), json.getString("timestamp"));
         LOG.info("LogEntry:" + logEntry);
         return logEntry;
