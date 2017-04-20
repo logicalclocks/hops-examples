@@ -46,6 +46,8 @@ public class StructuredStreamingKafka {
     StreamingQuery query = counts.writeStream()
         .format("console")
         .outputMode("complete")
+        .option("checkpointLocation", "/Projects/" + HopsUtil.getProjectName() + "/Resources/checkpoint-" + HopsUtil.
+            getAppId())
         .trigger(new ProcessingTime(1000))
         .start();
 
