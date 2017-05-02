@@ -23,7 +23,7 @@ public class StructuredStreamingKafka {
   private static final Map<String, Injection<GenericRecord, byte[]>> RECORD_INJECTIONS = HopsUtil.getRecordInjections();
   private static final Logger LOG = Logger.getLogger(StructuredStreamingKafka.class.getName());
 
-  public static void main(String[] args) throws StreamingQueryException {
+  public static void main(String[] args) throws StreamingQueryException, InterruptedException {
 
     // Create DataSet representing the stream of input lines from kafka
     DataStreamReader dsr = HopsUtil.getSparkConsumer().getKafkaDataStreamReader();
@@ -43,15 +43,23 @@ public class StructuredStreamingKafka {
     Dataset<Row> counts = wordCounts.groupBy("value").count();
 
     // Start running the query that prints the running counts to the console
-    StreamingQuery query = counts.writeStream()
-        .format("console")
-        .outputMode("complete")
-        .option("checkpointLocation", "/Projects/" + HopsUtil.getProjectName() + "/Resources/checkpoint-" + HopsUtil.
-            getAppId())
-        .trigger(new ProcessingTime(1000))
+//    StreamingQuery query = counts.writeStream()
+//        .format("console")
+//        .outputMode("complete")
+//        .option("checkpointLocation", "/Projects/" + HopsUtil.getProjectName() + "/Resources/checkpoint-" + HopsUtil.
+//            getAppId())
+//        .trigger(new ProcessingTime(1000))
+//        .start();
+    StreamingQuery queryFile = wordCounts.writeStream()
+        .format("text")
+        .option("path", "/Projects/" + HopsUtil.getProjectName() + "/Resources/data-text-" + HopsUtil.getAppId())
+        .option("checkpointLocation", "/Projects/" + HopsUtil.getProjectName() + "/Resources/checkpoint-text-"
+            + HopsUtil.
+                getAppId())
+        .trigger(new ProcessingTime(10000))
         .start();
 
-    query.awaitTermination();
+    HopsUtil.shutdownGracefully(queryFile);
   }
 
 }

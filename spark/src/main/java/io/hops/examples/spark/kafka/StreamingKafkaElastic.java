@@ -13,18 +13,11 @@ import java.net.ProtocolException;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.regex.Pattern;
 
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.common.serialization.StringDeserializer;
@@ -73,17 +66,6 @@ public final class StreamingKafkaElastic {
     // Create direct kafka stream with topics
     JavaInputDStream<ConsumerRecord<String, String>> messages = consumer.createDirectStream();
 
-    //Save hdfs file
-//    records.foreachRDD(
-//        new VoidFunction2<JavaRDD<String>, Time>() {
-//      @Override
-//      public void call(JavaRDD<String> rdd, Time time) throws
-//          Exception {
-//        //Keep the latest microbatch output in the file
-//        rdd.saveAsTextFile(args[0] + "-" + appId);
-//      }
-//    });
-    //lines.print();
     //Convert line to JSON
     JavaDStream<LogEntry> logEntries = messages.map(new Function<ConsumerRecord<String, String>, JSONObject>() {
       @Override
@@ -238,7 +220,7 @@ public final class StreamingKafkaElastic {
     BufferedReader br = null;
     try {
 //      LOG.log(Level.INFO, "elastic url:" + "http://10.0.2.15:9200/" + HopsUtil.getProjectName() + "/logs");
-      obj = new URL("http://10.0.2.15:9200/" + HopsUtil.getProjectName() + "/logs");
+      obj = new URL("http://"+HopsUtil.getElasticEndPoint()+"/" + HopsUtil.getProjectName() + "/logs");
       conn = (HttpURLConnection) obj.openConnection();
       conn.setDoOutput(true);
       conn.setRequestMethod("POST");

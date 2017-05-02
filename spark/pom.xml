@@ -20,7 +20,7 @@
         <configuration>
           <archive>
             <manifest>
-              <mainClass>io.hops.examples.spark.kafka.StreamingKafkaElastic</mainClass>
+              <mainClass>io.hops.examples.spark.kafka.StreamingExample</mainClass>
             </manifest>
           </archive>
         </configuration>
