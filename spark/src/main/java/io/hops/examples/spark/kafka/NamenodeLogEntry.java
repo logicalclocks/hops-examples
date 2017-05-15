@@ -6,18 +6,20 @@ import java.io.Serializable;
  *
  * <p>
  */
-public class LogEntry implements Serializable {
+public class NamenodeLogEntry implements Serializable {
 
   private String message;
   private String priority;
   private String logger;
   private String timestamp;
+  private String file;
 
-  public LogEntry(String message, String priority, String logger, String timestamp) {
+  public NamenodeLogEntry(String message, String priority, String logger, String timestamp, String file) {
     this.message = message;
     this.priority = priority;
     this.logger = logger;
     this.timestamp = timestamp;
+    this.file = file;
   }
 
   public String getMessage() {
@@ -32,8 +34,14 @@ public class LogEntry implements Serializable {
     return logger;
   }
 
+ 
+
   public String getTimestamp() {
     return timestamp;
+  }
+
+  public String getFile() {
+    return file;
   }
 
   public void setMessage(String message) {
@@ -48,14 +56,15 @@ public class LogEntry implements Serializable {
     this.logger = logger;
   }
 
+
   public void setTimestamp(String timestamp) {
     this.timestamp = timestamp;
   }
 
-  @Override
-  public String toString() {
-    return "LogEntry{" + "message=" + message + ", priority=" + priority + ", logger=" + logger + ", timestamp="
-        + timestamp + '}';
+  public void setFile(String file) {
+    this.file = file;
   }
+
+  
 
 }

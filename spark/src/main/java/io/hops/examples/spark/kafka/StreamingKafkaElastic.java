@@ -13,11 +13,14 @@ import java.net.ProtocolException;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import joptsimple.internal.Strings;
 
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.common.serialization.StringDeserializer;
@@ -67,33 +70,47 @@ public final class StreamingKafkaElastic {
     JavaInputDStream<ConsumerRecord<String, String>> messages = consumer.createDirectStream();
 
     //Convert line to JSON
-    JavaDStream<LogEntry> logEntries = messages.map(new Function<ConsumerRecord<String, String>, JSONObject>() {
+    JavaDStream<LogEntryFilebeat> logEntries = messages.map(new Function<ConsumerRecord<String, String>, JSONObject>() {
       @Override
       public JSONObject call(ConsumerRecord<String, String> record) throws SchemaNotFoundException,
           MalformedURLException, ProtocolException {
-        LOG.info("record:" + record);
+        //LOG.info("record:" + record);
 
-        return parser(args[1], record.value(), appId);
+        return parser(args[0], record.value(), appId);
       }
-    }).map(new Function<JSONObject, LogEntry>() {
+    }).map(new Function<JSONObject, LogEntryFilebeat>() {
       @Override
-      public LogEntry call(JSONObject json) throws SchemaNotFoundException, MalformedURLException, ProtocolException,
+      public LogEntryFilebeat call(JSONObject json) throws SchemaNotFoundException, MalformedURLException, ProtocolException,
           IOException {
-        LogEntry logEntry
-            = new LogEntry(json.getString("message").replace("\n\t", "\n").replace("\n", "---"), json.getString("priority"), json.getString("logger_name"), json.
-                getString("thread"), json.getString("timestamp"));
-        LOG.info("LogEntry:" + logEntry);
+        LogEntryFilebeat logEntry
+            = new LogEntryFilebeat(json.getString("message").replace("\n\t", "\n").replace("\n", "---"), json.getString(
+                "priority"), json.getString("logger_name"), json.
+                getString("thread"), json.getString("timestamp"), json.getString("file"));
+        //LOG.info("LogEntryFilebeat:" + logEntry);
         return logEntry;
       }
     });
 
     //logEntries.print();
-    logEntries.repartition(1).foreachRDD(new VoidFunction2<JavaRDD<LogEntry>, Time>() {
+    logEntries.repartition(1).foreachRDD(new VoidFunction2<JavaRDD<LogEntryFilebeat>, Time>() {
       @Override
-      public void call(JavaRDD<LogEntry> rdd, Time time) throws
+      public void call(JavaRDD<LogEntryFilebeat> rdd, Time time) throws
           Exception {
-        Dataset<Row> row = sparkSession.createDataFrame(rdd, LogEntry.class);
-        row.write().mode(SaveMode.Append).parquet("/Projects/" + HopsUtil.getProjectName() + "/Resources/Parquet");
+        Dataset<Row> row = sparkSession.createDataFrame(rdd, LogEntryFilebeat.class);
+        String dataset = "Resources";
+        if (!rdd.isEmpty()) {
+          LOG.info("hops rdd:" + rdd.first().getFile());
+          if (rdd.first().getFile().contains("fiona")) {
+            dataset = "Fiona";
+          } else if (rdd.first().getFile().contains("shrek")) {
+            dataset = "Shrek";
+          }
+
+          DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyyMMdd");
+          LocalDate localDate = LocalDate.now();
+          row.write().mode(SaveMode.Append).parquet("/Projects/" + HopsUtil.getProjectName() + "/" + dataset + "/Logs-"
+              + dtf.format(localDate));
+        }
       }
     });
     /*
@@ -164,7 +181,7 @@ public final class StreamingKafkaElastic {
       String message;
       String log = jsonLog.getString("message");
       thread = log.substring(log.indexOf("[") + 1, log.indexOf("]"));
-      log = log.substring(0,log.indexOf("[")) + log.substring(log.indexOf("]")+1);
+      log = log.substring(0, log.indexOf("[")) + log.substring(log.indexOf("]") + 1);
       try {
         if (log.contains(" : \n")) {
           attrs = log.split(" : \n")[0].split("\\s+");
@@ -189,6 +206,7 @@ public final class StreamingKafkaElastic {
         Locale currentLocale = Locale.getDefault();
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", currentLocale);
         timestamp = format.format(result);
+
       } catch (Exception ex) {
         LOG.warning("Error while parsing log, setting default index parameters:" + ex.getMessage());
         message = jsonLog.getString("message");
@@ -207,12 +225,27 @@ public final class StreamingKafkaElastic {
       index.put("logger_name", logger);
       index.put("thread", thread);
       index.put("class", "?");
-      index.put("file", jsonLog.getString("source"));
+      if (jsonLog.getString("source").contains("/")) {
+        index.put("file", jsonLog.getString("source").substring(jsonLog.getString("source").lastIndexOf("/") + 1));
+      } else {
+        index.put("file", jsonLog.getString("source"));
+      }
       index.put("application", appId);
       index.put("host", jsonLog.getJSONObject("beat").getString("hostname"));
       index.put("project", HopsUtil.getProjectName());
       index.put("method", "?");
       index.put("jobname", HopsUtil.getJobName());
+
+      if (jsonLog.getString("source").contains("shrek")) {
+        index.put("location", "59.32,18.06");
+      } else {
+        index.put("location", "40.71,-74.00");
+      }
+      if (!Strings.isNullOrEmpty(priority) && priority.equalsIgnoreCase("TRACE")) {
+        LOG.log(Level.INFO, "Sending email");
+        HopsUtil.sendEmail("tkak@kth.se", "Error message received", timestamp + " :: " +message);
+      }
+
     }
     //LOG.log(Level.INFO, "hops index:{0}", index.toString());
     URL obj;
@@ -220,7 +253,7 @@ public final class StreamingKafkaElastic {
     BufferedReader br = null;
     try {
 //      LOG.log(Level.INFO, "elastic url:" + "http://10.0.2.15:9200/" + HopsUtil.getProjectName() + "/logs");
-      obj = new URL("http://"+HopsUtil.getElasticEndPoint()+"/" + HopsUtil.getProjectName() + "/logs");
+      obj = new URL("http://" + HopsUtil.getElasticEndPoint() + "/" + HopsUtil.getProjectName().toLowerCase() + "/logs");
       conn = (HttpURLConnection) obj.openConnection();
       conn.setDoOutput(true);
       conn.setRequestMethod("POST");
