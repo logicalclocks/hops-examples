@@ -1,0 +1,8 @@
+{
+    "fields": [
+        { "name": "platform", "type": "string" },
+        { "name": "program", "type": "string" }
+    ],
+    "name": "myrecord",
+    "type": "record"
+}
