@@ -1,5 +1,5 @@
 # Spark & Kafka
-To help you get started, *StreamingExample* provides the code for a basic streaming Spark application. HopsWorks makes use of the latest Spark-Kafka experimental [API](http://spark.apache.org/docs/latest/streaming-kafka-0-10-integration.html). To run the example you need to provide the following parameters when creating a Spark job for Kafka in HopsWorks:
+To help you get started, *StreamingExample* provides the code for a basic streaming Spark application. HopsWorks makes use of the latest Spark-Kafka [API](http://spark.apache.org/docs/latest/streaming-kafka-0-10-integration.html). To run the example you need to provide the following parameters when creating a Spark job for Kafka in HopsWorks:
 ```
 Usage: <type>(producer|consumer) [<sink>]
 ```
@@ -41,4 +41,4 @@ This example produces String <key,value> pairs which are converted by HopsWorks 
 
 ## Libraries
 
-*StreamingExample* makes use of the HopsWorks Kafka Utility available [here](https://github.com/hopshadoop/kafka-util). This library is automatically provided by HopsWorks. If the user wants to implement a custom functionality, thens it must be added the job when creating it in HopsWorks.
+*StreamingExample* makes use of the HopsUtil API available [here](https://github.com/hopshadoop/hops-util). This library is automatically provided by HopsWorks with every Job/Notebook. If the user wants to implement a custom functionality, thens it must be added the job when creating it in HopsWorks.
