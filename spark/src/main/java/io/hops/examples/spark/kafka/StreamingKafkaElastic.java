@@ -1,5 +1,6 @@
 package io.hops.examples.spark.kafka;
 
+import io.hops.util.CredentialsNotFoundException;
 import io.hops.util.HopsUtil;
 import io.hops.util.SchemaNotFoundException;
 import io.hops.util.spark.SparkConsumer;
@@ -73,7 +74,7 @@ public final class StreamingKafkaElastic {
     JavaDStream<LogEntryFilebeat> logEntries = messages.map(new Function<ConsumerRecord<String, String>, JSONObject>() {
       @Override
       public JSONObject call(ConsumerRecord<String, String> record) throws SchemaNotFoundException,
-          MalformedURLException, ProtocolException {
+          MalformedURLException, ProtocolException, CredentialsNotFoundException {
         //LOG.info("record:" + record);
 
         return parser(args[0], record.value(), appId);
@@ -126,7 +127,7 @@ public final class StreamingKafkaElastic {
     HopsUtil.shutdownGracefully(jssc);
   }
 
-  private static JSONObject parser(String logType, String line, String appId) {
+  private static JSONObject parser(String logType, String line, String appId) throws CredentialsNotFoundException {
     JSONObject jsonLog = new JSONObject(line);
     JSONObject index = new JSONObject();
     String priority, logger, thread, timestamp;

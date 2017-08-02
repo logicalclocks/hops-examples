@@ -2,6 +2,7 @@ package io.hops.examples.spark.kafka;
 
 import com.google.common.base.Strings;
 import com.twitter.bijection.Injection;
+import io.hops.util.CredentialsNotFoundException;
 import io.hops.util.HopsProducer;
 import io.hops.util.HopsUtil;
 import io.hops.util.SchemaNotFoundException;
@@ -91,7 +92,7 @@ public final class StreamingExample {
                 i++;
                 System.out.println("KafkaHelloWorld sending message:" + message);
               }
-            } catch (SchemaNotFoundException | InterruptedException ex) {
+            } catch (SchemaNotFoundException | CredentialsNotFoundException | InterruptedException ex) {
               Logger.getLogger(StreamingExample.class.getName()).
                   log(Level.SEVERE, null, ex);
             }
