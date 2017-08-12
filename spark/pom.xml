@@ -4,11 +4,10 @@
   <parent>
     <groupId>io.hops</groupId>
     <artifactId>hops-examples</artifactId>
-    <version>0.1</version>
+    <version>0.1.0</version>
   </parent>
 
   <artifactId>hops-spark</artifactId>
-  <version>0.1</version>
   <packaging>jar</packaging>
   <name>HopsSpark</name>
 
@@ -68,6 +67,6 @@
       <groupId>org.apache.spark</groupId>
       <artifactId>spark-sql_2.11</artifactId>
       <version>${spark.version}</version>
-      </dependency>
+    </dependency>
   </dependencies>
 </project>
