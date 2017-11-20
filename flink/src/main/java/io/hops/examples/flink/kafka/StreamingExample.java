@@ -1,5 +1,6 @@
 package io.hops.examples.flink.kafka;
 
+import io.hops.util.Constants;
 import io.hops.util.HopsUtil;
 import java.util.Arrays;
 import org.apache.flink.api.common.restartstrategy.RestartStrategies;
@@ -39,7 +40,7 @@ public class StreamingExample {
     ////////////////////////////////////////////////////////////////////////////
     //Hopsworks utility method to automatically set parameters for Kafka
    HopsUtil.setup(HopsUtil.getFlinkKafkaProps(parameterTool.get(
-            HopsUtil.KAFKA_FLINK_PARAMS)));
+            Constants.KAFKA_FLINK_PARAMS)));
     ////////////////////////////////////////////////////////////////////////////
     if (parameterTool.get("type").equalsIgnoreCase("producer")) {
       StreamExecutionEnvironment env = StreamExecutionEnvironment.
