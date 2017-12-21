@@ -24,7 +24,7 @@
         <configuration>
           <archive>
             <manifest>
-              <mainClass>io.hops.examples.spark.kafka.StreamingLogs</mainClass>
+              <mainClass>io.hops.examples.spark.kafka.StructuredStreamingKafka</mainClass>
             </manifest>
           </archive>
         </configuration>

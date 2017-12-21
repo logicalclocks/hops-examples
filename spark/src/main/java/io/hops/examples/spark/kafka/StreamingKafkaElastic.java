@@ -1,5 +1,6 @@
 package io.hops.examples.spark.kafka;
 
+import com.google.common.base.Strings;
 import io.hops.util.CredentialsNotFoundException;
 import io.hops.util.HopsUtil;
 import io.hops.util.SchemaNotFoundException;
@@ -21,7 +22,6 @@ import java.util.Locale;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import joptsimple.internal.Strings;
 
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.common.serialization.StringDeserializer;
