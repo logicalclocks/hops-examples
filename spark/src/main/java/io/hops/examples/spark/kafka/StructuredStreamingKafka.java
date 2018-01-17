@@ -58,12 +58,15 @@ public class StructuredStreamingKafka {
        */
       messages.add("Container container_e01_1494850115055_0016_01_000002 succeeded");
       messages.add("Container container_e01_1494850115251_0015_01_000002 succeeded");
-      messages.add(
-          "rollingMonitorInterval is set as -1. The log rolling mornitoring interval is disabled. The logs will be aggregated after this application is finished.");
-      messages.add(
-          "rollingMonitorInterval is set as -1. The log rolling mornitoring interval is disabled. The logs will be aggregated after this application is finished.");
-      messages.add(
-          "Sending out 2 container statuses: [ContainerStatus: [ContainerId: container_e01_1494850115055_0016_01_000001, State: RUNNING, Diagnostics: , ExitStatus: -1000, ], ContainerStatus: [ContainerId: container_e01_1494850115055_0016_01_000002, State: RUNNING, Diagnostics: , ExitStatus: -1000, ]]");
+      messages.add("rollingMonitorInterval is set as -1. The log rolling mornitoring interval is disabled. "
+          + "The logs will be aggregated after this application is finished.");
+      messages.add("rollingMonitorInterval is set as -1. The log rolling mornitoring interval is disabled. "
+          + "The logs will be aggregated after this application is finished.");
+      messages.add("Sending out 2 container statuses: "
+          + "[ContainerStatus: [ContainerId: container_e01_1494850115055_0016_01_000001, State: RUNNING, "
+          + "Diagnostics: , ExitStatus: -1000, ], "
+          + "ContainerStatus: [ContainerId: container_e01_1494850115055_0016_01_000002, "
+          + "State: RUNNING, Diagnostics: , ExitStatus: -1000, ]]");
       messages.add("Node's health-status : true");
       messages.add("Cannot create writer for app application_1494433225517_0008. Skip log upload this time.");
       priorities.add("INFO");

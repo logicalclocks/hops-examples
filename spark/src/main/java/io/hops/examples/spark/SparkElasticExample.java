@@ -22,9 +22,10 @@ import org.json.JSONObject;
  * <p>
  */
 public class SparkElasticExample {
+  private static final Logger LOG = Logger.getLogger(SparkElasticExample.class.getName());
 
   public static void main(String[] args) throws Exception {
-    Logger logger = Logger.getLogger("SparkElasticExample");
+    
     SparkConf sparkConf = new SparkConf().setAppName("SparkElasticExample");
 
     JavaSparkContext jsc = new JavaSparkContext(sparkConf);
@@ -106,7 +107,7 @@ public class SparkElasticExample {
           while ((output = br.readLine()) != null) {
             outputBuilder.append(output);
           }
-          System.out.println("output:" + output);
+          LOG.info("output:" + output);
         } finally {
           if (conn != null) {
             conn.disconnect();

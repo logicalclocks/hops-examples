@@ -3,15 +3,12 @@ package io.hops.examples.spark.kafka;
 import com.google.common.base.Strings;
 import io.hops.util.CredentialsNotFoundException;
 import io.hops.util.HopsUtil;
-import io.hops.util.SchemaNotFoundException;
 import io.hops.util.spark.SparkConsumer;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -28,14 +25,17 @@ import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.spark.SparkConf;
 
 import org.apache.spark.api.java.JavaRDD;
-import org.apache.spark.api.java.function.*;
+import org.apache.spark.api.java.function.Function;
+import org.apache.spark.api.java.function.VoidFunction2;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SaveMode;
 import org.apache.spark.sql.SparkSession;
 import org.apache.spark.streaming.Durations;
-import org.apache.spark.streaming.api.java.*;
 import org.apache.spark.streaming.Time;
+import org.apache.spark.streaming.api.java.JavaDStream;
+import org.apache.spark.streaming.api.java.JavaInputDStream;
+import org.apache.spark.streaming.api.java.JavaStreamingContext;
 import org.json.JSONObject;
 
 /**
@@ -73,34 +73,27 @@ public final class StreamingKafkaElastic {
     //Convert line to JSON
     JavaDStream<LogEntryFilebeat> logEntries = messages.map(new Function<ConsumerRecord<String, String>, JSONObject>() {
       @Override
-      public JSONObject call(ConsumerRecord<String, String> record) throws SchemaNotFoundException,
-          MalformedURLException, ProtocolException, CredentialsNotFoundException {
-        //LOG.info("record:" + record);
-
+      public JSONObject call(ConsumerRecord<String, String> record) throws Exception {
         return parser(args[0], record.value(), appId);
       }
     }).map(new Function<JSONObject, LogEntryFilebeat>() {
       @Override
-      public LogEntryFilebeat call(JSONObject json) throws SchemaNotFoundException, MalformedURLException, ProtocolException,
-          IOException {
+      public LogEntryFilebeat call(JSONObject json) throws Exception {
         LogEntryFilebeat logEntry
             = new LogEntryFilebeat(json.getString("message").replace("\n\t", "\n").replace("\n", "---"), json.getString(
                 "priority"), json.getString("logger_name"), json.
                 getString("thread"), json.getString("timestamp"), json.getString("file"));
-        //LOG.info("LogEntryFilebeat:" + logEntry);
         return logEntry;
       }
     });
 
-    //logEntries.print();
     logEntries.repartition(1).foreachRDD(new VoidFunction2<JavaRDD<LogEntryFilebeat>, Time>() {
       @Override
-      public void call(JavaRDD<LogEntryFilebeat> rdd, Time time) throws
-          Exception {
+      public void call(JavaRDD<LogEntryFilebeat> rdd, Time time) throws Exception {
         Dataset<Row> row = sparkSession.createDataFrame(rdd, LogEntryFilebeat.class);
         String dataset = "Resources";
         if (!rdd.isEmpty()) {
-          LOG.info("hops rdd:" + rdd.first().getFile());
+          LOG.log(Level.INFO, "hops rdd:{0}", rdd.first().getFile());
           if (rdd.first().getFile().contains("fiona")) {
             dataset = "Fiona";
           } else if (rdd.first().getFile().contains("shrek")) {
@@ -150,7 +143,7 @@ public final class StreamingKafkaElastic {
         timestamp = format.format(result);
 
       } catch (Exception ex) {
-        LOG.warning("Error while parsing log, setting default index parameters:" + ex.getMessage());
+        LOG.log(Level.WARNING, "Error while parsing log, setting default index parameters:{0}", ex.getMessage());
         message = jsonLog.getString("message");
         priority = "parse error";
         logger = "parse error";
@@ -209,7 +202,7 @@ public final class StreamingKafkaElastic {
         timestamp = format.format(result);
 
       } catch (Exception ex) {
-        LOG.warning("Error while parsing log, setting default index parameters:" + ex.getMessage());
+        LOG.log(Level.WARNING, "Error while parsing log, setting default index parameters:{0}", ex.getMessage());
         message = jsonLog.getString("message");
         priority = "parse error";
         logger = "parse error";
@@ -244,17 +237,16 @@ public final class StreamingKafkaElastic {
       }
       if (!Strings.isNullOrEmpty(priority) && priority.equalsIgnoreCase("TRACE")) {
         LOG.log(Level.INFO, "Sending email");
-        HopsUtil.sendEmail("tkak@kth.se", "Error message received", timestamp + " :: " +message);
+        HopsUtil.sendEmail("tkak@kth.se", "Error message received", timestamp + " :: " + message);
       }
 
     }
-    //LOG.log(Level.INFO, "hops index:{0}", index.toString());
     URL obj;
     HttpURLConnection conn = null;
     BufferedReader br = null;
     try {
-//      LOG.log(Level.INFO, "elastic url:" + "http://10.0.2.15:9200/" + HopsUtil.getProjectName() + "/logs");
-      obj = new URL("http://" + HopsUtil.getElasticEndPoint() + "/" + HopsUtil.getProjectName().toLowerCase() + "/logs");
+      obj = new URL("http://" + HopsUtil.getElasticEndPoint() + "/" + HopsUtil.getProjectName().toLowerCase()
+          + "/logs");
       conn = (HttpURLConnection) obj.openConnection();
       conn.setDoOutput(true);
       conn.setRequestMethod("POST");
@@ -269,7 +261,6 @@ public final class StreamingKafkaElastic {
       while ((output = br.readLine()) != null) {
         outputBuilder.append(output);
       }
-//      LOG.log(Level.INFO, "output:{0}", output);
 
     } catch (IOException ex) {
       LOG.log(Level.SEVERE, ex.toString(), ex);

@@ -34,8 +34,6 @@ public class NamenodeLogEntry implements Serializable {
     return logger;
   }
 
- 
-
   public String getTimestamp() {
     return timestamp;
   }
@@ -56,7 +54,6 @@ public class NamenodeLogEntry implements Serializable {
     this.logger = logger;
   }
 
-
   public void setTimestamp(String timestamp) {
     this.timestamp = timestamp;
   }
@@ -64,7 +61,5 @@ public class NamenodeLogEntry implements Serializable {
   public void setFile(String file) {
     this.file = file;
   }
-
-  
 
 }

@@ -8,11 +8,10 @@ import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Properties;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.lang.StringUtils;
 
@@ -21,14 +20,17 @@ import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.spark.SparkConf;
 
 import org.apache.spark.api.java.JavaRDD;
-import org.apache.spark.api.java.function.*;
+import org.apache.spark.api.java.function.Function;
+import org.apache.spark.api.java.function.VoidFunction2;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SaveMode;
 import org.apache.spark.sql.SparkSession;
 import org.apache.spark.streaming.Durations;
-import org.apache.spark.streaming.api.java.*;
 import org.apache.spark.streaming.Time;
+import org.apache.spark.streaming.api.java.JavaDStream;
+import org.apache.spark.streaming.api.java.JavaInputDStream;
+import org.apache.spark.streaming.api.java.JavaStreamingContext;
 import org.json.JSONObject;
 
 /**
@@ -68,7 +70,7 @@ public final class StreamingLogs {
       @Override
       public JSONObject call(ConsumerRecord<String, String> record) throws SchemaNotFoundException,
           MalformedURLException, ProtocolException {
-        LOG.info("record:" + record);
+        LOG.log(Level.INFO, "record:{0}", record);
         return parser(record.value(), appId);
       }
     }).map(new Function<JSONObject, NamenodeLogEntry>() {
@@ -82,7 +84,7 @@ public final class StreamingLogs {
                 json.getString("logger_name"),
                 json.getString("timestamp"),
                 json.getString("file"));
-        LOG.info("NamenodeLogEntry:" + logEntry);
+        LOG.log(Level.INFO, "NamenodeLogEntry:{0}", logEntry);
         return logEntry;
       }
     });
@@ -119,7 +121,6 @@ public final class StreamingLogs {
     priority = logger = thread = timestamp = null;
 
     //Sample line:
-    //2017-05-08 16:08:33,638 FATAL io.hops.transaction.context.TransactionContext: find-blockinfo-ByINodeId hit inodeid=246994
     String[] attrs = jsonLog.getString("message").substring(0, StringUtils.ordinalIndexOf(jsonLog.getString("message"),
         " ", 4)).split(" ");
     String message = jsonLog.getString("message").substring(StringUtils.
@@ -136,14 +137,8 @@ public final class StreamingLogs {
       SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", currentLocale);
       timestamp = format.format(result);
 
-//      StringBuilder messageBuilder = new StringBuilder();
-//      for (int i = 4; i < attrs.length; i++) {
-//        messageBuilder.append(attrs[i]);
-//      }
-//      message = messageBuilder.toString();
-      //Concat the rest of splits into the message field
     } catch (Exception ex) {
-      LOG.warning("Error while parsing log, setting default index parameters:" + ex.getMessage());
+      LOG.log(Level.WARNING, "Error while parsing log, setting default index parameters:{0}", ex.getMessage());
       message = jsonLog.getString("message");
       priority = "parse error";
       logger = "parse error";

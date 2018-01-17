@@ -3,7 +3,6 @@ package io.hops.examples.flink.kafka;
 import io.hops.util.HopsConsumer;
 import io.hops.util.HopsProducer;
 import io.hops.util.HopsUtil;
-import java.util.Arrays;
 import java.util.Map;
 import org.apache.flink.api.common.functions.MapFunction;
 import org.apache.flink.api.java.tuple.Tuple2;
@@ -19,6 +18,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
+import java.util.logging.Logger;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.hadoop.fs.FileSystem;
@@ -30,49 +30,33 @@ import org.apache.hadoop.fs.Path;
  */
 public class FlinkKafkaExample {
 
+  private static final Logger LOG = Logger.getLogger(FlinkKafkaExample.class.getName());
   private static int BOUND = 100;
 
-  // *************************************************************************
-  // PROGRAM
-  // *************************************************************************
   public static void main(String[] args) throws Exception {
-
-    // Checking input parameters
-    //final ParameterTool params = ParameterTool.fromArgs(args);
-    System.out.println("  Usage: IterateExample --input <path> --output <path>");
-//    if (params.has("bound")) {
-//      BOUND = Integer.parseInt(params.get("bound"));
-//    }
-    // set up input for the stream of integer pairs
 
     // obtain execution environment and set setBufferTimeout to 1 to enable
     // continuous flushing of the output buffers (lowest latency)
     StreamExecutionEnvironment env = StreamExecutionEnvironment.
-            getExecutionEnvironment()
-            .setBufferTimeout(1);
+        getExecutionEnvironment()
+        .setBufferTimeout(1);
 
-    // make parameters available in the web interface
-    //env.getConfig().setGlobalJobParameters(params);
     // create input stream of integer pairs
     DataStream<Tuple2<Integer, Integer>> inputStream;
-//		if (params.has("input")) {
-//			inputStream = env.readTextFile(params.get("input")).map(new FibonacciInputMap());
-//		} else {
-    System.out.println("Executing Iterate example with default input data set.");
-    System.out.println("Use --input to specify file input.");
+    LOG.info("Executing Iterate example with default input data set.");
+    LOG.info("Use --input to specify file input.");
     inputStream = env.addSource(new RandomFibonacciSource());
-//		}
 
     // create an iterative data stream from the input with 5 second timeout
     IterativeStream<Tuple5<Integer, Integer, Integer, Integer, Integer>> it
-            = inputStream.map(new InputMap())
+        = inputStream.map(new InputMap())
             .iterate(5000);
 
     // apply the step function to get the next Fibonacci number
     // increment the counter and split the output with the output selector
     SplitStream<Tuple5<Integer, Integer, Integer, Integer, Integer>> step = it.
-            map(new Step())
-            .split(new MySelector());
+        map(new Step())
+        .split(new MySelector());
 
     // close the iteration by selecting the tuples that were directed to the
     // 'iterate' channel in the output selector
@@ -82,12 +66,11 @@ public class FlinkKafkaExample {
     // 'output' channel then get the input pairs that have the greatest iteration counter
     // on a 1 second sliding window
     DataStream<Tuple2<Tuple2<Integer, Integer>, Integer>> numbers = step.select(
-            "output")
-            .map(new OutputMap());
+        "output")
+        .map(new OutputMap());
 
     // emit results
-    System.out.println(
-            "Printing result to stdout. Use --output to specify output path.");
+    LOG.info("Printing result to stdout. Use --output to specify output path.");
     numbers.print();
     // execute the program
     env.execute("Streaming Iteration Example");
@@ -116,6 +99,7 @@ public class FlinkKafkaExample {
       final String path = args[2];
       final HopsConsumer hopsKafkaConsumer = HopsUtil.getHopsConsumer(args[0]);
       Thread t = new Thread() {
+        @Override
         public void run() {
           hopsKafkaConsumer.consume(path);
         }
@@ -136,7 +120,7 @@ public class FlinkKafkaExample {
    * BOUND/2
    */
   private static class RandomFibonacciSource implements
-          SourceFunction<Tuple2<Integer, Integer>> {
+      SourceFunction<Tuple2<Integer, Integer>> {
 
     private static final long serialVersionUID = 1L;
 
@@ -147,7 +131,7 @@ public class FlinkKafkaExample {
 
     @Override
     public void run(SourceFunction.SourceContext<Tuple2<Integer, Integer>> ctx)
-            throws Exception {
+        throws Exception {
 
       while (isRunning && counter < BOUND) {
         int first = rnd.nextInt(BOUND / 2 - 1) + 1;
@@ -169,7 +153,7 @@ public class FlinkKafkaExample {
    * Generate random integer pairs from the range from 0 to BOUND/2
    */
   private static class FibonacciInputMap implements
-          MapFunction<String, Tuple2<Integer, Integer>> {
+      MapFunction<String, Tuple2<Integer, Integer>> {
 
     private static final long serialVersionUID = 1L;
 
@@ -178,7 +162,7 @@ public class FlinkKafkaExample {
       String record = value.substring(1, value.length() - 1);
       String[] splitted = record.split(",");
       return new Tuple2<>(Integer.parseInt(splitted[0]), Integer.parseInt(
-              splitted[1]));
+          splitted[1]));
     }
   }
 
@@ -188,14 +172,14 @@ public class FlinkKafkaExample {
    * counter is attached to the tuple and incremented in every iteration step
    */
   public static class InputMap implements
-          MapFunction<Tuple2<Integer, Integer>, Tuple5<Integer, Integer, Integer, Integer, Integer>> {
+      MapFunction<Tuple2<Integer, Integer>, Tuple5<Integer, Integer, Integer, Integer, Integer>> {
 
     private static final long serialVersionUID = 1L;
 
     @Override
     public Tuple5<Integer, Integer, Integer, Integer, Integer> map(
-            Tuple2<Integer, Integer> value) throws
-            Exception {
+        Tuple2<Integer, Integer> value) throws
+        Exception {
       return new Tuple5<>(value.f0, value.f1, value.f0, value.f1, 0);
     }
   }
@@ -204,16 +188,17 @@ public class FlinkKafkaExample {
    * Iteration step function that calculates the next Fibonacci number
    */
   public static class Step implements
-          MapFunction<Tuple5<Integer, Integer, Integer, Integer, Integer>, Tuple5<Integer, Integer, Integer, Integer, Integer>> {
+      MapFunction<Tuple5<Integer, Integer, Integer, Integer, Integer>, Tuple5<Integer, Integer, Integer, Integer, 
+      Integer>> {
 
     private static final long serialVersionUID = 1L;
 
     @Override
     public Tuple5<Integer, Integer, Integer, Integer, Integer> map(
-            Tuple5<Integer, Integer, Integer, Integer, Integer> value) throws
-            Exception {
+        Tuple5<Integer, Integer, Integer, Integer, Integer> value) throws
+        Exception {
       return new Tuple5<>(value.f0, value.f1, value.f3, value.f2 + value.f3,
-              ++value.f4);
+          ++value.f4);
     }
   }
 
@@ -221,13 +206,13 @@ public class FlinkKafkaExample {
    * OutputSelector testing which tuple needs to be iterated again.
    */
   public static class MySelector implements
-          OutputSelector<Tuple5<Integer, Integer, Integer, Integer, Integer>> {
+      OutputSelector<Tuple5<Integer, Integer, Integer, Integer, Integer>> {
 
     private static final long serialVersionUID = 1L;
 
     @Override
     public Iterable<String> select(
-            Tuple5<Integer, Integer, Integer, Integer, Integer> value) {
+        Tuple5<Integer, Integer, Integer, Integer, Integer> value) {
       List<String> output = new ArrayList<>();
       if (value.f2 < BOUND && value.f3 < BOUND) {
         output.add("iterate");
@@ -242,97 +227,16 @@ public class FlinkKafkaExample {
    * Giving back the input pair and the counter
    */
   public static class OutputMap implements
-          MapFunction<Tuple5<Integer, Integer, Integer, Integer, Integer>, Tuple2<Tuple2<Integer, Integer>, Integer>> {
+      MapFunction<Tuple5<Integer, Integer, Integer, Integer, Integer>, Tuple2<Tuple2<Integer, Integer>, Integer>> {
 
     private static final long serialVersionUID = 1L;
 
     @Override
     public Tuple2<Tuple2<Integer, Integer>, Integer> map(
-            Tuple5<Integer, Integer, Integer, Integer, Integer> value) throws
-            Exception {
+        Tuple5<Integer, Integer, Integer, Integer, Integer> value) throws
+        Exception {
       return new Tuple2<>(new Tuple2<>(value.f0, value.f1), value.f4);
     }
   }
 
-//  public static void main(String[] args) throws Exception {
-//    String topicName;
-//    String type = null;
-//    int numberOfMessages = 30;
-//
-//    //Setup the KafkaUtil
-//    KafkaUtil hopsKafkaUtil = KafkaUtil.getInstance();
-//    
-//    System.out.println("SYSPROPS-ARGS:"+Arrays.toString(args)) ;
-//    System.out.println("SYSPROPS-KAFKA_PROPS:"+args[args.length-1]) ;
-//    
-//    
-//    //Check user args
-//    /*
-//     * USAGES: 1. topicname numberOfMessages type(producer/consumer)
-//     * IF TYPE IS NOT PROVIDED, application will do both
-//     * EXAMPLE: weather 30 producer
-//     * weather consumer
-//     */
-//    Map<String, String> kafkaProps = hopsKafkaUtil.getFlinkKafkaProps(args[args.length-1]);
-//    if (args != null && args.length == 4 && args[1].equals("producer")) {
-//      topicName = args[0];
-//      type = args[1];
-//      numberOfMessages = Integer.parseInt(args[2]);
-//    } else if (args != null && args.length == 3 && args[1].equals("consumer")) {
-//      topicName = args[0];
-//      type = args[1];
-//    } else if (args != null && args.length == 2) {
-//      topicName = args[0];
-//    } else {
-//      throw new Exception(
-//              "Wrong arguments. Usage: topicName isProducer(true/false)");
-//    }
-//    
-//    StreamExecutionEnvironment env =StreamExecutionEnvironment.getExecutionEnvironment();
-//    
-//    Properties sysProps = System.getProperties();
-//    System.out.println("SYSPROPRS-APP:"+sysProps);
-//        
-//    for (Map.Entry<String, String> entry : kafkaProps.entrySet()){
-//      System.out.println("KAFKA-PROP:"+entry.getKey()+","+entry.getValue());
-//    }
-//    //hopsKafkaUtil.setup("http://localhost:8080", "localhost");
-//    hopsKafkaUtil.setup(kafkaProps.get(hopsKafkaUtil.KAFKA_SESSIONID_ENV_VAR), 
-//            Integer.parseInt(kafkaProps.get(hopsKafkaUtil.KAFKA_PROJECTID_ENV_VAR)), 
-//            topicName, 
-//            "localhost",
-//            kafkaProps.get(hopsKafkaUtil.KAFKA_BROKERADDR_ENV_VAR), 
-//            "http://localhost:8080",
-//            "/srv/glassfish/domain1/config/"+kafkaProps.get(hopsKafkaUtil.KAFKA_K_CERTIFICATE_ENV_VAR), 
-//            "/srv/glassfish/domain1/config/"+kafkaProps.get(hopsKafkaUtil.KAFKA_T_CERTIFICATE_ENV_VAR));
-//    
-//		env.getConfig().disableSysoutLogging();
-//		env.getConfig().setRestartStrategy(RestartStrategies.fixedDelayRestart(4, 10000));
-//
-//		// very simple data generator
-//		DataStream<String> messageStream = env.addSource(new SourceFunction<String>() {
-//			public boolean running = true;
-//
-//			@Override
-//			public void run(SourceContext<String> ctx) throws Exception {
-//				long i = 0;
-//				while(this.running && i<60) {
-//					ctx.collect("Element - " + i++);
-//					Thread.sleep(500);
-//				}
-//			}
-//
-//			@Override
-//			public void cancel() {
-//				running = false;
-//			}
-//		});
-//    
-//		// write data into Kafka
-//		//messageStream.addSink(new FlinkKafkaProducer08<>(parameterTool.getRequired("topic"), new SimpleStringSchema(), parameterTool.getProperties()));
-//    messageStream.addSink(hopsKafkaUtil.getFlinkProducer(topicName,
-//            new SimpleStringSchema())) ;
-//    env.execute("Write into Kafka example");
-//
-//  }
 }

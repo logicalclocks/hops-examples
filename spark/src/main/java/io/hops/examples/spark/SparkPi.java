@@ -22,12 +22,16 @@ import org.apache.spark.sql.SparkSession;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Computes an approximation to pi
  * Usage: JavaSparkPi [partitions]
  */
 public final class SparkPi {
+  
+  private static final Logger LOG = Logger.getLogger(SparkPi.class.getName());
 
   public static void main(String[] args) throws Exception {
     SparkSession spark = SparkSession
@@ -47,11 +51,11 @@ public final class SparkPi {
     JavaRDD<Integer> dataSet = jsc.parallelize(l, slices);
 
     int count = dataSet.map(integer -> {
-      double x = Math.random() * 2 - 1;
-      double y = Math.random() * 2 - 1;
-      return (x * x + y * y <= 1) ? 1 : 0;
-    }).reduce((integer, integer2) -> integer + integer2);
-    System.out.println("Pi is roughly " + 4.0 * count / n);
+        double x = Math.random() * 2 - 1;
+        double y = Math.random() * 2 - 1;
+        return (x * x + y * y <= 1) ? 1 : 0;
+      }).reduce((integer, integer2) -> integer + integer2);
+    LOG.log(Level.INFO, "Pi is roughly {0}", 4.0 * count / n);
 
     spark.stop();
   }

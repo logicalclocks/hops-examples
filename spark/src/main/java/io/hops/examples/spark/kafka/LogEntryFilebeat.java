@@ -11,7 +11,8 @@ public class LogEntryFilebeat extends LogEntry implements Serializable {
   private String thread;
   private String file;
 
-  public LogEntryFilebeat(String message, String priority, String logger, String thread, String timestamp, String file) {
+  public LogEntryFilebeat(String message, String priority, String logger, String thread, String timestamp, 
+      String file) {
     super(message, priority, logger, timestamp);
     this.thread = thread;
     this.file = file;

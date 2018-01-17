@@ -19,21 +19,25 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
-
 import scala.Tuple2;
-
 import org.apache.avro.generic.GenericRecord;
 import org.apache.avro.util.Utf8;
 import org.apache.hadoop.mapred.TextOutputFormat;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
-
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaSparkContext;
-import org.apache.spark.api.java.function.*;
-import org.apache.spark.streaming.api.java.*;
+import org.apache.spark.api.java.function.FlatMapFunction;
+import org.apache.spark.api.java.function.Function;
+import org.apache.spark.api.java.function.Function2;
+import org.apache.spark.api.java.function.PairFunction;
+import org.apache.spark.api.java.function.VoidFunction2;
 import org.apache.spark.streaming.Durations;
 import org.apache.spark.streaming.Time;
+import org.apache.spark.streaming.api.java.JavaDStream;
+import org.apache.spark.streaming.api.java.JavaInputDStream;
+import org.apache.spark.streaming.api.java.JavaPairDStream;
+import org.apache.spark.streaming.api.java.JavaStreamingContext;
 
 /**
  * Consumes messages from one or more topics in Kafka and does wordcount,
@@ -51,6 +55,7 @@ import org.apache.spark.streaming.Time;
  */
 public final class StreamingExample {
 
+  private static final Logger LOG = Logger.getLogger(StreamingExample.class.getName());
   private static final Pattern SPACE = Pattern.compile(" ");
   //Get HopsWorks Kafka Utility instance
   private static final Map<String, Injection<GenericRecord, byte[]>> recordInjections
@@ -58,7 +63,7 @@ public final class StreamingExample {
 
   public static void main(final String[] args) throws Exception {
     if (args.length < 1) {
-      System.err.println("Usage: StreamingExample <type> <sink> <topics> \n"
+      LOG.log(Level.SEVERE, "Usage: StreamingExample <type> <sink> <topics> \n"
           + "  <type> type of kafka process (producer|consumer).\n"
           + "  <sink> location in hdfs to append streaming output.\n\n");
       System.exit(1);
@@ -68,7 +73,6 @@ public final class StreamingExample {
     // Create context with a 2 ; batch interval
     Set<String> topicsSet = new HashSet<>(HopsUtil.getTopics());
     SparkConf sparkConf = new SparkConf().setAppName("StreamingExample");
-    System.out.println("Topics:" + topicsSet);
     final List<HopsProducer> sparkProducers = new ArrayList<>();
 
     if (!Strings.isNullOrEmpty(type) && type.equalsIgnoreCase("producer")) {
@@ -90,7 +94,6 @@ public final class StreamingExample {
                 sparkProducer.produce(message);
                 Thread.sleep(1000);
                 i++;
-                System.out.println("KafkaHelloWorld sending message:" + message);
               }
             } catch (SchemaNotFoundException | CredentialsNotFoundException | InterruptedException ex) {
               Logger.getLogger(StreamingExample.class.getName()).
@@ -99,7 +102,6 @@ public final class StreamingExample {
           }
         }.start();
       }//Keep application running
-      System.out.println("Before gracefully");
       HopsUtil.shutdownGracefully(jsc);
     } else {
       JavaStreamingContext jssc = new JavaStreamingContext(sparkConf,
@@ -118,8 +120,7 @@ public final class StreamingExample {
       final StringBuilder line = new StringBuilder();
 
       // Get the lines, split them into words, count the words and print
-      JavaDStream<String> lines = messages.map(
-          new Function<ConsumerRecord<String, byte[]>, String>() {
+      JavaDStream<String> lines = messages.map(new Function<ConsumerRecord<String, byte[]>, String>() {
         @Override
         public String call(ConsumerRecord<String, byte[]> record) throws
             SchemaNotFoundException {
@@ -137,26 +138,24 @@ public final class StreamingExample {
         }
       });
 
-      JavaDStream<String> words = lines.flatMap(
-          new FlatMapFunction<String, String>() {
+      JavaDStream<String> words = lines.flatMap(new FlatMapFunction<String, String>() {
         @Override
         public Iterator<String> call(String x) {
           return Arrays.asList(SPACE.split(x)).iterator();
         }
       });
 
-      JavaPairDStream<String, Integer> wordCounts = words.mapToPair(
-          new PairFunction<String, String, Integer>() {
+      JavaPairDStream<String, Integer> wordCounts = words.mapToPair(new PairFunction<String, String, Integer>() {
         @Override
         public Tuple2<String, Integer> call(String s) {
           return new Tuple2<>(s, 1);
         }
       }).reduceByKey(new Function2<Integer, Integer, Integer>() {
-            @Override
-            public Integer call(Integer i1, Integer i2) {
-              return i1 + i2;
-            }
-          });
+          @Override
+          public Integer call(Integer i1, Integer i2) {
+            return i1 + i2;
+          }
+        });
 
       wordCounts.print();
 
@@ -164,8 +163,7 @@ public final class StreamingExample {
        * Based on Spark Design patterns
        * http://spark.apache.org/docs/latest/streaming-programming-guide.html#output-operations-on-dstreams
        */
-      wordCounts.foreachRDD(
-          new VoidFunction2<JavaPairRDD<String, Integer>, Time>() {
+      wordCounts.foreachRDD(new VoidFunction2<JavaPairRDD<String, Integer>, Time>() {
         @Override
         public void call(JavaPairRDD<String, Integer> rdd, Time time) throws
             Exception {

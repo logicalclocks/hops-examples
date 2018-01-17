@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.kafka.common.Cluster;
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaSparkContext;
@@ -24,7 +26,9 @@ import org.apache.spark.api.java.JavaSparkContext;
  * SimpleKafkaProcess mytopic producer 50
  */
 public class SimpleKafkaProcess {
-
+  
+  private static final Logger LOG = Logger.getLogger(SimpleKafkaProcess.class.getName());
+  
   public static void main(String[] args) throws Exception {
     String topic = null;
     String type = null;
@@ -43,8 +47,7 @@ public class SimpleKafkaProcess {
       topic = args[0];
       type = args[1];
     } else {
-      System.err.println(
-              "Wrong arguments. Usage: topicName isProducer(true/false)");
+      LOG.log(Level.SEVERE, "Wrong arguments. Usage: topicName isProducer(true/false)");
       System.exit(1);
     }
 
@@ -58,11 +61,13 @@ public class SimpleKafkaProcess {
       InetSocketAddress broker = new InetSocketAddress("10.0.2.15", 9091);
       brokers.add(broker);
       Cluster cluster = Cluster.bootstrap(brokers);
-      System.out.println("Topics:"+cluster.topics());
-      System.out.println("Get availablePartitionsForTopic:"+topic+", "+cluster.availablePartitionsForTopic(topic));
-      System.out.println("Get availablePartitionsForTopic:"+topic+", "+cluster.availablePartitionsForTopic("yourtopic"));
-      
-      
+      LOG.log(Level.INFO, "Topics:{0}", cluster.topics());
+      LOG.log(Level.INFO, "Get availablePartitionsForTopic:{0}, {1}", new Object[]{topic,
+        cluster.availablePartitionsForTopic(topic)});
+      LOG.log(Level.INFO, "Get availablePartitionsForTopic:{0}, {1}", new Object[]{topic,
+        cluster.availablePartitionsForTopic(
+            "yourtopic")});
+
       //Produce Kafka messages to topic
       HopsProducer hopsKafkaProducer = HopsUtil.getHopsProducer(topic);
 
@@ -75,7 +80,7 @@ public class SimpleKafkaProcess {
         hopsKafkaProducer.produce(message);
         Thread.sleep(100);
         i++;
-        System.out.println("KafkaHelloWorld sending message:" + message);
+        LOG.log(Level.INFO, "KafkaHelloWorld sending message:{0}", message);
 
       }
       hopsKafkaProducer.close();

@@ -3,6 +3,8 @@ package io.hops.examples.flink.kafka;
 import io.hops.util.Constants;
 import io.hops.util.HopsUtil;
 import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.flink.api.common.restartstrategy.RestartStrategies;
 import org.apache.flink.api.java.tuple.Tuple4;
 import org.apache.flink.api.java.utils.ParameterTool;
@@ -20,58 +22,57 @@ import org.apache.flink.streaming.connectors.fs.RollingSink;
  */
 public class StreamingExample {
 
+  private static final Logger LOG = Logger.getLogger(StreamingExample.class.getName());
+
   public static void main(String[] args) throws Exception {
     ParameterTool parameterTool = ParameterTool.fromArgs(args);
     if (parameterTool.getNumberOfParameters() < 2 || !parameterTool.has("type")) {
-      System.out.println(
-              "Missing parameters!\nUsage: -type <producer|consumer> "
-              + "[-sink_path <rolling_sink path>]"
-              + " [-batch_size <rolling_file_size>]"
-              + " [-bucket_format <bucket_format>]");
+      LOG.log(Level.SEVERE, "Missing parameters!\nUsage: -type <producer|consumer> "
+          + "[-sink_path <rolling_sink path>]"
+          + " [-batch_size <rolling_file_size>]"
+          + " [-bucket_format <bucket_format>]");
       throw new Exception(
-              "Missing parameters!\nUsage: -type <producer|consumer> "
-              + "[-sink_path <rolling_sink path>]"
-              + " [-batch_size <rolling_file_size>]"
-              + " [-bucket_format <bucket_format>]");
+          "Missing parameters!\nUsage: -type <producer|consumer> "
+          + "[-sink_path <rolling_sink path>]"
+          + " [-batch_size <rolling_file_size>]"
+          + " [-bucket_format <bucket_format>]");
     }
-    System.out.println("FlinkKafkaStreamingExample.Params:" + parameterTool.
-            toMap().toString());
+    LOG.log(Level.INFO, "FlinkKafkaStreamingExample.Params:{0}", parameterTool.toMap().toString());
 
     ////////////////////////////////////////////////////////////////////////////
     //Hopsworks utility method to automatically set parameters for Kafka
-   HopsUtil.setup(HopsUtil.getFlinkKafkaProps(parameterTool.get(
-            Constants.KAFKA_FLINK_PARAMS)));
+    HopsUtil.setup(HopsUtil.getFlinkKafkaProps(parameterTool.get(
+        Constants.KAFKA_FLINK_PARAMS)));
     ////////////////////////////////////////////////////////////////////////////
     if (parameterTool.get("type").equalsIgnoreCase("producer")) {
       StreamExecutionEnvironment env = StreamExecutionEnvironment.
-              getExecutionEnvironment();
+          getExecutionEnvironment();
       env.getConfig().disableSysoutLogging();
-      env.getConfig().setRestartStrategy(RestartStrategies.fixedDelayRestart(4,
-              10000));
+      env.getConfig().setRestartStrategy(RestartStrategies.fixedDelayRestart(4, 10000));
 
       // very simple data generator
       DataStream<Tuple4<String, String, String, String>> messageStream = env.
-              addSource(
-                      new SourceFunction<Tuple4<String, String, String, String>>() {
-                public boolean running = true;
+          addSource(
+              new SourceFunction<Tuple4<String, String, String, String>>() {
+            public boolean running = true;
 
-                @Override
-                public void run(
-                        SourceContext<Tuple4<String, String, String, String>> ctx)
-                        throws Exception {
-                  long i = 0;
-                  while (this.running) {
-                    ctx.collect(new Tuple4("platform", "HopsWorks",
-                            "program", "Flink Streaming - " + i++));
-                    Thread.sleep(500);
-                  }
-                }
+            @Override
+            public void run(
+                SourceContext<Tuple4<String, String, String, String>> ctx)
+                throws Exception {
+              long i = 0;
+              while (this.running) {
+                ctx.collect(new Tuple4("platform", "HopsWorks",
+                    "program", "Flink Streaming - " + i++));
+                Thread.sleep(500);
+              }
+            }
 
-                @Override
-                public void cancel() {
-                  running = false;
-                }
-              });
+            @Override
+            public void cancel() {
+              running = false;
+            }
+          });
 
       // write data into Kafka
       for (String topic : HopsUtil.getTopics()) {
@@ -81,19 +82,18 @@ public class StreamingExample {
     } else {
 
       StreamExecutionEnvironment env = StreamExecutionEnvironment.
-              getExecutionEnvironment();
+          getExecutionEnvironment();
       env.getConfig().disableSysoutLogging();
-      env.getConfig().setRestartStrategy(RestartStrategies.fixedDelayRestart(4,
-              10000));
+      env.getConfig().setRestartStrategy(RestartStrategies.fixedDelayRestart(4, 10000));
       //env.enableCheckpointing(5000); // create a checkpoint every 5 secodns
       //Get user parameters, excluding kafka ones set by HopsWorks
       // make parameters available in the web interface
       env.getConfig().setGlobalJobParameters(ParameterTool.fromArgs(
-              Arrays.copyOf(args, args.length - 2)));
+          Arrays.copyOf(args, args.length - 2)));
 
       for (String topic : HopsUtil.getTopics()) {
         DataStream<String> messageStream = env.addSource(HopsUtil.
-                getFlinkConsumer(topic));
+            getFlinkConsumer(topic));
         String dateTimeBucketerFormat = "yyyy-MM-dd--HH";
         if (parameterTool.has("sink_path")) {
           if (parameterTool.has("bucket_format")) {
@@ -102,7 +102,7 @@ public class StreamingExample {
             }
           }
           RollingSink<String> rollingSink = new RollingSink<>(
-                  parameterTool.get("sink_path"));
+              parameterTool.get("sink_path"));
           //Size of part file in bytes
           int batchSize = 8;
           if (parameterTool.has("batch_size")) {
