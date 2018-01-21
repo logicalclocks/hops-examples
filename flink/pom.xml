@@ -7,9 +7,9 @@
     <version>0.3.0</version>
   </parent>
 
-  <artifactId>flink-hops-examples</artifactId>
+  <artifactId>hops-examples-flink</artifactId>
   <packaging>jar</packaging>
-  <name>flink-hops-examples</name>
+  <name>hops-examples-flink</name>
   
   <build>
     <plugins>

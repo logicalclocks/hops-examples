@@ -7,9 +7,9 @@
     <version>0.3.0</version>
   </parent>
 
-  <artifactId>hive-hops-examples</artifactId>
+  <artifactId>hops-examples-hive</artifactId>
   <packaging>jar</packaging>
-  <name>hive-hops-examples</name>
+  <name>hops-examples-hive</name>
 
   <properties>
     <hive.version>2.3.0</hive.version>
