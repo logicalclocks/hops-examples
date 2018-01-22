@@ -1,7 +1,7 @@
 package io.hops.examples.spark.kafka;
 
 import io.hops.util.HopsUtil;
-import io.hops.util.SchemaNotFoundException;
+import io.hops.util.exceptions.SchemaNotFoundException;
 import io.hops.util.spark.SparkConsumer;
 import java.io.IOException;
 import java.net.MalformedURLException;

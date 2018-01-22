@@ -1,7 +1,7 @@
 package io.hops.examples.spark.kafka;
 
 import com.google.common.base.Strings;
-import io.hops.util.CredentialsNotFoundException;
+import io.hops.util.exceptions.CredentialsNotFoundException;
 import io.hops.util.HopsUtil;
 import io.hops.util.spark.SparkConsumer;
 import java.io.BufferedReader;
@@ -237,7 +237,7 @@ public final class StreamingKafkaElastic {
       }
       if (!Strings.isNullOrEmpty(priority) && priority.equalsIgnoreCase("TRACE")) {
         LOG.log(Level.INFO, "Sending email");
-        HopsUtil.sendEmail("tkak@kth.se", "Error message received", timestamp + " :: " + message);
+        HopsUtil.getWorkflowManager().sendEmail("tkak@kth.se", "Error message received", timestamp + " :: " + message);
       }
 
     }

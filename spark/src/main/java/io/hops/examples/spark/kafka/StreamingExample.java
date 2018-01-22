@@ -2,10 +2,10 @@ package io.hops.examples.spark.kafka;
 
 import com.google.common.base.Strings;
 import com.twitter.bijection.Injection;
-import io.hops.util.CredentialsNotFoundException;
+import io.hops.util.exceptions.CredentialsNotFoundException;
 import io.hops.util.HopsProducer;
 import io.hops.util.HopsUtil;
-import io.hops.util.SchemaNotFoundException;
+import io.hops.util.exceptions.SchemaNotFoundException;
 import io.hops.util.spark.SparkConsumer;
 import io.hops.util.spark.SparkProducer;
 import java.util.ArrayList;
