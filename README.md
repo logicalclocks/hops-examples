@@ -1,6 +1,6 @@
 #  Hops Examples 
 
-This repository provides users with examples on how to program Big Data and Deep Learning applications that run on [HopsWorks](https://github.com/hopshadoop/hopsworks), using [Apache Spark](https://spark.apache.org/), [Apache Flink](https://flink.apache.org/), [Apache Kafka](https://kafka.apache.org/),  [Apache Hive](https://hive.apache.org/)  and [TensorFlow](https://www.tensorflow.org/). Users can then upload and run their programs and notebooks from within their HopsWork projects. 
+This repository provides users with examples on how to program Big Data and Deep Learning applications that run on [HopsWorks](https://github.com/hopshadoop/hopsworks), using [Apache Spark](https://spark.apache.org/), [Apache Flink](https://flink.apache.org/), [Apache Kafka](https://kafka.apache.org/),  [Apache Hive](https://hive.apache.org/)  and [TensorFlow](https://www.tensorflow.org/). Users can then upload and run their programs and notebooks from within their HopsWorks projects. 
 
 ## Online Documentation ![N|Solid](http://www.hops.io/sites/default/files/hops-50x50.png)
 You can find the latest Hops documentation on the [project's webpage](https://hops.readthedocs.io/en/latest/), including HopsWorks user and developer guides as well as a list of versions for all supported services. This README file is meant to provide basic instructions and codebase on how to build and run the examples.  
