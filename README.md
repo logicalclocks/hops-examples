@@ -1,6 +1,6 @@
 #  Hops Examples 
 
-This repository provides users with examples on how to program Big Data and Deep Learning applications that run on [HopsWorks](https://github.com/hopshadoop/hopsworks), using [Apache Spark](https://spark.apache.org/), [Apache Flink](https://flink.apache.org/), [Apache Kafka](https://kafka.apache.org/),  [Apache Hive](https://hive.apache.org/)  and [TensorFlow](https://www.tensorflow.org/). Users can then upload and run their programs and notebooks from within their HopsWork projects. 
+This repository provides users with examples on how to program Big Data and Deep Learning applications that run on [HopsWorks](https://github.com/hopshadoop/hopsworks), using [Apache Spark](https://spark.apache.org/), [Apache Flink](https://flink.apache.org/), [Apache Kafka](https://kafka.apache.org/),  [Apache Hive](https://hive.apache.org/)  and [TensorFlow](https://www.tensorflow.org/). Users can then upload and run their programs and notebooks from within their HopsWorks projects. 
 
 ## Online Documentation ![N|Solid](http://www.hops.io/sites/default/files/hops-50x50.png)
 You can find the latest Hops documentation on the [project's webpage](https://hops.readthedocs.io/en/latest/), including HopsWorks user and developer guides as well as a list of versions for all supported services. This README file is meant to provide basic instructions and codebase on how to build and run the examples.  
@@ -18,7 +18,7 @@ Hops Examples makes use of **HopsUtil**, a set of Java and Python libraries whic
 
 # Spark
 ## Structured Streaming with Kafka and HopsFS
-To help you get started, [StructuredStreamingKafka.java](https://github.com/hopshadoop/hops-examples/blob/master/spark/src/main/java/io/hops/examples/spark/kafka/StructuredStreamingKafka.java) show how to build a Spark application that produces and consumes messages from Kafka and also persists it both in [Parquet](https://parquet.apache.org/) format and in plain text to HopsFS. The example makes use of the latest Spark-Kafka [API](https://spark.apache.org/docs/2.2.0/structured-streaming-kafka-integration.html). To run the example, you need to provide the following parameters when creating a Spark job in HopsWorks:
+To help you get started, [StructuredStreamingKafka](https://github.com/hopshadoop/hops-examples/blob/master/spark/src/main/java/io/hops/examples/spark/kafka/StructuredStreamingKafka.java) show how to build a Spark application that produces and consumes messages from Kafka and also persists it both in [Parquet](https://parquet.apache.org/) format and in plain text to HopsFS. The example makes use of the latest Spark-Kafka [API](https://spark.apache.org/docs/2.2.0/structured-streaming-kafka-integration.html). To run the example, you need to provide the following parameters when creating a Spark job in HopsWorks:
 
 ```
 Usage: <type>(producer|consumer)
@@ -35,7 +35,7 @@ Usage: <type>(producer|consumer)
 Data consumed is be default persisted to the `Resources` dataset of the Project where the job is running.
 
 ### Avro Records
-*StructuredStreamingKafka.java* generates *String <key,value>* pairs which are converted by **HopsUtil** into Avro records and serialized into bytes. Similarly, during consuming from a Kafka source, messages are deserialized into Avro records. **The default Avro schema used is the following**:
+`StructuredStreamingKafka.java` generates *String <key,value>* pairs which are converted by **HopsUtil** into Avro records and serialized into bytes. Similarly, during consuming from a Kafka source, messages are deserialized into Avro records. **The default Avro schema used is the following**:
 
 ```json
 {
@@ -68,12 +68,12 @@ Hops Example provides Jupyter notebooks for running TensorFlow applications on H
 
 
 # Hive
-**HiveJDBCClient.java** available in hops-examples-hive, shows how users can remotely execute Hive queries against their HopsWorks projects' Hive databases. Firstly, it instantiates a Java JDBC client and then connects to the example database described in [Hops documentation](https://hops.readthedocs.io/en/latest/user_guide/hopsworks/hive.html#try-it-out). Users need to have created the database in their project as described in the documentation. This example uses [log4j2](https://logging.apache.org/log4j/2.x/) with logs being written to a `./hive/logs` directory. For changes made to `./hive/src/main/resources/log4j2.properties` to take effect, users must first do
+`HiveJDBCClient.java` available in hops-examples-hive, shows how users can remotely execute Hive queries against their HopsWorks projects' Hive databases. Firstly, it instantiates a Java JDBC client and then connects to the example database described in [Hops documentation](https://hops.readthedocs.io/en/latest/user_guide/hopsworks/hive.html#try-it-out). Users need to have created the database in their project as described in the documentation. This example uses [log4j2](https://logging.apache.org/log4j/2.x/) with logs being written to a `./hive/logs` directory. For changes made to `./hive/src/main/resources/log4j2.properties` to take effect, users must first do
 ```
 mvn clean package
 ```
 
-For *HiveJDBCClient.java* to be able to connect to the HopsWorks Hive server, users need to create a `hive_credentials.properties` file based on `hive_credentials.properties.example` and set proper values for the parameters:
+For `HiveJDBCClient.java` to be able to connect to the HopsWorks Hive server, users need to create a `hive_credentials.properties` file based on `hive_credentials.properties.example` and set proper values for the parameters:
 ```
 hive_url=jdbc:hive2://[domain]:[port]
 dbname=[database_name]
