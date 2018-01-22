@@ -27,6 +27,7 @@
               <mainClass>io.hops.examples.spark.kafka.StructuredStreamingKafka</mainClass>
             </manifest>
           </archive>
+          <createDependencyReducedPom>false</createDependencyReducedPom>
         </configuration>
       </plugin>
       <plugin>

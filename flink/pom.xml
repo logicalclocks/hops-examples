@@ -39,6 +39,7 @@
                   <mainClass>io.hops.examples.flink.kafka.StreamingExample</mainClass>
                 </transformer>
               </transformers>
+              <createDependencyReducedPom>false</createDependencyReducedPom>
             </configuration>              
           </execution>
         </executions>
