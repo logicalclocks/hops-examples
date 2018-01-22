@@ -96,12 +96,11 @@ public class FlinkKafkaExample {
       stream.close();
       hopsKafkaProducer.close();
     } else {
-      final String path = args[2];
       final HopsConsumer hopsKafkaConsumer = HopsUtil.getHopsConsumer(args[0]);
       Thread t = new Thread() {
         @Override
         public void run() {
-          hopsKafkaConsumer.consume(path);
+          hopsKafkaConsumer.consume();
         }
       };
       t.start();
