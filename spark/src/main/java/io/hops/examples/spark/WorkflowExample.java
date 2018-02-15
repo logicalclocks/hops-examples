@@ -6,6 +6,8 @@ import io.hops.util.WorkflowManager;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ws.rs.core.Response;
+
+import io.hops.util.exceptions.WorkflowManagerException;
 import org.apache.spark.sql.SparkSession;
 
 /**
@@ -18,7 +20,8 @@ public class WorkflowExample {
 
   private static final Logger LOG = Logger.getLogger(WorkflowManager.class.getName());
 
-  public static void main(String[] args) throws CredentialsNotFoundException, InterruptedException {
+  public static void main(String[] args)
+      throws CredentialsNotFoundException, InterruptedException, WorkflowManagerException {
 
     SparkSession spark = SparkSession
         .builder()

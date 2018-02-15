@@ -3,6 +3,7 @@ package io.hops.examples.spark.kafka;
 import com.google.common.base.Strings;
 import io.hops.util.exceptions.CredentialsNotFoundException;
 import io.hops.util.HopsUtil;
+import io.hops.util.exceptions.WorkflowManagerException;
 import io.hops.util.spark.SparkConsumer;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -120,7 +121,8 @@ public final class StreamingKafkaElastic {
     HopsUtil.shutdownGracefully(jssc);
   }
 
-  private static JSONObject parser(String logType, String line, String appId) throws CredentialsNotFoundException {
+  private static JSONObject parser(String logType, String line, String appId)
+      throws CredentialsNotFoundException, WorkflowManagerException {
     JSONObject jsonLog = new JSONObject(line);
     JSONObject index = new JSONObject();
     String priority, logger, thread, timestamp;
