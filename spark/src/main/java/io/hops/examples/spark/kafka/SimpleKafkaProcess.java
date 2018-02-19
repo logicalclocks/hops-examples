@@ -2,7 +2,7 @@ package io.hops.examples.spark.kafka;
 
 import io.hops.util.HopsConsumer;
 import io.hops.util.HopsProducer;
-import io.hops.util.HopsUtil;
+import io.hops.util.Hops;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -69,7 +69,7 @@ public class SimpleKafkaProcess {
             "yourtopic")});
 
       //Produce Kafka messages to topic
-      HopsProducer hopsKafkaProducer = HopsUtil.getHopsProducer(topic);
+      HopsProducer hopsKafkaProducer = Hops.getHopsProducer(topic);
 
       Map<String, String> message;
       int i = 0;
@@ -86,7 +86,7 @@ public class SimpleKafkaProcess {
       hopsKafkaProducer.close();
     } else {
       //Consume kafka messages from topic
-      HopsConsumer hopsKafkaConsumer = HopsUtil.getHopsConsumer(topic);
+      HopsConsumer hopsKafkaConsumer = Hops.getHopsConsumer(topic);
       //Keep thread alive
       //THIS WILL CAUSE THE JOB TO HANG. USER HAS TO MANUALLY STOP THE JOB.
       while (true) {
