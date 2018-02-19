@@ -2,7 +2,7 @@ package io.hops.examples.flink.kafka;
 
 import io.hops.util.HopsConsumer;
 import io.hops.util.HopsProducer;
-import io.hops.util.HopsUtil;
+import io.hops.util.Hops;
 import java.util.Map;
 import org.apache.flink.api.common.functions.MapFunction;
 import org.apache.flink.api.java.tuple.Tuple2;
@@ -75,7 +75,7 @@ public class FlinkKafkaExample {
     // execute the program
     env.execute("Streaming Iteration Example");
 
-    HopsUtil.setup(HopsUtil.getFlinkKafkaProps(args[args.length - 1]));
+    Hops.setup(Hops.getFlinkKafkaProps(args[args.length - 1]));
     if (args[1].equalsIgnoreCase("producer")) {
       Configuration hdConf = new Configuration();
       Path hdPath = new org.apache.hadoop.fs.Path(args[2]);
@@ -83,7 +83,7 @@ public class FlinkKafkaExample {
       final FSDataOutputStream stream = hdfs.create(hdPath);
       stream.write("My first Flink program on Hops!".getBytes());
 
-      HopsProducer hopsKafkaProducer = HopsUtil.getHopsProducer(args[0]);
+      HopsProducer hopsKafkaProducer = Hops.getHopsProducer(args[0]);
       Map<String, String> message;
       for (int i = 0; i < 30; i++) {
         message = new HashMap<>();
@@ -96,7 +96,7 @@ public class FlinkKafkaExample {
       stream.close();
       hopsKafkaProducer.close();
     } else {
-      final HopsConsumer hopsKafkaConsumer = HopsUtil.getHopsConsumer(args[0]);
+      final HopsConsumer hopsKafkaConsumer = Hops.getHopsConsumer(args[0]);
       Thread t = new Thread() {
         @Override
         public void run() {

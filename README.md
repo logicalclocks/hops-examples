@@ -14,7 +14,7 @@ mvn package
 Generates a jar for each module which can then either be used to create HopsWorks jobs (Spark/Flink) or execute Hive queries remotely.
 
 # Helper Libraries
-Hops Examples makes use of **HopsUtil**, a set of Java and Python libraries which provide developers with tools that make programming on Hops easy. *HopsUtil* is automatically made available to all Jobs and Notebooks, without the user having to explicitely import it. Detailed documentation on HopsUtil is available [here](https://github.com/hopshadoop/hops-util). 
+Hops Examples makes use of **Hops**, a set of Java and Python libraries which provide developers with tools that make programming on Hops easy. *Hops* is automatically made available to all Jobs and Notebooks, without the user having to explicitely import it. Detailed documentation on Hops is available [here](https://github.com/hopshadoop/hops-util). 
 
 # Spark
 ## Structured Streaming with Kafka and HopsFS
@@ -35,7 +35,7 @@ Usage: <type>(producer|consumer)
 Data consumed is be default persisted to the `Resources` dataset of the Project where the job is running.
 
 ### Avro Records
-`StructuredStreamingKafka.java` generates *String <key,value>* pairs which are converted by **HopsUtil** into Avro records and serialized into bytes. Similarly, during consuming from a Kafka source, messages are deserialized into Avro records. **The default Avro schema used is the following**:
+`StructuredStreamingKafka.java` generates *String <key,value>* pairs which are converted by **Hops** into Avro records and serialized into bytes. Similarly, during consuming from a Kafka source, messages are deserialized into Avro records. **The default Avro schema used is the following**:
 
 ```json
 {
@@ -140,7 +140,7 @@ For Avro schemas with more fields, the application's SourceFunction should use a
 
 2. For examples on customizing logging for Flink jobs on HopsWorks see [here](https://github.com/hopshadoop/hops-kafka-examples/tree/master/examples-flink).
 
-3. *StreamingExample* makes use of [here](https://github.com/hopshadoop/hops-util). When building this project, HopsUtil is automatically included in the assembled jar file.
+3. *StreamingExample* makes use of [here](https://github.com/hopshadoop/hops-util). When building this project, Hops is automatically included in the assembled jar file.
 
 
 ## Job Logging

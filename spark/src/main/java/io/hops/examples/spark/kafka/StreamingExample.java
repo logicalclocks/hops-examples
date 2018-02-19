@@ -4,7 +4,7 @@ import com.google.common.base.Strings;
 import com.twitter.bijection.Injection;
 import io.hops.util.exceptions.CredentialsNotFoundException;
 import io.hops.util.HopsProducer;
-import io.hops.util.HopsUtil;
+import io.hops.util.Hops;
 import io.hops.util.exceptions.SchemaNotFoundException;
 import io.hops.util.spark.SparkConsumer;
 import io.hops.util.spark.SparkProducer;
@@ -59,7 +59,7 @@ public final class StreamingExample {
   private static final Pattern SPACE = Pattern.compile(" ");
   //Get HopsWorks Kafka Utility instance
   private static final Map<String, Injection<GenericRecord, byte[]>> recordInjections
-      = HopsUtil.getRecordInjections();
+      = Hops.getRecordInjections();
 
   public static void main(final String[] args) throws Exception {
     if (args.length < 1) {
@@ -71,7 +71,7 @@ public final class StreamingExample {
 
     final String type = args[0];
     // Create context with a 2 ; batch interval
-    Set<String> topicsSet = new HashSet<>(HopsUtil.getTopics());
+    Set<String> topicsSet = new HashSet<>(Hops.getTopics());
     SparkConf sparkConf = new SparkConf().setAppName("StreamingExample");
     final List<HopsProducer> sparkProducers = new ArrayList<>();
 
@@ -83,7 +83,7 @@ public final class StreamingExample {
           @Override
           public void run() {
             try {
-              SparkProducer sparkProducer = HopsUtil.getSparkProducer(topic);
+              SparkProducer sparkProducer = Hops.getSparkProducer(topic);
               sparkProducers.add(sparkProducer);
               Map<String, String> message = new HashMap<>();
               int i = 0;
@@ -102,7 +102,7 @@ public final class StreamingExample {
           }
         }.start();
       }//Keep application running
-      HopsUtil.shutdownGracefully(jsc);
+      Hops.shutdownGracefully(jsc);
     } else {
       JavaStreamingContext jssc = new JavaStreamingContext(sparkConf,
           Durations.seconds(2));
@@ -110,8 +110,8 @@ public final class StreamingExample {
       final String appId = jssc.sparkContext().getConf().getAppId();
 
       //Get consumer groups
-      List<String> consumerGroups = HopsUtil.getConsumerGroups();
-      SparkConsumer consumer = HopsUtil.getSparkConsumer(jssc, topicsSet);
+      List<String> consumerGroups = Hops.getConsumerGroups();
+      SparkConsumer consumer = Hops.getSparkConsumer(jssc, topicsSet);
       // Create direct kafka stream with topics
       JavaInputDStream<ConsumerRecord<String, byte[]>> messages = consumer.
           createDirectStream();
@@ -186,7 +186,7 @@ public final class StreamingExample {
        */
       // Start the computation
       jssc.start();
-      HopsUtil.shutdownGracefully(jssc);
+      Hops.shutdownGracefully(jssc);
     }
     for (HopsProducer hopsProducer : sparkProducers) {
       hopsProducer.close();
