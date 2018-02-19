@@ -4,7 +4,7 @@ import com.google.common.base.Strings;
 import com.twitter.bijection.Injection;
 import io.hops.util.exceptions.CredentialsNotFoundException;
 import io.hops.util.HopsProducer;
-import io.hops.util.HopsUtil;
+import io.hops.util.Hops;
 import io.hops.util.exceptions.SchemaNotFoundException;
 import io.hops.util.spark.SparkProducer;
 import java.text.DateFormat;
@@ -37,15 +37,15 @@ import org.apache.spark.sql.streaming.Trigger;
  */
 public class StructuredStreamingKafka {
 
-  private static final Map<String, Injection<GenericRecord, byte[]>> RECORD_INJECTIONS = HopsUtil.getRecordInjections();
+  private static final Map<String, Injection<GenericRecord, byte[]>> RECORD_INJECTIONS = Hops.getRecordInjections();
   private static final Logger LOG = Logger.getLogger(StructuredStreamingKafka.class.getName());
 
   public static void main(String[] args) throws StreamingQueryException, InterruptedException {
     final String type = args[0];
     //Producer
     if (!Strings.isNullOrEmpty(type) && type.equalsIgnoreCase("producer")) {
-      Set<String> topicsSet = new HashSet<>(HopsUtil.getTopics());
-      SparkConf sparkConf = new SparkConf().setAppName(HopsUtil.getJobName());
+      Set<String> topicsSet = new HashSet<>(Hops.getTopics());
+      SparkConf sparkConf = new SparkConf().setAppName(Hops.getJobName());
       JavaSparkContext jsc = new JavaSparkContext(sparkConf);
       final List<HopsProducer> sparkProducers = new ArrayList<>();
       final DateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss:SSS");
@@ -86,15 +86,15 @@ public class StructuredStreamingKafka {
       //End setup dummy data
 
       //Get a broker for the producer
-      LOG.log(Level.INFO, "Producing to:{0}", HopsUtil.getBrokerEndpointsList().get(0));
+      LOG.log(Level.INFO, "Producing to:{0}", Hops.getBrokerEndpointsList().get(0));
       Properties props = new Properties();
-      props.put("bootstrap.servers", HopsUtil.getBrokerEndpointsList().get(0));
+      props.put("bootstrap.servers", Hops.getBrokerEndpointsList().get(0));
       for (final String topic : topicsSet) {
         new Thread() {
           @Override
           public void run() {
             try {
-              SparkProducer sparkProducer = HopsUtil.getSparkProducer(topic, props);
+              SparkProducer sparkProducer = Hops.getSparkProducer(topic, props);
               sparkProducers.add(sparkProducer);
               Map<String, String> message = new HashMap<>();
               int i = 0;
@@ -115,14 +115,14 @@ public class StructuredStreamingKafka {
           }
         }.start();
       }//Keep application running
-      HopsUtil.shutdownGracefully(jsc);
+      Hops.shutdownGracefully(jsc);
       for (HopsProducer hopsProducer : sparkProducers) {
         hopsProducer.close();
       }
       //Consumer
     } else {
       // Create DataSet representing the stream of input lines from kafka
-      DataStreamReader dsr = HopsUtil.getSparkConsumer().getKafkaDataStreamReader();
+      DataStreamReader dsr = Hops.getSparkConsumer().getKafkaDataStreamReader();
       Dataset<Row> lines = dsr.load();
 
       // Generate running word count
@@ -154,21 +154,21 @@ public class StructuredStreamingKafka {
       // Start running the query that prints the running counts to the console
       StreamingQuery queryFile = logEntries.writeStream()
           .format("parquet")
-          .option("path", "/Projects/" + HopsUtil.getProjectName() + "/Resources/data-parquet-" + HopsUtil.getAppId())
-          .option("checkpointLocation", "/Projects/" + HopsUtil.getProjectName() + "/Resources/checkpoint-parquet-"
-              + HopsUtil.getAppId())
+          .option("path", "/Projects/" + Hops.getProjectName() + "/Resources/data-parquet-" + Hops.getAppId())
+          .option("checkpointLocation", "/Projects/" + Hops.getProjectName() + "/Resources/checkpoint-parquet-"
+              + Hops.getAppId())
           .trigger(Trigger.ProcessingTime(10000))
           .start();
 
       StreamingQuery queryFile2 = logEntriesRaw.writeStream()
           .format("text")
-          .option("path", "/Projects/" + HopsUtil.getProjectName() + "/Resources/data-text-" + HopsUtil.getAppId())
-          .option("checkpointLocation", "/Projects/" + HopsUtil.getProjectName() + "/Resources/checkpoint-text-"
-              + HopsUtil.getAppId())
+          .option("path", "/Projects/" + Hops.getProjectName() + "/Resources/data-text-" + Hops.getAppId())
+          .option("checkpointLocation", "/Projects/" + Hops.getProjectName() + "/Resources/checkpoint-text-"
+              + Hops.getAppId())
           .trigger(Trigger.ProcessingTime(10000))
           .start();
 
-      HopsUtil.shutdownGracefully(queryFile);
+      Hops.shutdownGracefully(queryFile);
     }
   }
 }

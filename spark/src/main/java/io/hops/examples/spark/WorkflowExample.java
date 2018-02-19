@@ -1,7 +1,7 @@
 package io.hops.examples.spark;
 
 import io.hops.util.exceptions.CredentialsNotFoundException;
-import io.hops.util.HopsUtil;
+import io.hops.util.Hops;
 import io.hops.util.WorkflowManager;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -25,7 +25,7 @@ public class WorkflowExample {
 
     SparkSession spark = SparkSession
         .builder()
-        .appName(HopsUtil.getJobName())
+        .appName(Hops.getJobName())
         .getOrCreate();
 
     //if Start job with given ID

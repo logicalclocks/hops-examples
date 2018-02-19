@@ -1,6 +1,6 @@
 package io.hops.examples.spark.kafka;
 
-import io.hops.util.HopsUtil;
+import io.hops.util.Hops;
 import io.hops.util.exceptions.SchemaNotFoundException;
 import io.hops.util.spark.SparkConsumer;
 import java.io.IOException;
@@ -49,7 +49,7 @@ public final class StreamingLogs {
 
   public static void main(final String[] args) throws Exception {
 
-    SparkConf sparkConf = new SparkConf().setAppName(HopsUtil.getJobName());
+    SparkConf sparkConf = new SparkConf().setAppName(Hops.getJobName());
     JavaStreamingContext jssc = new JavaStreamingContext(sparkConf, Durations.seconds(2));
 
     //Use applicationId for sink folder
@@ -58,8 +58,8 @@ public final class StreamingLogs {
     //Get consumer groups
     Properties props = new Properties();
     props.put("value.deserializer", StringDeserializer.class.getName());
-    props.put("client.id", HopsUtil.getJobName());
-    SparkConsumer consumer = HopsUtil.getSparkConsumer(jssc, props);
+    props.put("client.id", Hops.getJobName());
+    SparkConsumer consumer = Hops.getSparkConsumer(jssc, props);
     //Store processed offsets
 
     // Create direct kafka stream with topics
@@ -97,7 +97,7 @@ public final class StreamingLogs {
         Dataset<Row> row = sparkSession.createDataFrame(rdd, NamenodeLogEntry.class);
         if (!rdd.isEmpty()) {
           row.write().mode(SaveMode.Append).
-              parquet("/Projects/" + HopsUtil.getProjectName() + "/Resources/LogAnalysis");
+              parquet("/Projects/" + Hops.getProjectName() + "/Resources/LogAnalysis");
         }
       }
     });
@@ -111,7 +111,7 @@ public final class StreamingLogs {
      */
     // Start the computation
     jssc.start();
-    HopsUtil.shutdownGracefully(jssc);
+    Hops.shutdownGracefully(jssc);
   }
 
   private static JSONObject parser(String line, String appId) {
@@ -152,8 +152,8 @@ public final class StreamingLogs {
     index.put("timestamp", timestamp);
     index.put("application", appId);
     index.put("host", jsonLog.getJSONObject("beat").getString("hostname"));
-    index.put("project", HopsUtil.getProjectName());
-    index.put("jobname", HopsUtil.getJobName());
+    index.put("project", Hops.getProjectName());
+    index.put("jobname", Hops.getJobName());
     if (jsonLog.getString("source").contains("/")) {
       index.put("file", jsonLog.getString("source").substring(jsonLog.getString("source").lastIndexOf("/") + 1));
     } else {

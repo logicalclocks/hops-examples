@@ -41,4 +41,4 @@ This example produces String <key,value> pairs which are converted by HopsWorks 
 
 ## Libraries
 
-*StreamingExample* makes use of the HopsUtil API available [here](https://github.com/hopshadoop/hops-util). This library is automatically provided by HopsWorks with every Job/Notebook. If the user wants to implement a custom functionality, thens it must be added the job when creating it in HopsWorks.
+*StreamingExample* makes use of the Hops API available [here](https://github.com/hopshadoop/hops-util). This library is automatically provided by HopsWorks with every Job/Notebook. If the user wants to implement a custom functionality, thens it must be added the job when creating it in HopsWorks.

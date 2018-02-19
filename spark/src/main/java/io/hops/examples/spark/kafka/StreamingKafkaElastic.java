@@ -2,7 +2,7 @@ package io.hops.examples.spark.kafka;
 
 import com.google.common.base.Strings;
 import io.hops.util.exceptions.CredentialsNotFoundException;
-import io.hops.util.HopsUtil;
+import io.hops.util.Hops;
 import io.hops.util.exceptions.WorkflowManagerException;
 import io.hops.util.spark.SparkConsumer;
 import java.io.BufferedReader;
@@ -55,7 +55,7 @@ public final class StreamingKafkaElastic {
 
   public static void main(final String[] args) throws Exception {
 
-    SparkConf sparkConf = new SparkConf().setAppName(HopsUtil.getJobName());
+    SparkConf sparkConf = new SparkConf().setAppName(Hops.getJobName());
     JavaStreamingContext jssc = new JavaStreamingContext(sparkConf, Durations.seconds(10));
 
     //Use applicationId for sink folder
@@ -64,8 +64,8 @@ public final class StreamingKafkaElastic {
     //Get consumer groups
     Properties props = new Properties();
     props.put("value.deserializer", StringDeserializer.class.getName());
-    props.put("client.id", HopsUtil.getJobName());
-    SparkConsumer consumer = HopsUtil.getSparkConsumer(jssc, props);
+    props.put("client.id", Hops.getJobName());
+    SparkConsumer consumer = Hops.getSparkConsumer(jssc, props);
     //Store processed offsets
 
     // Create direct kafka stream with topics
@@ -103,7 +103,7 @@ public final class StreamingKafkaElastic {
 
           DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyyMMdd");
           LocalDate localDate = LocalDate.now();
-          row.write().mode(SaveMode.Append).parquet("/Projects/" + HopsUtil.getProjectName() + "/" + dataset + "/Logs-"
+          row.write().mode(SaveMode.Append).parquet("/Projects/" + Hops.getProjectName() + "/" + dataset + "/Logs-"
               + dtf.format(localDate));
         }
       }
@@ -118,7 +118,7 @@ public final class StreamingKafkaElastic {
      */
     // Start the computation
     jssc.start();
-    HopsUtil.shutdownGracefully(jssc);
+    Hops.shutdownGracefully(jssc);
   }
 
   private static JSONObject parser(String logType, String line, String appId)
@@ -165,9 +165,9 @@ public final class StreamingKafkaElastic {
       index.put("file", jsonLog.getString("source"));
       index.put("application", appId);
       index.put("host", jsonLog.getJSONObject("beat").getString("hostname"));
-      index.put("project", HopsUtil.getProjectName());
+      index.put("project", Hops.getProjectName());
       index.put("method", "?");
-      index.put("jobname", HopsUtil.getJobName());
+      index.put("jobname", Hops.getJobName());
     } else if (logType.equalsIgnoreCase("custom")) {
       //Catch an error getting log attributes and set default ones in this case
       //Example message
@@ -228,9 +228,9 @@ public final class StreamingKafkaElastic {
       }
       index.put("application", appId);
       index.put("host", jsonLog.getJSONObject("beat").getString("hostname"));
-      index.put("project", HopsUtil.getProjectName());
+      index.put("project", Hops.getProjectName());
       index.put("method", "?");
-      index.put("jobname", HopsUtil.getJobName());
+      index.put("jobname", Hops.getJobName());
 
       if (jsonLog.getString("source").contains("shrek")) {
         index.put("location", "59.32,18.06");
@@ -239,7 +239,7 @@ public final class StreamingKafkaElastic {
       }
       if (!Strings.isNullOrEmpty(priority) && priority.equalsIgnoreCase("TRACE")) {
         LOG.log(Level.INFO, "Sending email");
-        HopsUtil.getWorkflowManager().sendEmail("tkak@kth.se", "Error message received", timestamp + " :: " + message);
+        Hops.getWorkflowManager().sendEmail("tkak@kth.se", "Error message received", timestamp + " :: " + message);
       }
 
     }
@@ -247,7 +247,7 @@ public final class StreamingKafkaElastic {
     HttpURLConnection conn = null;
     BufferedReader br = null;
     try {
-      obj = new URL("http://" + HopsUtil.getElasticEndPoint() + "/" + HopsUtil.getProjectName().toLowerCase()
+      obj = new URL("http://" + Hops.getElasticEndPoint() + "/" + Hops.getProjectName().toLowerCase()
           + "/logs");
       conn = (HttpURLConnection) obj.openConnection();
       conn.setDoOutput(true);
