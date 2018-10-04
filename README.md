@@ -1,9 +1,9 @@
-#  Hops Examples 
+#  Hops Examples
 
-This repository provides users with examples on how to program Big Data and Deep Learning applications that run on [HopsWorks](https://github.com/hopshadoop/hopsworks), using [Apache Spark](https://spark.apache.org/), [Apache Flink](https://flink.apache.org/), [Apache Kafka](https://kafka.apache.org/),  [Apache Hive](https://hive.apache.org/)  and [TensorFlow](https://www.tensorflow.org/). Users can then upload and run their programs and notebooks from within their HopsWorks projects. 
+This repository provides users with examples on how to program Big Data and Deep Learning applications that run on [HopsWorks](https://github.com/hopshadoop/hopsworks), using [Apache Spark](https://spark.apache.org/), [Apache Flink](https://flink.apache.org/), [Apache Kafka](https://kafka.apache.org/),  [Apache Hive](https://hive.apache.org/)  and [TensorFlow](https://www.tensorflow.org/). Users can then upload and run their programs and notebooks from within their HopsWorks projects.
 
-## Online Documentation ![N|Solid](http://www.hops.io/sites/default/files/hops-50x50.png)
-You can find the latest Hops documentation on the [project's webpage](https://hops.readthedocs.io/en/latest/), including HopsWorks user and developer guides as well as a list of versions for all supported services. This README file is meant to provide basic instructions and codebase on how to build and run the examples.  
+## Online Documentation
+You can find the latest Hops documentation on the [project's webpage](https://hops.readthedocs.io/en/latest/), including HopsWorks user and developer guides as well as a list of versions for all supported services. This README file is meant to provide basic instructions and codebase on how to build and run the examples.
 
 # Building the examples
 
@@ -14,7 +14,7 @@ mvn package
 Generates a jar for each module which can then either be used to create HopsWorks jobs (Spark/Flink) or execute Hive queries remotely.
 
 # Helper Libraries
-Hops Examples makes use of **Hops**, a set of Java and Python libraries which provide developers with tools that make programming on Hops easy. *Hops* is automatically made available to all Jobs and Notebooks, without the user having to explicitely import it. Detailed documentation on Hops is available [here](https://github.com/hopshadoop/hops-util). 
+Hops Examples makes use of **Hops**, a set of Java and Python libraries which provide developers with tools that make programming on Hops easy. *Hops* is automatically made available to all Jobs and Notebooks, without the user having to explicitely import it. Detailed documentation on Hops is available [here](https://github.com/hopshadoop/hops-util).
 
 # Spark
 ## Structured Streaming with Kafka and HopsFS
@@ -30,7 +30,7 @@ Usage: <type>(producer|consumer)
 
 **Topics** are provided via the HopsWorks Job UI. User checks the *Kafka* box and selects the topics from the drop-down menu. When consuming from multiple topics using a single Spark directStream, all topics must use the same Avro schema. Create a new directStream for topic(s) that use different Avro schemas.
 
-**Consumer groups** are an advanced option for consumer jobs. A default one is set by HopsWorks and a user can add further ones via the Jobservice UI. 
+**Consumer groups** are an advanced option for consumer jobs. A default one is set by HopsWorks and a user can add further ones via the Jobservice UI.
 
 Data consumed is be default persisted to the `Resources` dataset of the Project where the job is running.
 
@@ -83,7 +83,7 @@ hopsworks_username=[hopsworks_username]
 hopsworks_pw=[hopsworks_password]
 ```
 
-Users can export the project's certificates by navigating to its *Settings* page in HopsWorks. An email is then sent with the password for the truststore. 
+Users can export the project's certificates by navigating to its *Settings* page in HopsWorks. An email is then sent with the password for the truststore.
 
 # Flink
 ## Writing a Flink-Kafka Streaming Application
@@ -95,7 +95,7 @@ Usage: -type <producer|consumer> [-sink_path <rolling_sink path>] [-batch_size <
 * **type**: Defines if the the job is producing or consuming.
 * **sink_path**: Used only by a Consumer job, itdefines the path to the Dataset in which the Flink RollingSink writes its files. The latter contain the consumed Avro records from Kafka. In this example, the RollingSink creates a new folder (Bucket) every minute.
 * **batch_size**: Used only by a Consumer job, it defines the size of the file being written by the RollingSink. default is 32KB
-* **bucket_format**: Used only by a Consumer job, it defines the names and creation frequency of the folders under sink_path. For more information see [DateTimeBucketer](https://ci.apache.org/projects/flink/flink-docs-master/api/java/org/apache/flink/streaming/connectors/fs/DateTimeBucketer.html) 
+* **bucket_format**: Used only by a Consumer job, it defines the names and creation frequency of the folders under sink_path. For more information see [DateTimeBucketer](https://ci.apache.org/projects/flink/flink-docs-master/api/java/org/apache/flink/streaming/connectors/fs/DateTimeBucketer.html)
 
 ## Example:
 (*A single space must exist between parameters*)
@@ -107,13 +107,13 @@ Usage: -type <producer|consumer> [-sink_path <rolling_sink path>] [-batch_size <
 
 ```
 
-**Consumer** 
+**Consumer**
 ```
 -type consumer -sink_path /Projects/FlinkKafka/SinkE -batch_size 16 -bucket_format yyyy-MM-dd--HH
 ```
 **Topic names** are provided via the HopsWorks Jobs user interface, when creating the job.
 
-**Consumer groups** are provided via the HopsWorks Job UI. User provides a comma-separated list of the groups that shall be available within the application. 
+**Consumer groups** are provided via the HopsWorks Job UI. User provides a comma-separated list of the groups that shall be available within the application.
 
 Example
 ```
@@ -153,7 +153,7 @@ DataStream<Tuple2<Tuple2<Integer, Integer>, Integer>> numbers = step.select("out
 				.map(new OutputMap());
 numbers.print();
 ```
-the DataStream output will be available in the HopsWorks Job Execution Logs. 
+the DataStream output will be available in the HopsWorks Job Execution Logs.
 
 In case you would like this output to be written to a particular file in your Data Sets, you can do the following
 
@@ -163,7 +163,7 @@ DataStream<Tuple2<Tuple2<Integer, Integer>, Integer>> numbers = step.select("out
 numbers.writeAsText("absolute_path_to_file");
 ```
 
-the DataStrem object will be printed into the file specified in the *writeAsText* method. The path must point to either the *Logs* or *Resources* data sets in HopsWorks. 
+the DataStrem object will be printed into the file specified in the *writeAsText* method. The path must point to either the *Logs* or *Resources* data sets in HopsWorks.
 For example, if you would like the output of a the Flink DataStream object to be written to a *test.out* file in your Resources data set, the command is the following
 
 ```java
@@ -174,7 +174,7 @@ The path to an existing file can be easily found by clicking on this particular 
 
 
 ### Application Logs
-In case you want to print something to the *standard output* within your application, *do not use System.out*. Instead, use the following code example which utilizes an HDFS client to 
+In case you want to print something to the *standard output* within your application, *do not use System.out*. Instead, use the following code example which utilizes an HDFS client to
 write your output to HDFS. The file path must be set similarly to the Flink logs described above.
 ```java
 Configuration hdConf = new Configuration();
@@ -183,4 +183,4 @@ FileSystem hdfs = hdPath.getFileSystem(hdConf);
 FSDataOutputStream stream = hdfs.create(hdPath);
 stream.write("My first Flink program on Hops!".getBytes());
 stream.close();
-``` 
+```
