@@ -1,9 +1,9 @@
 #  Hops Examples
 
-This repository provides users with examples on how to program Big Data and Deep Learning applications that run on [HopsWorks](https://github.com/hopshadoop/hopsworks), using [Apache Spark](https://spark.apache.org/), [Apache Flink](https://flink.apache.org/), [Apache Kafka](https://kafka.apache.org/),  [Apache Hive](https://hive.apache.org/)  and [TensorFlow](https://www.tensorflow.org/). Users can then upload and run their programs and notebooks from within their HopsWorks projects.
+This repository provides users with examples on how to program Big Data and Deep Learning applications that run on [Hopsworks](https://github.com/logicalclocks/hopsworks), using [Apache Spark](https://spark.apache.org/), [Apache Flink](https://flink.apache.org/), [Apache Kafka](https://kafka.apache.org/),  [Apache Hive](https://hive.apache.org/)  and [TensorFlow](https://www.tensorflow.org/). Users can then upload and run their programs and notebooks from within their Hopsworks projects.
 
 ## Online Documentation
-You can find the latest Hops documentation on the [project's webpage](https://hops.readthedocs.io/en/latest/), including HopsWorks user and developer guides as well as a list of versions for all supported services. This README file is meant to provide basic instructions and codebase on how to build and run the examples.
+You can find the latest Hops documentation on the [project's webpage](https://hops.readthedocs.io/en/latest/), including Hopsworks user and developer guides as well as a list of versions for all supported services. This README file is meant to provide basic instructions and codebase on how to build and run the examples.
 
 # Building the examples
 
@@ -11,14 +11,14 @@ You can find the latest Hops documentation on the [project's webpage](https://ho
 mvn package
 ```
 
-Generates a jar for each module which can then either be used to create HopsWorks jobs (Spark/Flink) or execute Hive queries remotely.
+Generates a jar for each module which can then either be used to create Hopsworks jobs (Spark/Flink) or execute Hive queries remotely.
 
 # Helper Libraries
-Hops Examples makes use of **Hops**, a set of Java and Python libraries which provide developers with tools that make programming on Hops easy. *Hops* is automatically made available to all Jobs and Notebooks, without the user having to explicitely import it. Detailed documentation on Hops is available [here](https://github.com/hopshadoop/hops-util).
+Hops Examples makes use of **Hops**, a set of Java and Python libraries which provide developers with tools that make programming on Hops easy. *Hops* is automatically made available to all Jobs and Notebooks, without the user having to explicitely import it. Detailed documentation on Hops is available [here](https://github.com/logicalclocks/hops-util).
 
 # Spark
 ## Structured Streaming with Kafka and HopsFS
-To help you get started, [StructuredStreamingKafka](https://github.com/hopshadoop/hops-examples/blob/master/spark/src/main/java/io/hops/examples/spark/kafka/StructuredStreamingKafka.java) show how to build a Spark application that produces and consumes messages from Kafka and also persists it both in [Parquet](https://parquet.apache.org/) format and in plain text to HopsFS. The example makes use of the latest Spark-Kafka [API](https://spark.apache.org/docs/2.2.0/structured-streaming-kafka-integration.html). To run the example, you need to provide the following parameters when creating a Spark job in HopsWorks:
+To help you get started, [StructuredStreamingKafka](https://github.com/logicalclocks/hops-examples/blob/master/spark/src/main/java/io/hops/examples/spark/kafka/StructuredStreamingKafka.java) show how to build a Spark application that produces and consumes messages from Kafka and also persists it both in [Parquet](https://parquet.apache.org/) format and in plain text to HopsFS. The example makes use of the latest Spark-Kafka [API](https://spark.apache.org/docs/2.2.0/structured-streaming-kafka-integration.html). To run the example, you need to provide the following parameters when creating a Spark job in Hopsworks:
 
 ```
 Usage: <type>(producer|consumer)
@@ -28,9 +28,9 @@ Usage: <type>(producer|consumer)
 
 **MainClass** is io.hops.examples.spark.kafka.StreamingExample
 
-**Topics** are provided via the HopsWorks Job UI. User checks the *Kafka* box and selects the topics from the drop-down menu. When consuming from multiple topics using a single Spark directStream, all topics must use the same Avro schema. Create a new directStream for topic(s) that use different Avro schemas.
+**Topics** are provided via the Hopsworks Job UI. User checks the *Kafka* box and selects the topics from the drop-down menu. When consuming from multiple topics using a single Spark directStream, all topics must use the same Avro schema. Create a new directStream for topic(s) that use different Avro schemas.
 
-**Consumer groups** are an advanced option for consumer jobs. A default one is set by HopsWorks and a user can add further ones via the Jobservice UI.
+**Consumer groups** are an advanced option for consumer jobs. A default one is set by Hopsworks and a user can add further ones via the Jobservice UI.
 
 Data consumed is be default persisted to the `Resources` dataset of the Project where the job is running.
 
@@ -64,16 +64,16 @@ Data consumed is be default persisted to the `Resources` dataset of the Project 
 
 
 # TensorFlow
-Hops Example provides Jupyter notebooks for running TensorFlow applications on Hops. All notebooks are automatically made available to HopsWorks projects upon project creation. Detailed documentation on how tp program TensorFlow on Hops, is available [here](https://hops.readthedocs.io/en/latest/user_guide/hopsworks/tensorflow.html).
+Hops Example provides Jupyter notebooks for running TensorFlow applications on Hops. All notebooks are automatically made available to Hopsworks projects upon project creation. Detailed documentation on how tp program TensorFlow on Hops, is available [here](https://hops.readthedocs.io/en/latest/user_guide/hopsworks/tensorflow.html).
 
 
 # Hive
-`HiveJDBCClient.java` available in hops-examples-hive, shows how users can remotely execute Hive queries against their HopsWorks projects' Hive databases. Firstly, it instantiates a Java JDBC client and then connects to the example database described in [Hops documentation](https://hops.readthedocs.io/en/latest/user_guide/hopsworks/hive.html#try-it-out). Users need to have created the database in their project as described in the documentation. This example uses [log4j2](https://logging.apache.org/log4j/2.x/) with logs being written to a `./hive/logs` directory. For changes made to `./hive/src/main/resources/log4j2.properties` to take effect, users must first do
+`HiveJDBCClient.java` available in hops-examples-hive, shows how users can remotely execute Hive queries against their Hopsworks projects' Hive databases. Firstly, it instantiates a Java JDBC client and then connects to the example database described in [Hops documentation](https://hops.readthedocs.io/en/latest/user_guide/hopsworks/hive.html#try-it-out). Users need to have created the database in their project as described in the documentation. This example uses [log4j2](https://logging.apache.org/log4j/2.x/) with logs being written to a `./hive/logs` directory. For changes made to `./hive/src/main/resources/log4j2.properties` to take effect, users must first do
 ```
 mvn clean package
 ```
 
-For `HiveJDBCClient.java` to be able to connect to the HopsWorks Hive server, users need to create a `hive_credentials.properties` file based on `hive_credentials.properties.example` and set proper values for the parameters:
+For `HiveJDBCClient.java` to be able to connect to the Hopsworks Hive server, users need to create a `hive_credentials.properties` file based on `hive_credentials.properties.example` and set proper values for the parameters:
 ```
 hive_url=jdbc:hive2://[domain]:[port]
 dbname=[database_name]
@@ -83,11 +83,11 @@ hopsworks_username=[hopsworks_username]
 hopsworks_pw=[hopsworks_password]
 ```
 
-Users can export the project's certificates by navigating to its *Settings* page in HopsWorks. An email is then sent with the password for the truststore.
+Users can export the project's certificates by navigating to its *Settings* page in Hopsworks. An email is then sent with the password for the truststore.
 
 # Flink
 ## Writing a Flink-Kafka Streaming Application
-To help you get started, *StreamingExample* provides the code for a basic streaming Flink application. To use it you need to provide the following parameters when creating a Flink job for Kafka in HopsWorks:
+To help you get started, *StreamingExample* provides the code for a basic streaming Flink application. To use it you need to provide the following parameters when creating a Flink job for Kafka in Hopsworks:
 
 ```
 Usage: -type <producer|consumer> [-sink_path <rolling_sink path>] [-batch_size <rolling_file_size>] [-bucket_format <bucket_format>]
@@ -111,9 +111,9 @@ Usage: -type <producer|consumer> [-sink_path <rolling_sink path>] [-batch_size <
 ```
 -type consumer -sink_path /Projects/FlinkKafka/SinkE -batch_size 16 -bucket_format yyyy-MM-dd--HH
 ```
-**Topic names** are provided via the HopsWorks Jobs user interface, when creating the job.
+**Topic names** are provided via the Hopsworks Jobs user interface, when creating the job.
 
-**Consumer groups** are provided via the HopsWorks Job UI. User provides a comma-separated list of the groups that shall be available within the application.
+**Consumer groups** are provided via the Hopsworks Job UI. User provides a comma-separated list of the groups that shall be available within the application.
 
 Example
 ```
@@ -138,22 +138,22 @@ For Avro schemas with more fields, the application's SourceFunction should use a
 ## Notes
 1. Currently *Flink version 1.1.3* is supported.
 
-2. For examples on customizing logging for Flink jobs on HopsWorks see [here](https://github.com/hopshadoop/hops-kafka-examples/tree/master/examples-flink).
+2. For examples on customizing logging for Flink jobs on Hopsworks see [here](https://github.com/logicalclocks/hops-kafka-examples/tree/master/examples-flink).
 
-3. *StreamingExample* makes use of [here](https://github.com/hopshadoop/hops-util). When building this project, Hops is automatically included in the assembled jar file.
+3. *StreamingExample* makes use of [here](https://github.com/logicalclocks/hops-util). When building this project, Hops is automatically included in the assembled jar file.
 
 
 ## Job Logging
 
 ### Flink Logs
-JobManager and TaskManager logs are displayed in the *Jobs* tab in HopsWorks. For example, when printing a Flink *DataStream* object by doing
+JobManager and TaskManager logs are displayed in the *Jobs* tab in Hopsworks. For example, when printing a Flink *DataStream* object by doing
 
 ```java
 DataStream<Tuple2<Tuple2<Integer, Integer>, Integer>> numbers = step.select("output")
 				.map(new OutputMap());
 numbers.print();
 ```
-the DataStream output will be available in the HopsWorks Job Execution Logs.
+the DataStream output will be available in the Hopsworks Job Execution Logs.
 
 In case you would like this output to be written to a particular file in your Data Sets, you can do the following
 
@@ -163,14 +163,14 @@ DataStream<Tuple2<Tuple2<Integer, Integer>, Integer>> numbers = step.select("out
 numbers.writeAsText("absolute_path_to_file");
 ```
 
-the DataStrem object will be printed into the file specified in the *writeAsText* method. The path must point to either the *Logs* or *Resources* data sets in HopsWorks.
+the DataStrem object will be printed into the file specified in the *writeAsText* method. The path must point to either the *Logs* or *Resources* data sets in Hopsworks.
 For example, if you would like the output of a the Flink DataStream object to be written to a *test.out* file in your Resources data set, the command is the following
 
 ```java
 numbers.writeAsText("/Projects/myproject/Resources/test.out");
 ```
 
-The path to an existing file can be easily found by clicking on this particular file in HopsWorks-DataSets and then easily copy the path by using the clipboard icon.
+The path to an existing file can be easily found by clicking on this particular file in Hopsworks-DataSets and then easily copy the path by using the clipboard icon.
 
 
 ### Application Logs
