@@ -24,12 +24,12 @@
   </properties>
   <name>hops-examples</name>
 
-  
+
   <dependencies>
     <dependency>
       <groupId>io.hops</groupId>
       <artifactId>hops-util</artifactId>
-      <version>0.7.0-SNAPSHOT</version>
+      <version>0.8.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>io.hops</groupId>
@@ -54,7 +54,7 @@
           <target>1.8</target>
         </configuration>
       </plugin>
-      
+
       <plugin>
         <artifactId>maven-scm-plugin</artifactId>
         <version>1.8.1</version>
@@ -64,7 +64,7 @@
           <scmVersionType>branch</scmVersionType>
         </configuration>
       </plugin>
-      
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
@@ -89,13 +89,14 @@
       </plugin>
     </plugins>
   </build>
-  
+
   <modules>
     <module>spark</module>
     <module>flink</module>
     <module>hive</module>
+    <module>featurestore</module>
   </modules>
-  
+
 
   <repositories>
     <repository>
@@ -129,8 +130,8 @@
         <enabled>true</enabled>
       </snapshots>
     </repository>
-  </repositories>  
+  </repositories>
 
 
-  
+
 </project>

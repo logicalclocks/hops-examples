@@ -1,0 +1,25 @@
+# Ensime
+.ensime_cache
+.ensime
+
+# Intellij
+.idea
+
+# Scala/Java
+*.class
+*.log
+
+# sbt specific
+.cache
+.history
+.lib/
+dist/*
+target/
+lib_managed/
+src_managed/
+project/boot/
+project/plugins/project/
+
+
+*.ipynb_checkpoints
+data/*
