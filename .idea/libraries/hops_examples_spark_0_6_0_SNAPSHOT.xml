@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="hops-examples-spark-0.6.0-SNAPSHOT">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/spark/target/hops-examples-spark-0.6.0-SNAPSHOT.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

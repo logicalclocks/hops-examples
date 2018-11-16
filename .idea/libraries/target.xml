@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="target">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/flink/target/original-hops-examples-flink-0.6.0-SNAPSHOT.jar!/" />
+      <root url="jar://$PROJECT_DIR$/flink/target/hops-examples-flink-0.6.0-SNAPSHOT.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

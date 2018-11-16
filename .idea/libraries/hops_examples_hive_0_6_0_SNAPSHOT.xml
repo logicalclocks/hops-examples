@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="hops-examples-hive-0.6.0-SNAPSHOT">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/hive/target/hops-examples-hive-0.6.0-SNAPSHOT.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
