@@ -68,22 +68,24 @@ Hops Example provides Jupyter notebooks for running TensorFlow applications on H
 
 
 # Hive
-`HiveJDBCClient.java` available in hops-examples-hive, shows how users can remotely execute Hive queries against their Hopsworks projects' Hive databases. Firstly, it instantiates a Java JDBC client and then connects to the example database described in [Hops documentation](https://hops.readthedocs.io/en/latest/user_guide/hopsworks/hive.html#try-it-out). Users need to have created the database in their project as described in the documentation. This example uses [log4j2](https://logging.apache.org/log4j/2.x/) with logs being written to a `./hive/logs` directory. For changes made to `./hive/src/main/resources/log4j2.properties` to take effect, users must first do
+`HiveJDBCClient.java` available in `hops-examples-hive`      }
+, shows how users can remotely execute Hive queries against their Hopsworks projects' Hive databases. Firstly, it instantiates a Java JDBC client and then connects to the example database described in [Hops documentation](https://hops.readthedocs.io/en/latest/user_guide/hopsworks/hive.html#try-it-out). Users need to have created the database in their project as described in the documentation. This example uses [log4j2](https://logging.apache.org/log4j/2.x/) with logs being written to a `./hive/logs` directory. For changes made to `./hive/src/main/resources/log4j2.properties` to take effect, users must first do
 ```
 mvn clean package
 ```
 
 For `HiveJDBCClient.java` to be able to connect to the Hopsworks Hive server, users need to create a `hive_credentials.properties` file based on `hive_credentials.properties.example` and set proper values for the parameters:
 ```
-hive_url=jdbc:hive2://[domain]:[port]
-dbname=[database_name]
-truststore_path=[path_to_truststore]
+hive_url=jdbc:hive2://[domain]:[port] #default port:9085
+dbname=[database_name] #the name of the Dataset in Hopsworks, omitting the ".db" suffix.
+truststore_path=[absolute_path_to_truststore]
+keystore_path=[absolute_path_to_keystore]
 truststore_pw=[truststore_password]
-hopsworks_username=[hopsworks_username]
-hopsworks_pw=[hopsworks_password]
+keystore_pw=[keystore_password]
 ```
 
-Users can export the project's certificates by navigating to its *Settings* page in Hopsworks. An email is then sent with the password for the truststore.
+Users can export their project's certificates by navigating to the *Settings* page in Hopsworks. An email is then sent
+ with the password for the truststore and keystore.
 
 # Flink
 ## Writing a Flink-Kafka Streaming Application
