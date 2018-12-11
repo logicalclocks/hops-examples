@@ -1,4 +1,4 @@
-#  Hops Examples
+k#  Hops Examples
 
 This repository provides users with examples on how to program Big Data and Deep Learning applications that run on [Hopsworks](https://github.com/logicalclocks/hopsworks), using [Apache Spark](https://spark.apache.org/), [Apache Flink](https://flink.apache.org/), [Apache Kafka](https://kafka.apache.org/),  [Apache Hive](https://hive.apache.org/)  and [TensorFlow](https://www.tensorflow.org/). Users can then upload and run their programs and notebooks from within their Hopsworks projects.
 
