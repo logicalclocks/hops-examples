@@ -48,7 +48,7 @@ public class HiveJDBCClient {
   
   public static void main(String[] args) throws SQLException, IOException {
     
-    if(args == null || args.length==0){
+    if (args == null || args.length == 0) {
       LOG.warn("Nor input arguments found. Please provide location of input raw data. For example " +
         "<Projects/hivedemo/Resources/rawdata>");
       System.exit(1);
@@ -57,12 +57,13 @@ public class HiveJDBCClient {
     try (Connection conn = HiveJDBCClient.getHiveJDBCConnection();) {
       
       //Set hive/tez properties
-      try(Statement stmt = conn.createStatement()) {
+      try (Statement stmt = conn.createStatement()) {
         stmt.execute("set hive.exec.dynamic.partition.mode=nonstrict;");
       }
       
+      LOG.info("Creating external table...");
       //Create external table
-      try(Statement stmt = conn.createStatement()) {
+      try (Statement stmt = conn.createStatement()) {
         stmt.execute("create external table sales(" +
           "  street string," +
           "  city string," +
@@ -78,11 +79,12 @@ public class HiveJDBCClient {
           "  longitude float)" +
           "  ROW FORMAT DELIMITED" +
           "  FIELDS TERMINATED BY ','" +
-          "  LOCATION '" + rawdata + "';");
+          "  LOCATION '" + rawdata + "'");
       }
       
+      LOG.info("Creating Hive table...");
       //Create hive table
-      try(Statement stmt = conn.createStatement()) {
+      try (Statement stmt = conn.createStatement()) {
         stmt.execute("create table orc_table (" +
           "  street string," +
           "  city string," +
@@ -96,17 +98,20 @@ public class HiveJDBCClient {
           "  price float," +
           "  latitude float," +
           "  longitude float)" +
-          "  STORED AS ORC;");
+          "  STORED AS ORC");
       }
+      
+      LOG.info("Inserting data into Hive table from external one...");
       
       //Insert data from external table into hive one
-      try(Statement stmt = conn.createStatement()) {
-        stmt.execute("insert overwrite table orc_table select * from sales;");
+      try (Statement stmt = conn.createStatement()) {
+        stmt.execute("insert overwrite table orc_table select * from sales");
       }
       
+      LOG.info("Selecting average price per city...");
       //Select and display data
       try (Statement stmt = conn.createStatement()) {
-        try (ResultSet rst = stmt.executeQuery("select city, avg(price) as price from sales_orc group by city")) {
+        try (ResultSet rst = stmt.executeQuery("select city, avg(price) as price from sales group by city")) {
           LOG.info("City \t Price");
           while (rst.next()) {
             LOG.info(rst.getString(1) + "\t" + rst.getString(2));
