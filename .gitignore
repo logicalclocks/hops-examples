@@ -7,3 +7,6 @@
 /flink/target/
 /beam/target/
 /hive/target/
+/logs
+.idea/*
+*.iml
