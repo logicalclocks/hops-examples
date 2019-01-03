@@ -3,7 +3,8 @@
 This repository provides users with examples on how to program Big Data and Deep Learning applications that run on [Hopsworks](https://github.com/logicalclocks/hopsworks), using [Apache Spark](https://spark.apache.org/), [Apache Flink](https://flink.apache.org/), [Apache Kafka](https://kafka.apache.org/),  [Apache Hive](https://hive.apache.org/)  and [TensorFlow](https://www.tensorflow.org/). Users can then upload and run their programs and notebooks from within their Hopsworks projects.
 
 ## Online Documentation
-You can find the latest Hops documentation on the [project's webpage](https://hops.readthedocs.io/en/latest/), including Hopsworks user and developer guides as well as a list of versions for all supported services. This README file is meant to provide basic instructions and codebase on how to build and run the examples.
+You can find the latest Hopsworks documentation on the [project's webpage](https://hopsworks.readthedocs.io/en/latest/), 
+including Hopsworks user and developer guides as well as a list of versions for all supported services. This README file is meant to provide basic instructions and codebase on how to build and run the examples.
 
 # Building the examples
 
@@ -64,12 +65,16 @@ Data consumed is be default persisted to the `Resources` dataset of the Project 
 
 
 # TensorFlow
-Hops Example provides Jupyter notebooks for running TensorFlow applications on Hops. All notebooks are automatically made available to Hopsworks projects upon project creation. Detailed documentation on how tp program TensorFlow on Hops, is available [here](https://hops.readthedocs.io/en/latest/user_guide/hopsworks/tensorflow.html).
+Hops Example provides Jupyter notebooks for running TensorFlow applications on Hops. All notebooks are automatically 
+made available to Hopsworks projects upon project creation. Detailed documentation on how tp program TensorFlow on 
+Hopsworks, is available [here](https://hopsworks.readthedocs.io/en/latest/user_guide/hopsworks/tensorflow.html).
 
 
 # Hive
 `HiveJDBCClient.java` available in `hops-examples-hive`      }
-, shows how users can remotely execute Hive queries against their Hopsworks projects' Hive databases. Firstly, it instantiates a Java JDBC client and then connects to the example database described in [Hops documentation](https://hops.readthedocs.io/en/latest/user_guide/hopsworks/hive.html#try-it-out). Users need to have created the database in their project as described in the documentation. This example uses [log4j2](https://logging.apache.org/log4j/2.x/) with logs being written to a `./hive/logs` directory. For changes made to `./hive/src/main/resources/log4j2.properties` to take effect, users must first do
+, shows how users can remotely execute Hive queries against their Hopsworks projects' Hive databases. Firstly, it 
+instantiates a Java JDBC client and then connects to the example database described in
+ [Hopsworks documentation](https://hops.readthedocs.io/en/latest/user_guide/hopsworks/hive.html#try-it-out). Users need to have created the database in their project as described in the documentation. This example uses [log4j2](https://logging.apache.org/log4j/2.x/) with logs being written to a `./hive/logs` directory. For changes made to `./hive/src/main/resources/log4j2.properties` to take effect, users must first do
 ```
 mvn clean package
 ```
