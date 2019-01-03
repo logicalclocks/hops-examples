@@ -25,12 +25,6 @@
   <packaging>jar</packaging>
   <name>hops-examples-spark</name>
 
-  <properties>
-    <spark.version>2.3.2</spark.version>
-    <scala.version>2.11</scala.version>
-  </properties>
-
-  
   <build>
     <plugins>
       <plugin>
@@ -56,32 +50,16 @@
       </plugin>
     </plugins>
   </build>
-  
+
   <dependencies>
     <dependency>
       <groupId>org.apache.spark</groupId>
-      <artifactId>spark-core_${scala.version}</artifactId>
-      <version>${spark.version}</version>
-      <exclusions>
-        <exclusion> 
-          <groupId>org.apache.hadoop</groupId>
-          <artifactId>hadoop-client</artifactId>
-        </exclusion>
-      </exclusions> 
-    </dependency>
-    <dependency>
-      <groupId>org.apache.spark</groupId>
-      <artifactId>spark-streaming_${scala.version}</artifactId>
+      <artifactId>spark-streaming_${scala.base}</artifactId>
       <version>${spark.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.spark</groupId>
-      <artifactId>spark-streaming-kafka-0-10_${scala.version}</artifactId>
-      <version>${spark.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.spark</groupId>
-      <artifactId>spark-sql_${scala.version}</artifactId>
+      <artifactId>spark-streaming-kafka-0-10_${scala.base}</artifactId>
       <version>${spark.version}</version>
     </dependency>
   </dependencies>

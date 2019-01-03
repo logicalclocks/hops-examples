@@ -12,14 +12,7 @@ It will output five feature groups according to this model:
 
 ### Build
 
-#### With sbt
-
-1. **Build fat jar**
-   - `$ sbt assembly`
-
-#### With maven
-
-1. **Build fat jar**
+1. **Build jar**
    - `$ mvn clean install`
 
 ### Run

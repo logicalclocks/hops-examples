@@ -27,9 +27,7 @@
   <name>hops-examples-featurestore</name>
 
   <properties>
-    <spark.version>2.3.2</spark.version>
     <scala.version>2.11.8</scala.version>
-    <scala.base>2.11</scala.base>
   </properties>
 
   <build>
@@ -107,24 +105,6 @@
       <groupId>org.scala-lang</groupId>
       <artifactId>scala-library</artifactId>
       <version>${scala.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.spark</groupId>
-      <artifactId>spark-core_${scala.base}</artifactId>
-      <version>${spark.version}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>org.apache.hadoop</groupId>
-          <artifactId>hadoop-client</artifactId>
-        </exclusion>
-      </exclusions>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.spark</groupId>
-      <artifactId>spark-sql_${scala.base}</artifactId>
-      <version>${spark.version}</version>
-      <scope>provided</scope>
     </dependency>
   </dependencies>
 </project>
