@@ -13,7 +13,8 @@
   ~ limitations under the License.
   -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>io.hops</groupId>
   <artifactId>hops-examples</artifactId>
@@ -21,20 +22,40 @@
   <packaging>pom</packaging>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <spark.version>2.3.2</spark.version>
+    <scala.base>2.11</scala.base>
   </properties>
   <name>hops-examples</name>
 
-  
+
   <dependencies>
     <dependency>
       <groupId>io.hops</groupId>
       <artifactId>hops-util</artifactId>
-      <version>0.7.0-SNAPSHOT</version>
+      <version>0.8.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>io.hops</groupId>
       <artifactId>hadoop-client</artifactId>
       <version>2.8.2.6</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.spark</groupId>
+      <artifactId>spark-core_${scala.base}</artifactId>
+      <version>${spark.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.apache.hadoop</groupId>
+          <artifactId>hadoop-client</artifactId>
+        </exclusion>
+      </exclusions>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.spark</groupId>
+      <artifactId>spark-sql_${scala.base}</artifactId>
+      <version>${spark.version}</version>
+      <scope>provided</scope>
     </dependency>
   </dependencies>
 
@@ -54,7 +75,7 @@
           <target>1.8</target>
         </configuration>
       </plugin>
-      
+
       <plugin>
         <artifactId>maven-scm-plugin</artifactId>
         <version>1.8.1</version>
@@ -64,7 +85,7 @@
           <scmVersionType>branch</scmVersionType>
         </configuration>
       </plugin>
-      
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
@@ -89,13 +110,14 @@
       </plugin>
     </plugins>
   </build>
-  
+
   <modules>
     <module>spark</module>
     <module>flink</module>
     <module>hive</module>
+    <module>featurestore</module>
   </modules>
-  
+
 
   <repositories>
     <repository>
@@ -129,8 +151,7 @@
         <enabled>true</enabled>
       </snapshots>
     </repository>
-  </repositories>  
+  </repositories>
 
 
-  
 </project>
