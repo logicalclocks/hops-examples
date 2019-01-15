@@ -1,4 +1,4 @@
-k<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
   ~ Licensed under the Apache License, Version 2.0 (the "License");
   ~ you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ k<?xml version="1.0" encoding="UTF-8"?>
   <packaging>pom</packaging>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <spark.version>2.3.2</spark.version>
+    <spark.version>2.4.0</spark.version>
     <scala.base>2.11</scala.base>
   </properties>
   <name>hops-examples</name>
