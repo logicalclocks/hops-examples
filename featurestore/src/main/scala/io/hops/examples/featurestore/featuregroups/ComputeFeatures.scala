@@ -110,9 +110,10 @@ object ComputeFeatures {
     val dependencies = List[String](input).asJava
     val description = "Features of average season scores for football teams"
     val primaryKey = "home_team_id"
+    val jobName : String = null
     log.info(s"Creating featuregroup $GAMES_FEATUREGROUP version $FEATUREGROUP_VERSION in featurestore $featurestore")
     Hops.createFeaturegroup(spark, rawDs.toDF, GAMES_FEATUREGROUP, featurestore, FEATUREGROUP_VERSION, description,
-      null, dependencies, primaryKey, descriptiveStats, featureCorr, featureHistograms, clusterAnalysis,
+      jobName, dependencies, primaryKey, descriptiveStats, featureCorr, featureHistograms, clusterAnalysis,
       statColumns, numBins, corrMethod, numClusters)
     log.info(s"Creation of featuregroup $GAMES_FEATUREGROUP complete")
   }
@@ -146,9 +147,10 @@ object ComputeFeatures {
     val dependencies = List[String](input).asJava
     val description = "Features of average season scores for football teams"
     val primaryKey = "team_id"
+    val jobName : String = null
     log.info(s"Creating featuregroup $SEASON_SCORES_FEATUREGROUP version $FEATUREGROUP_VERSION in featurestore $featurestore")
     Hops.createFeaturegroup(spark, featureDs.toDF, SEASON_SCORES_FEATUREGROUP, featurestore, FEATUREGROUP_VERSION, description,
-      null, dependencies, primaryKey, descriptiveStats, featureCorr, featureHistograms, clusterAnalysis,
+      jobName, dependencies, primaryKey, descriptiveStats, featureCorr, featureHistograms, clusterAnalysis,
       statColumns, numBins, corrMethod, numClusters)
     log.info(s"Creation of featuregroup $SEASON_SCORES_FEATUREGROUP complete")
   }
@@ -182,9 +184,10 @@ object ComputeFeatures {
     val dependencies = List[String](input).asJava
     val description = "Features of average attendance of games of football teams"
     val primaryKey = "team_id"
+    val jobName : String = null
     log.info(s"Creating featuregroup $ATTENDANCES_FEATUREGROUP version $FEATUREGROUP_VERSION in featurestore $featurestore")
     Hops.createFeaturegroup(spark, featureDs.toDF, ATTENDANCES_FEATUREGROUP, featurestore, FEATUREGROUP_VERSION, description,
-      null, dependencies, primaryKey, descriptiveStats, featureCorr, featureHistograms, clusterAnalysis,
+      jobName, dependencies, primaryKey, descriptiveStats, featureCorr, featureHistograms, clusterAnalysis,
       statColumns, numBins, corrMethod, numClusters)
     log.info(s"Creation of featuregroup $ATTENDANCES_FEATUREGROUP complete")
   }
@@ -226,9 +229,10 @@ object ComputeFeatures {
     val dependencies = List[String](input).asJava
     val description = "Aggregate features of players football teams"
     val primaryKey = "team_id"
+    val jobName : String = null
     log.info(s"Creating featuregroup $PLAYERS_FEATUREGROUP version $FEATUREGROUP_VERSION in featurestore $featurestore")
     Hops.createFeaturegroup(spark, featureDs.toDF, PLAYERS_FEATUREGROUP, featurestore, FEATUREGROUP_VERSION, description,
-      null, dependencies, primaryKey, descriptiveStats, featureCorr, featureHistograms, clusterAnalysis,
+      jobName, dependencies, primaryKey, descriptiveStats, featureCorr, featureHistograms, clusterAnalysis,
       statColumns, numBins, corrMethod, numClusters)
     log.info(s"Creation of featuregroup $PLAYERS_FEATUREGROUP complete")
   }
@@ -250,9 +254,10 @@ object ComputeFeatures {
     val dependencies = List[String](input).asJava
     val description = "Features of football teams"
     val primaryKey = "team_id"
+    val jobName : String = null
     log.info(s"Creating featuregroup $TEAMS_FEATUREGROUP version $FEATUREGROUP_VERSION in featurestore $featurestore")
     Hops.createFeaturegroup(spark, featureDs.toDF, TEAMS_FEATUREGROUP, featurestore, FEATUREGROUP_VERSION, description,
-      null, dependencies, primaryKey, descriptiveStats, featureCorr, featureHistograms, clusterAnalysis,
+      jobName, dependencies, primaryKey, descriptiveStats, featureCorr, featureHistograms, clusterAnalysis,
       statColumns, numBins, corrMethod, numClusters)
     log.info(s"Creation of featuregroup $TEAMS_FEATUREGROUP complete")
   }
