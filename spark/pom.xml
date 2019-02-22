@@ -21,6 +21,9 @@
     <version>0.10.0-SNAPSHOT</version>
   </parent>
 
+  <properties>
+    <geomesa.version>2.2.1</geomesa.version>
+  </properties>
   <artifactId>hops-examples-spark</artifactId>
   <packaging>jar</packaging>
   <name>hops-examples-spark</name>
@@ -61,6 +64,29 @@
       <groupId>org.apache.spark</groupId>
       <artifactId>spark-streaming-kafka-0-10_${scala.base}</artifactId>
       <version>${spark.version}</version>
+    </dependency>
+
+    <!--Geomesa-->
+    <dependency>
+      <groupId>org.locationtech.geomesa</groupId>
+      <artifactId>geomesa-fs-spark_${scala.base}</artifactId>
+      <version>${geomesa.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.apache.hadoop</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.locationtech.geomesa</groupId>
+      <artifactId>geomesa-fs-datastore_${scala.base}</artifactId>
+      <version>${geomesa.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.locationtech.geomesa</groupId>
+      <artifactId>geomesa-utils_${scala.base}</artifactId>
+      <version>${geomesa.version}</version>
     </dependency>
   </dependencies>
 </project>

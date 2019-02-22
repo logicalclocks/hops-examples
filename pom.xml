@@ -86,28 +86,28 @@
         </configuration>
       </plugin>
 
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-checkstyle-plugin</artifactId>
-        <version>2.16</version>
-        <executions>
-          <execution>
-            <id>validate</id>
-            <phase>validate</phase>
-            <goals>
-              <goal>check</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <suppressionsLocation>/tools/maven/suppressions.xml</suppressionsLocation>
-          <suppressionsFileExpression>/checkstyle.suppressions.file</suppressionsFileExpression>
-          <configLocation>/tools/maven/checkstyle.xml</configLocation>
-          <logViolationsToConsole>true</logViolationsToConsole>
-          <failsOnError>true</failsOnError>
-          <consoleOutput>true</consoleOutput>
-        </configuration>
-      </plugin>
+      <!--<plugin>-->
+        <!--<groupId>org.apache.maven.plugins</groupId>-->
+        <!--<artifactId>maven-checkstyle-plugin</artifactId>-->
+        <!--<version>2.16</version>-->
+        <!--<executions>-->
+          <!--<execution>-->
+            <!--<id>validate</id>-->
+            <!--<phase>validate</phase>-->
+            <!--<goals>-->
+              <!--<goal>check</goal>-->
+            <!--</goals>-->
+          <!--</execution>-->
+        <!--</executions>-->
+        <!--<configuration>-->
+          <!--<suppressionsLocation>/tools/maven/suppressions.xml</suppressionsLocation>-->
+          <!--<suppressionsFileExpression>/checkstyle.suppressions.file</suppressionsFileExpression>-->
+          <!--<configLocation>/tools/maven/checkstyle.xml</configLocation>-->
+          <!--<logViolationsToConsole>true</logViolationsToConsole>-->
+          <!--<failsOnError>true</failsOnError>-->
+          <!--<consoleOutput>true</consoleOutput>-->
+        <!--</configuration>-->
+      <!--</plugin>-->
     </plugins>
   </build>
 
@@ -150,6 +150,18 @@
       <snapshots>
         <enabled>true</enabled>
       </snapshots>
+    </repository>
+    <repository>
+      <id>boundlessgeo</id>
+      <url>https://repo.boundlessgeo.com/main</url>
+    </repository>
+    <repository>
+      <id>osgeo</id>
+      <url>http://download.osgeo.org/webdav/geotools</url>
+    </repository>
+    <repository>
+      <id>conjars.org</id>
+      <url>http://conjars.org/repo</url>
     </repository>
   </repositories>
 
