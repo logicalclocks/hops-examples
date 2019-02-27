@@ -31,17 +31,10 @@
 
   <build>
     <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <configuration>
-          <archive>
-            <manifest>
-              <mainClass>io.hops.examples.spark.kafka.StructuredStreamingKafka</mainClass>
-            </manifest>
-          </archive>
-        </configuration>
-      </plugin>
+      <!--<plugin>-->
+        <!--<groupId>org.apache.maven.plugins</groupId>-->
+        <!--<artifactId>maven-jar-plugin</artifactId>-->
+      <!--</plugin>-->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -59,6 +52,7 @@
       <groupId>io.hops.hive</groupId>
       <artifactId>hive-jdbc</artifactId>
       <version>${hive.version}</version>
+      <scope>provided</scope>
     </dependency>
   </dependencies>
 </project>

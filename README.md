@@ -27,11 +27,9 @@ Usage: <type>(producer|consumer)
 * **type**: Defines if the the job is producing/consuming to/from Kafka.
 * **sink**: Used only by a Consumer job, it defines the path to the Dataset or folder to which the Spark job appends its streaming output. The latter contain the consumed Avro records from Kafka. The name of the folder is suffixed with the YARN applicationId to deferantiate between multiple jobs writing to the same Dataset. In this example, the sink file contains data from the latest microbatch. The default microbatch period is set to two(2) seconds.
 
-**MainClass** is io.hops.examples.spark.kafka.StreamingExample
+**MainClass** is io.hops.examples.spark.kafka.StructuredStreamingKafka
 
 **Topics** are provided via the Hopsworks Job UI. User checks the *Kafka* box and selects the topics from the drop-down menu. When consuming from multiple topics using a single Spark directStream, all topics must use the same Avro schema. Create a new directStream for topic(s) that use different Avro schemas.
-
-**Consumer groups** are an advanced option for consumer jobs. A default one is set by Hopsworks and a user can add further ones via the Jobservice UI.
 
 Data consumed is be default persisted to the `Resources` dataset of the Project where the job is running.
 
@@ -91,103 +89,3 @@ keystore_pw=[keystore_password]
 
 Users can export their project's certificates by navigating to the *Settings* page in Hopsworks. An email is then sent
  with the password for the truststore and keystore.
-
-# Flink
-## Writing a Flink-Kafka Streaming Application
-To help you get started, *StreamingExample* provides the code for a basic streaming Flink application. To use it you need to provide the following parameters when creating a Flink job for Kafka in Hopsworks:
-
-```
-Usage: -type <producer|consumer> [-sink_path <rolling_sink path>] [-batch_size <rolling_file_size>] [-bucket_format <bucket_format>]
-```
-* **type**: Defines if the the job is producing or consuming.
-* **sink_path**: Used only by a Consumer job, itdefines the path to the Dataset in which the Flink RollingSink writes its files. The latter contain the consumed Avro records from Kafka. In this example, the RollingSink creates a new folder (Bucket) every minute.
-* **batch_size**: Used only by a Consumer job, it defines the size of the file being written by the RollingSink. default is 32KB
-* **bucket_format**: Used only by a Consumer job, it defines the names and creation frequency of the folders under sink_path. For more information see [DateTimeBucketer](https://ci.apache.org/projects/flink/flink-docs-master/api/java/org/apache/flink/streaming/connectors/fs/DateTimeBucketer.html)
-
-## Example:
-(*A single space must exist between parameters*)
-
-**Producer**
-
-```
--type producer
-
-```
-
-**Consumer**
-```
--type consumer -sink_path /Projects/FlinkKafka/SinkE -batch_size 16 -bucket_format yyyy-MM-dd--HH
-```
-**Topic names** are provided via the Hopsworks Jobs user interface, when creating the job.
-
-**Consumer groups** are provided via the Hopsworks Job UI. User provides a comma-separated list of the groups that shall be available within the application.
-
-Example
-```
-mytopic:yourtopic
-```
-
-## Avro Records
-This example streams Tuples of String <key,value> pairs which are then serialized by the HopsAvroSchema class into Avro records and then produced to Kafka. The user needs to use a Tuple with twice as many fields as his schema (in this case Tuple4) which is required due to the Tuple containing *both the key and values* of the record. **The Avro schema used in this example is the following**:
-
-```json
-{
-    "fields": [
-        { "name": "platform", "type": "string" },
-        { "name": "program", "type": "string" }
-    ],
-    "name": "myrecord",
-    "type": "record"
-}
-```
-For Avro schemas with more fields, the application's SourceFunction should use a Tuple with the proper arity and the user should also update the definition of the *HopsAvroSchema* class accordingly. No other change is required by this class.
-
-## Notes
-1. Currently *Flink version 1.1.3* is supported.
-
-2. For examples on customizing logging for Flink jobs on Hopsworks see [here](https://github.com/logicalclocks/hops-kafka-examples/tree/master/examples-flink).
-
-3. *StreamingExample* makes use of [here](https://github.com/logicalclocks/hops-util). When building this project, Hops is automatically included in the assembled jar file.
-
-
-## Job Logging
-
-### Flink Logs
-JobManager and TaskManager logs are displayed in the *Jobs* tab in Hopsworks. For example, when printing a Flink *DataStream* object by doing
-
-```java
-DataStream<Tuple2<Tuple2<Integer, Integer>, Integer>> numbers = step.select("output")
-				.map(new OutputMap());
-numbers.print();
-```
-the DataStream output will be available in the Hopsworks Job Execution Logs.
-
-In case you would like this output to be written to a particular file in your Data Sets, you can do the following
-
-```java
-DataStream<Tuple2<Tuple2<Integer, Integer>, Integer>> numbers = step.select("output")
-				.map(new OutputMap());
-numbers.writeAsText("absolute_path_to_file");
-```
-
-the DataStrem object will be printed into the file specified in the *writeAsText* method. The path must point to either the *Logs* or *Resources* data sets in Hopsworks.
-For example, if you would like the output of a the Flink DataStream object to be written to a *test.out* file in your Resources data set, the command is the following
-
-```java
-numbers.writeAsText("/Projects/myproject/Resources/test.out");
-```
-
-The path to an existing file can be easily found by clicking on this particular file in Hopsworks-DataSets and then easily copy the path by using the clipboard icon.
-
-
-### Application Logs
-In case you want to print something to the *standard output* within your application, *do not use System.out*. Instead, use the following code example which utilizes an HDFS client to
-write your output to HDFS. The file path must be set similarly to the Flink logs described above.
-```java
-Configuration hdConf = new Configuration();
-Path hdPath = new org.apache.hadoop.fs.Path("/Projects/myproject/Logs/mylog/test3.out");
-FileSystem hdfs = hdPath.getFileSystem(hdConf);
-FSDataOutputStream stream = hdfs.create(hdPath);
-stream.write("My first Flink program on Hops!".getBytes());
-stream.close();
-```
