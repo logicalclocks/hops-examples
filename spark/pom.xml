@@ -25,10 +25,6 @@
   <packaging>jar</packaging>
   <name>hops-examples-spark</name>
 
-  <properties>
-    <scala.version>2.11.12</scala.version>
-  </properties>
-
   <build>
     <plugins>
       <plugin>
@@ -106,11 +102,6 @@
       <artifactId>spark-avro_${scala.base}</artifactId>
       <version>${spark.version}</version>
       <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.scala-lang</groupId>
-      <artifactId>scala-library</artifactId>
-      <version>${scala.version}</version>
     </dependency>
   </dependencies>
 </project>

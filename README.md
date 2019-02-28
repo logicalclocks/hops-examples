@@ -19,7 +19,8 @@ Hops Examples makes use of **Hops**, a set of Java and Python libraries which pr
 
 # Spark
 ## Structured Streaming with Kafka and HopsFS
-To help you get started, [StructuredStreamingKafka](https://github.com/logicalclocks/hops-examples/blob/master/spark/src/main/java/io/hops/examples/spark/kafka/StructuredStreamingKafka.java) show how to build a Spark application that produces and consumes messages from Kafka and also persists it both in [Parquet](https://parquet.apache.org/) format and in plain text to HopsFS. The example makes use of the latest Spark-Kafka [API](https://spark.apache.org/docs/2.2.0/structured-streaming-kafka-integration.html). To run the example, you need to provide the following parameters when creating a Spark job in Hopsworks:
+To help you get started, [StructuredStreamingKafka](https://github.com/logicalclocks/hops-examples/blob/master/spark/src/main/scala/io/hops/examples/spark/kafka/StructuredStreamingKafka.scala) show how to build a Spark application that produces and consumes messages from Kafka and also persists it 
+both in [Parquet](https://parquet.apache.org/) format and in plain text to HopsFS. The example makes use of the latest Spark-Kafka [API](https://spark.apache.org/docs/2.2.0/structured-streaming-kafka-integration.html). To run the example, you need to provide the following parameters when creating a Spark job in Hopsworks:
 
 ```
 Usage: <type>(producer|consumer)
