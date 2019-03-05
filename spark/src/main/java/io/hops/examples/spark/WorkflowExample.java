@@ -16,7 +16,6 @@ package io.hops.examples.spark;
 
 import io.hops.util.Hops;
 import io.hops.util.WorkflowManager;
-import io.hops.util.exceptions.CredentialsNotFoundException;
 import io.hops.util.exceptions.WorkflowManagerException;
 import org.apache.spark.sql.SparkSession;
 
@@ -29,9 +28,8 @@ import org.apache.spark.sql.SparkSession;
  */
 public class WorkflowExample {
 
-
   public static void main(String[] args)
-    throws WorkflowManagerException, CredentialsNotFoundException, InterruptedException {
+      throws InterruptedException, WorkflowManagerException {
 
     SparkSession spark = SparkSession
         .builder()
@@ -39,13 +37,12 @@ public class WorkflowExample {
         .getOrCreate();
 
     //if Start job with given ID
-    WorkflowManager.startJobs(Integer.parseInt(args[0]));
-
+    WorkflowManager.startJobs(args[0]);
     //Wait for previous job to complete
-    WorkflowManager.waitForJobs(Integer.parseInt(args[0]));
+    WorkflowManager.waitForJobs(args[0]);
 
     //Start second job
-    WorkflowManager.startJobs(Integer.parseInt(args[1]));
+    WorkflowManager.startJobs(args[1]);
 
     //Stop spark session
     spark.stop();
