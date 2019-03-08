@@ -16,10 +16,10 @@ package io.hops.examples.spark;
 
 import io.hops.util.Hops;
 import io.hops.util.WorkflowManager;
+import io.hops.util.exceptions.CredentialsNotFoundException;
 import io.hops.util.exceptions.WorkflowManagerException;
 import org.apache.spark.sql.SparkSession;
 
-import java.util.logging.Logger;
 
 /**
  * Example demo showing how to build Spark job workflows in Hopsworks. In particular, it expects that two Spark
@@ -29,10 +29,9 @@ import java.util.logging.Logger;
  */
 public class WorkflowExample {
 
-  private static final Logger LOG = Logger.getLogger(WorkflowManager.class.getName());
 
   public static void main(String[] args)
-      throws InterruptedException, WorkflowManagerException {
+    throws WorkflowManagerException, CredentialsNotFoundException, InterruptedException {
 
     SparkSession spark = SparkSession
         .builder()
@@ -40,13 +39,13 @@ public class WorkflowExample {
         .getOrCreate();
 
     //if Start job with given ID
-    WorkflowManager.startJobs(args[0]);
+    WorkflowManager.startJobs(Integer.parseInt(args[0]));
 
     //Wait for previous job to complete
-    WorkflowManager.waitForJobs(args[0]);
+    WorkflowManager.waitForJobs(Integer.parseInt(args[0]));
 
     //Start second job
-    WorkflowManager.startJobs(args[1]);
+    WorkflowManager.startJobs(Integer.parseInt(args[1]));
 
     //Stop spark session
     spark.stop();
