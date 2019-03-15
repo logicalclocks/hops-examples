@@ -3,7 +3,6 @@ package io.hops.examples.featurestore.featuregroups
 import org.apache.log4j.Logger
 import org.apache.spark.sql.SparkSession
 import io.hops.util.Hops
-import scala.collection.JavaConversions._
 import collection.JavaConverters._
 import org.apache.spark.sql.Row
 

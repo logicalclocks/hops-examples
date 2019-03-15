@@ -1,14 +1,13 @@
 package io.hops.examples.featurestore
 
 import io.hops.examples.featurestore.featuregroups.ComputeFeatures
-import org.apache.log4j.{ Level, LogManager, Logger }
-import org.apache.spark.rdd.RDD
-import org.apache.spark.sql.{ Row, SparkSession }
-import org.apache.spark.{ SparkConf, SparkContext }
+import org.apache.log4j.{ Level, LogManager }
+import org.apache.spark.sql.SparkSession
+import org.apache.spark.SparkConf
 import io.hops.util.Hops
 
 /**
- * Program entrypoint
+ * Program entry point
  *
  * Sample Feature Engineering Job for the Hopsworks Feature
  */
@@ -17,7 +16,7 @@ object Main {
   def main(args: Array[String]): Unit = {
 
     // Setup logging
-    val log = LogManager.getRootLogger()
+    val log = LogManager.getLogger(Main.getClass.getName)
     log.setLevel(Level.INFO)
     log.info(s"Starting Sample Feature Engineering Job For Feature Store Examples")
 
@@ -25,7 +24,7 @@ object Main {
     var sparkConf: SparkConf = null
     sparkConf = sparkClusterSetup()
 
-    val spark = SparkSession.builder().config(sparkConf).enableHiveSupport().getOrCreate();
+    val spark = SparkSession.builder().config(sparkConf).enableHiveSupport().getOrCreate()
 
     val sc = spark.sparkContext
 
@@ -36,8 +35,6 @@ object Main {
     ComputeFeatures.computeAttendanceFeatureGroup(spark, log, input)
     ComputeFeatures.computePlayersFeatureGroup(spark, log, input)
     ComputeFeatures.computeTeamsFeatureGroup(spark, log, input)
-
-    import spark.implicits._
 
     log.info("Shutting down spark job")
     spark.close
