@@ -55,7 +55,7 @@ object Main {
    * @return spark configuration
    */
   def sparkClusterSetup(): SparkConf = {
-    new SparkConf().setAppName("feature_engineering_spark").set("spark.executor.heartbeatInterval", "20s").set("spark.rpc.message.maxSize", "512").set("spark.kryoserializer.buffer.max", "1024")
+    new SparkConf().setAppName("feature_engineering_spark")
   }
 
 }

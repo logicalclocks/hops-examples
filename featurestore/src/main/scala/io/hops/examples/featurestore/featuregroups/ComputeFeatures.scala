@@ -83,15 +83,7 @@ object ComputeFeatures {
     home_team_id: Int,
     score: Int)
 
-  val featurestore = Hops.getProjectFeaturestore
-  val descriptiveStats = true
-  val featureCorr = true
-  val featureHistograms = true
-  val clusterAnalysis = true
-  val statColumns = List[String]().asJava
-  val numBins = 20
-  val corrMethod = "pearson"
-  val numClusters = 5
+  val featurestore = Hops.getProjectFeaturestore.read
 
   /**
     * Compute features from games.csv and save to a new feature group called games_features
@@ -106,14 +98,10 @@ object ComputeFeatures {
     val rawDf = spark.read.format("csv").option("header", true).option("inferSchema", "true").load(input)
     import spark.implicits._
     val rawDs = rawDf.as[RawGame]
-    val dependencies = List[String](input).asJava
-    val description = "Features of average season scores for football teams"
-    val primaryKey = "home_team_id"
-    val jobName : String = null
     log.info(s"Creating featuregroup $GAMES_FEATUREGROUP version $FEATUREGROUP_VERSION in featurestore $featurestore")
-    Hops.createFeaturegroup(spark, rawDs.toDF, GAMES_FEATUREGROUP, featurestore, FEATUREGROUP_VERSION, description,
-      jobName, dependencies, primaryKey, descriptiveStats, featureCorr, featureHistograms, clusterAnalysis,
-      statColumns, numBins, corrMethod, numClusters)
+    Hops.createFeaturegroup(GAMES_FEATUREGROUP).setDataframe(rawDs.toDF)
+      .setDescription("Features of games").setPrimaryKey("home_team_id")
+      .setDependencies(List[String](input).asJava).write
     log.info(s"Creation of featuregroup $GAMES_FEATUREGROUP complete")
   }
 
@@ -143,14 +131,10 @@ object ComputeFeatures {
         average_position = avgPosition,
         sum_position = sumPosition)
     })
-    val dependencies = List[String](input).asJava
-    val description = "Features of average season scores for football teams"
-    val primaryKey = "team_id"
-    val jobName : String = null
     log.info(s"Creating featuregroup $SEASON_SCORES_FEATUREGROUP version $FEATUREGROUP_VERSION in featurestore $featurestore")
-    Hops.createFeaturegroup(spark, featureDs.toDF, SEASON_SCORES_FEATUREGROUP, featurestore, FEATUREGROUP_VERSION, description,
-      jobName, dependencies, primaryKey, descriptiveStats, featureCorr, featureHistograms, clusterAnalysis,
-      statColumns, numBins, corrMethod, numClusters)
+    Hops.createFeaturegroup(SEASON_SCORES_FEATUREGROUP).setDataframe(featureDs.toDF)
+      .setDescription("Features of average season scores for football teams").setPrimaryKey("team_id")
+      .setDependencies(List[String](input).asJava).write
     log.info(s"Creation of featuregroup $SEASON_SCORES_FEATUREGROUP complete")
   }
 
@@ -180,14 +164,10 @@ object ComputeFeatures {
         average_attendance = avgAttendance,
         sum_attendance = sumAttendance.toFloat)
     })
-    val dependencies = List[String](input).asJava
-    val description = "Features of average attendance of games of football teams"
-    val primaryKey = "team_id"
-    val jobName : String = null
     log.info(s"Creating featuregroup $ATTENDANCES_FEATUREGROUP version $FEATUREGROUP_VERSION in featurestore $featurestore")
-    Hops.createFeaturegroup(spark, featureDs.toDF, ATTENDANCES_FEATUREGROUP, featurestore, FEATUREGROUP_VERSION, description,
-      jobName, dependencies, primaryKey, descriptiveStats, featureCorr, featureHistograms, clusterAnalysis,
-      statColumns, numBins, corrMethod, numClusters)
+    Hops.createFeaturegroup(ATTENDANCES_FEATUREGROUP).setDataframe(featureDs.toDF)
+      .setDescription("Features of average attendance of games of football teams").setPrimaryKey("team_id")
+      .setDependencies(List[String](input).asJava).write
     log.info(s"Creation of featuregroup $ATTENDANCES_FEATUREGROUP complete")
   }
 
@@ -225,14 +205,10 @@ object ComputeFeatures {
         sum_player_age = sumAge,
         sum_player_worth = sumWorth.toFloat)
     })
-    val dependencies = List[String](input).asJava
-    val description = "Aggregate features of players football teams"
-    val primaryKey = "team_id"
-    val jobName : String = null
     log.info(s"Creating featuregroup $PLAYERS_FEATUREGROUP version $FEATUREGROUP_VERSION in featurestore $featurestore")
-    Hops.createFeaturegroup(spark, featureDs.toDF, PLAYERS_FEATUREGROUP, featurestore, FEATUREGROUP_VERSION, description,
-      jobName, dependencies, primaryKey, descriptiveStats, featureCorr, featureHistograms, clusterAnalysis,
-      statColumns, numBins, corrMethod, numClusters)
+    Hops.createFeaturegroup(PLAYERS_FEATUREGROUP).setDataframe(featureDs.toDF)
+      .setDescription("Aggregate features of players football teams").setPrimaryKey("team_id")
+      .setDependencies(List[String](input).asJava).write
     log.info(s"Creation of featuregroup $PLAYERS_FEATUREGROUP complete")
   }
 
@@ -255,9 +231,9 @@ object ComputeFeatures {
     val primaryKey = "team_id"
     val jobName : String = null
     log.info(s"Creating featuregroup $TEAMS_FEATUREGROUP version $FEATUREGROUP_VERSION in featurestore $featurestore")
-    Hops.createFeaturegroup(spark, featureDs.toDF, TEAMS_FEATUREGROUP, featurestore, FEATUREGROUP_VERSION, description,
-      jobName, dependencies, primaryKey, descriptiveStats, featureCorr, featureHistograms, clusterAnalysis,
-      statColumns, numBins, corrMethod, numClusters)
+    Hops.createFeaturegroup(TEAMS_FEATUREGROUP).setDataframe(featureDs.toDF)
+      .setDescription("Features of football teams").setPrimaryKey("team_id")
+      .setDependencies(List[String](input).asJava).write
     log.info(s"Creation of featuregroup $TEAMS_FEATUREGROUP complete")
   }
 
