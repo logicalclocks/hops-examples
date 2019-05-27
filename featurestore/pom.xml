@@ -27,6 +27,14 @@
   <packaging>jar</packaging>
   <name>hops-examples-featurestore</name>
 
+  <dependencies>
+    <dependency>
+      <groupId>org.rogach</groupId>
+      <artifactId>scallop_${scala.base}</artifactId>
+      <version>3.3.0</version>
+    </dependency>
+  </dependencies>
+
   <build>
     <plugins>
       <!--<plugin>-->
