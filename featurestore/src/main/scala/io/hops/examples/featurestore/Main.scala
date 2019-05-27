@@ -1,10 +1,19 @@
 package io.hops.examples.featurestore
 
 import io.hops.examples.featurestore.featuregroups.ComputeFeatures
-import org.apache.log4j.{ Level, LogManager }
+import org.apache.log4j.{Level, LogManager}
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.SparkConf
 import io.hops.util.Hops
+import org.rogach.scallop.ScallopConf
+
+/**
+  * Parser of command-line arguments
+  */
+class Conf(arguments: Seq[String]) extends ScallopConf(arguments) {
+  val input = opt[String](required = false, descr = "path to input sample data files (csv files)")
+  verify()
+}
 
 /**
  * Program entry point
@@ -20,15 +29,15 @@ object Main {
     log.setLevel(Level.INFO)
     log.info(s"Starting Sample Feature Engineering Job For Feature Store Examples")
 
+    //Parse cmd arguments
+    val conf = new Conf(args)
+    val input = parseInput(conf.input())
+
     // Setup Spark
     var sparkConf: SparkConf = null
     sparkConf = sparkClusterSetup()
-
     val spark = SparkSession.builder().config(sparkConf).enableHiveSupport().getOrCreate()
-
     val sc = spark.sparkContext
-
-    val input = "hdfs:///Projects/" + Hops.getProjectName + "/TestJob/data"
 
     ComputeFeatures.computeGamesFeatureGroup(spark, log, input)
     ComputeFeatures.computeSeasonScoresFeatureGroup(spark, log, input)
@@ -38,6 +47,20 @@ object Main {
 
     log.info("Shutting down spark job")
     spark.close
+  }
+
+  /**
+    * Expands input path with "hdfs:///Projects/projectName/" in case the user supplied a relative path
+    *
+    * @param input the path to expand
+    * @return the expanded path
+    */
+  def parseInput(input: String): String = {
+    if (input.contains("hdfs://")){
+      return input
+    }  else {
+      return "hdfs:///Projects/" + Hops.getProjectName + "/" + input
+    }
   }
 
   /**
