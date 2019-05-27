@@ -11,7 +11,7 @@ import org.rogach.scallop.ScallopConf
   * Parser of command-line arguments
   */
 class Conf(arguments: Seq[String]) extends ScallopConf(arguments) {
-  val input = opt[String](required = false, descr = "path to input config (csv)")
+  val input = opt[String](required = false, descr = "path to input sample data files (csv files)")
   verify()
 }
 
