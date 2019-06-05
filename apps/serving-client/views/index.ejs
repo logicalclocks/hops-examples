@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Loan default predictor</title>
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300' rel='stylesheet' type='text/css'>
+  </head>
+  <body>
+    <div class="container">
+      <fieldset>
+        <form action="/" method="post">
+          <input name="loan_amnt" type="text" class="ghost-input" placeholder="Enter loan amount" required>
+          <input name="grade" type="text" class="ghost-input" placeholder="Enter grade" required>
+          <input name="annual_inc" type="text" class="ghost-input" placeholder="Enter annual income" required>
+          <input name="int_rate" type="text" class="ghost-input" placeholder="Enter interest rate" required>
+          <input type="submit" class="ghost-button" value="Get default prediction">
+        </form>
+        <% if(loan_status_bin !== null){ %>
+          <p><%= loan_status_bin %></p>
+        <% } %>
+
+        <% if(error !== null){ %>
+          <p>An error has occured:</p>
+          <%= error %>
+          <% if(error_details !== null){ %>
+            <br>
+            <%= error_details %>
+          <% } %>
+        <% } %>
+      </fieldset>
+    </div>
+  </body>
+</html>
