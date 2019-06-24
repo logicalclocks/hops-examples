@@ -1,6 +1,6 @@
-package io.hops.examples.featurestore
+package io.hops.examples.featurestore_tour
 
-import io.hops.examples.featurestore.featuregroups.ComputeFeatures
+import io.hops.examples.featurestore_tour.featuregroups.ComputeFeatures
 import org.apache.log4j.{Level, LogManager}
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.SparkConf

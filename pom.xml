@@ -147,7 +147,8 @@
   <modules>
     <module>spark</module>
     <module>hive</module>
-    <module>featurestore</module>
+    <module>featurestore_tour</module>
+    <module>featurestore_util/featurestore_util4j</module>
   </modules>
 
 

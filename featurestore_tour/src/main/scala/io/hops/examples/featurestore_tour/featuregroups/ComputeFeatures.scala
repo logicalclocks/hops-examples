@@ -1,4 +1,4 @@
-package io.hops.examples.featurestore.featuregroups
+package io.hops.examples.featurestore_tour.featuregroups
 
 import org.apache.log4j.Logger
 import org.apache.spark.sql.SparkSession
@@ -100,8 +100,7 @@ object ComputeFeatures {
     val rawDs = rawDf.as[RawGame]
     log.info(s"Creating featuregroup $GAMES_FEATUREGROUP version $FEATUREGROUP_VERSION in featurestore $featurestore")
     Hops.createFeaturegroup(GAMES_FEATUREGROUP).setDataframe(rawDs.toDF)
-      .setDescription("Features of games").setPrimaryKey("home_team_id")
-      .setDependencies(List[String](input).asJava).write
+      .setDescription("Features of games").setPrimaryKey("home_team_id").write
     log.info(s"Creation of featuregroup $GAMES_FEATUREGROUP complete")
   }
 
@@ -134,7 +133,7 @@ object ComputeFeatures {
     log.info(s"Creating featuregroup $SEASON_SCORES_FEATUREGROUP version $FEATUREGROUP_VERSION in featurestore $featurestore")
     Hops.createFeaturegroup(SEASON_SCORES_FEATUREGROUP).setDataframe(featureDs.toDF)
       .setDescription("Features of average season scores for football teams").setPrimaryKey("team_id")
-      .setDependencies(List[String](input).asJava).write
+      .write
     log.info(s"Creation of featuregroup $SEASON_SCORES_FEATUREGROUP complete")
   }
 
@@ -167,7 +166,7 @@ object ComputeFeatures {
     log.info(s"Creating featuregroup $ATTENDANCES_FEATUREGROUP version $FEATUREGROUP_VERSION in featurestore $featurestore")
     Hops.createFeaturegroup(ATTENDANCES_FEATUREGROUP).setDataframe(featureDs.toDF)
       .setDescription("Features of average attendance of games of football teams").setPrimaryKey("team_id")
-      .setDependencies(List[String](input).asJava).write
+      .write
     log.info(s"Creation of featuregroup $ATTENDANCES_FEATUREGROUP complete")
   }
 
@@ -208,7 +207,7 @@ object ComputeFeatures {
     log.info(s"Creating featuregroup $PLAYERS_FEATUREGROUP version $FEATUREGROUP_VERSION in featurestore $featurestore")
     Hops.createFeaturegroup(PLAYERS_FEATUREGROUP).setDataframe(featureDs.toDF)
       .setDescription("Aggregate features of players football teams").setPrimaryKey("team_id")
-      .setDependencies(List[String](input).asJava).write
+      .write
     log.info(s"Creation of featuregroup $PLAYERS_FEATUREGROUP complete")
   }
 
@@ -233,7 +232,7 @@ object ComputeFeatures {
     log.info(s"Creating featuregroup $TEAMS_FEATUREGROUP version $FEATUREGROUP_VERSION in featurestore $featurestore")
     Hops.createFeaturegroup(TEAMS_FEATUREGROUP).setDataframe(featureDs.toDF)
       .setDescription("Features of football teams").setPrimaryKey("team_id")
-      .setDependencies(List[String](input).asJava).write
+      .write
     log.info(s"Creation of featuregroup $TEAMS_FEATUREGROUP complete")
   }
 

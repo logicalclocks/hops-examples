@@ -23,9 +23,9 @@
     <version>1.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>hops-examples-featurestore</artifactId>
+  <artifactId>hops-examples-featurestore-util4j</artifactId>
   <packaging>jar</packaging>
-  <name>hops-examples-featurestore</name>
+  <name>hops-examples-featurestore-util4j</name>
 
   <dependencies>
     <dependency>
