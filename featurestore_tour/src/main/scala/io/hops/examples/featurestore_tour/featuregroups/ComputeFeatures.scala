@@ -225,7 +225,6 @@ object ComputeFeatures {
     import spark.implicits._
     val rawDs = rawDf.as[RawTeam]
     val featureDs = rawDs.map((rawTeam: RawTeam) => TeamFeature(team_budget = rawTeam.team_budget.toFloat, team_id = rawTeam.team_id, team_position = rawTeam.team_position))
-    val dependencies = List[String](input).asJava
     val description = "Features of football teams"
     val primaryKey = "team_id"
     val jobName : String = null
