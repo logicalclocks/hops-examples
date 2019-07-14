@@ -34,21 +34,20 @@
       <artifactId>scallop_${scala.base}</artifactId>
       <version>3.3.0</version>
     </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.module</groupId>
+      <artifactId>jackson-module-scala_2.11</artifactId>
+      <version>2.9.8</version>
+    </dependency>
+    <dependency>
+      <groupId>com.typesafe.play</groupId>
+      <artifactId>play-json_${scala.base}</artifactId>
+      <version>2.7.4</version>
+    </dependency>
   </dependencies>
 
   <build>
     <plugins>
-      <!--<plugin>-->
-        <!--<groupId>org.apache.maven.plugins</groupId>-->
-        <!--<artifactId>maven-jar-plugin</artifactId>-->
-        <!--<configuration>-->
-          <!--<archive>-->
-            <!--<manifest>-->
-              <!--<mainClass>io.hops.examples.featurestore.Main</mainClass>-->
-            <!--</manifest>-->
-          <!--</archive>-->
-        <!--</configuration>-->
-      <!--</plugin>-->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>

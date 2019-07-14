@@ -4,42 +4,21 @@ import org.apache.log4j.{Level, LogManager, Logger}
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.SparkConf
 import org.apache.spark.sql.jdbc.{JdbcDialects, JdbcType, JdbcDialect}
-import org.apache.spark.sql.types._
 import io.hops.util.Hops
 import org.rogach.scallop.ScallopConf
-
+import play.api.libs.json._
 import scala.collection.JavaConversions._
 import scala.collection.JavaConversions
 import scala.language.implicitConversions
 
+import org.apache.hadoop.conf.Configuration;
+import java.io.BufferedReader
+import java.io.InputStreamReader
 /**
   * Parser of command-line arguments
   */
 class Conf(arguments: Seq[String]) extends ScallopConf(arguments) {
-  val features = opt[String](required = false, descr = "comma separated list of features", default = Some(""))
-  val featuregroups = opt[String](required = false, descr = "comma separated list of featuregroups on the form " +
-    "`featuregroup:version` where the features reside", default = Some(""))
-  val featurestore = opt[String](required = false, descr = "name of the featurestore to apply the operation to",
-    default = Some(""))
-  val trainingdataset = opt[String](required = false, descr = "name of the training dataset", default = Some(""))
-  val featuregroup = opt[String](required = false, descr = "name of the feature group", default = Some(""))
-  val joinkey = opt[String](required = false, descr = "join key for joining the features together", default = Some(null))
-  val description = opt[List[String]](required = false, descr = "description", default = Some(List("")))
-  val dataformat = opt[String](required = false, descr = "data format for training dataset", default = Some("parquet"))
-  val version = opt[String](required = false, descr = "version", default = Some("1"))
-  val descriptivestats = opt[Boolean](descr = "flag whether to compute descriptive stats")
-  val featurecorrelation = opt[Boolean](descr = "flag whether to compute feature correlations")
-  val clusteranalysis = opt[Boolean](descr = "flag whether to compute cluster analysis")
-  val featurehistograms = opt[Boolean](descr = "flag whether to compute feature histograms")
-  val statColumns = opt[String](required = false,
-    descr = "comma separated list of columns to apply statisics to (if empty use all columns)",
-    default = Some(""))
-  val operation = opt[String](required = true, descr = "the featurestore operation")
-  val sqlquery = opt[List[String]](required = false, descr = "custom SQL query to run against a Hive Database or JDBC" +
-    " backend")
-  val hivedb = opt[String](required = false, descr = "Hive Database to Apply SQL query to ")
-  val jdbcstring = opt[String](required = false, descr = "JDBC Connection String")
-  val jdbcarguments = opt[String](required = false, descr = "Arguments for the JDBC Connection String (comma separated string)")
+  val input = opt[String](required = false, descr = "path to JSON input arguments", default = Some(""))
   verify()
 }
 
@@ -67,8 +46,11 @@ object Main {
     log.info(s"Starting Sample Feature Engineering Job For Feature Store Examples")
 
     //Parse cmd arguments
+    val hdfsConf = new Configuration()
     val conf = new Conf(args)
-    val operation = conf.operation()
+    val jsonArgs = parseInputJson(conf.input(), hdfsConf)
+    val operation = jsonArgs("operation").as[String]
+    log.info(s"---- Feature Store Util----- \n Operation: ${operation}")
 
     // Setup Spark
     var sparkConf: SparkConf = null
@@ -76,18 +58,41 @@ object Main {
     val spark = SparkSession.builder().config(sparkConf).enableHiveSupport().getOrCreate()
     val sc = spark.sparkContext
 
+
     //Perform actions
     operation match {
-      case "create_td" => createTrainingDataset(conf, log)
-      case "update_fg_stats" => updateFeaturegroupStats(conf, log)
-      case "update_td_stats" => updateTrainingDatasetStats(conf, log)
-      case "spark_sql_create_fg" => createFeaturegroupFromSparkSql(conf, log)
-      case "jdbc_sql_create_fg" => createFeaturegroupFromJdbcSql(conf, log)
+      case "create_td" => createTrainingDataset(jsonArgs, log)
+      case "update_fg_stats" => updateFeaturegroupStats(jsonArgs, log)
+      case "update_td_stats" => updateTrainingDatasetStats(jsonArgs, log)
+      case "spark_sql_create_fg" => createFeaturegroupFromSparkSql(jsonArgs, log)
+      case "jdbc_sql_create_fg" => createFeaturegroupFromJdbcSql(jsonArgs, log)
     }
 
     //Cleanup
     log.info("Shutting down spark job")
     spark.close
+  }
+
+  /**
+    * Parse the input JSON arguments from HDFS
+    *
+    * @param inputPath path to the hdfs file
+    * @param hdfsConf hdfs config
+    * @return the parsed JSON arguments
+    */
+  def parseInputJson(inputPath: String, hdfsConf: Configuration): JsValue = {
+    val filePath = new org.apache.hadoop.fs.Path(inputPath)
+    val hdfs = filePath.getFileSystem(hdfsConf)
+    if(!hdfs.exists(filePath))
+      throw new IllegalArgumentException(s"Input argument path is not valid: ${inputPath}")
+    val inputStream =hdfs.open(filePath)
+    val reader = new BufferedReader(new InputStreamReader(inputStream))
+    val jsonLines = reader.readLine()
+    val controlCode : (Char) => Boolean = (c:Char) => (c <= 32 || c == 127)
+    val extendedCode : (Char) => Boolean = (c:Char) => (c <= 32 || c > 127)
+    val filteredJsonLines = jsonLines.filterNot(controlCode).filterNot(extendedCode)
+    val parsedJson = Json.parse(filteredJsonLines)
+    return parsedJson
   }
 
   /**
@@ -105,66 +110,26 @@ object Main {
   }
 
   /**
-    * Pre-process comma-separated features list
+    * Pre-process JSON with features into a list of feature names (strings)
     *
-    * @param featuresStr the string to process
+    * @param featuresJson the string to process
     * @return a list of features
     */
-  def preProcessFeatures(featuresStr: String): List[String] = {
-    if (featuresStr.isEmpty)
+  def preProcessFeatures(featuresJson: JsValue): List[String] = {
+    val featuresList = featuresJson.as[JsArray]
+    if (featuresList.value.isEmpty)
       throw new IllegalArgumentException("Features cannot be empty")
-    featuresStr.split(",").toList
+    return featuresList.value.map((elem: JsValue) => elem("name").as[String]).toList
   }
 
   /**
-    * Pre-process comma-separated list of stat columns
+    * Pre-process json featurestore string
     *
-    * @param statColumnsStr the string to process
-    * @return list of stat columns
+    * @param featurestoreJson the string to process
+    * @return the featurestore string
     */
-  def preProcessStatColumns(statColumnsStr: String): List[String] = {
-    if (statColumnsStr.equals("")) {
-      List[String]()
-    } else {
-      statColumnsStr.split(",").toList
-    }
-  }
-
-  /**
-    * Pre-process list of SQL query
-    *
-    * @param sqlQueryList the list of space separated input words from command-line
-    * @return a joined SQL string
-    */
-  def preProcessSqlQuery(sqlQueryList: List[String]): String = {
-    if (sqlQueryList.isEmpty) {
-      throw new IllegalArgumentException("SQL Query Cannot Empty")
-    } else {
-      return sqlQueryList.mkString(" ")
-    }
-  }
-
-  /**
-    * Pre-process list of description words
-    *
-    * @param description the list of space separated input description words from command-line
-    * @return a joined description string
-    */
-  def preProcessDescription(description: List[String]): String = {
-    if (!description.isEmpty) {
-      return description.mkString(" ")
-    } else {
-      return ""
-    }
-  }
-
-  /**
-    * Pre-process comma-separated list of stat columns
-    *
-    * @param statColumnsStr the string to process
-    * @return list of stat columns
-    */
-  def preProcessFeaturestore(featurestoreStr: String): String = {
+  def preProcessFeaturestore(featurestoreJson: JsValue): String = {
+    val featurestoreStr = featurestoreJson.as[String]
     if (featurestoreStr.equals("")) {
       return Hops.getProjectFeaturestore.read
     } else {
@@ -173,39 +138,35 @@ object Main {
   }
 
   /**
-    * Pre-process comma-separated list of featuregroup:version
+    * Pre-process featuregroups input JSON
     *
-    * @param featuregroupsVersionsStr the string to process
+    * @param featuregroupsJson the json to process
     * @return map of featuregroup --> version
     */
-  def preProcessFeatureGroups(featuregroupsVersionsStr: String): java.util.Map[String, Integer]
-  = {
-    if (featuregroupsVersionsStr.isEmpty)
+  def preProcessFeatureGroups(featuregroupsJson: JsValue): java.util.Map[String, Integer] = {
+    val featuregroupsList = featuregroupsJson.as[JsArray]
+    if (featuregroupsList.value.isEmpty)
       throw new IllegalArgumentException("Feature Groups cannot be empty")
-    val featuregroupsVersions = featuregroupsVersionsStr.split(",")
-    val scalaFeaturegroupsMap = featuregroupsVersions.map((fgVersion: String) => {
-      val fgVersionArr = fgVersion.split(":")
-      val fg = fgVersionArr(0)
-      val version = new Integer(fgVersionArr(1).toInt)
-      (fg, version)
-    }).toMap
+    val scalaFeaturegroupsMap: Map[String, Integer] = featuregroupsList.value.map((elem: JsValue) => {
+      (elem("name").as[String], new Integer(elem("version").as[Int]))
+    }).toList.toMap
     return JavaConversions.mapAsJavaMap(scalaFeaturegroupsMap)
   }
 
   /**
-    * Pre-process comma-separated list of featuregroup:version
+    * Pre-process the input jdbc json arguments
     *
-    * @param jdbcArgumentsStr the string to process
+    * @param jdbcArgumentsJson the input json to process
     * @return formatted JDBC arguments sub-string
     */
-  def preProcessJdbcArguments(jdbcArgumentsStr: String): String = {
-    if (!jdbcArgumentsStr.isEmpty) {
+  def preProcessJdbcArguments(jdbcArgumentsJson: JsValue): String = {
+    val jdbcArgumentsList = jdbcArgumentsJson.as[JsArray]
+    if (!jdbcArgumentsList.value.isEmpty) {
       val hopsTrustStore = Hops.getTrustStore()
       val hopsKeyStore = Hops.getKeyStore()
       val pw = Hops.getKeystorePwd()
-      val jdbcArgumentsAndValue = jdbcArgumentsStr.split(",")
-      val jdbcArgsStr = jdbcArgumentsAndValue.map((argumentValue: String) => {
-        val argumentValueArr = argumentValue.split(":")
+      val jdbcArgsStr = jdbcArgumentsList.value.map((argumentValue: JsValue) => {
+        val argumentValueArr = argumentValue.as[String].split(",")
         val argument = argumentValueArr(0)
         val value = argumentValueArr(1)
         argument match {
@@ -225,22 +186,22 @@ object Main {
     * Creates a Feature Group in the featurestore based on the result of a SparkSQL query (as specified in the
     * command-line arguments).
     *
-    * @param conf the command-line arguments
+    * @param jsonArgs the input json arguments
     * @param log  logger
     */
-  def createFeaturegroupFromSparkSql(conf: Conf, log: Logger): Unit = {
+  def createFeaturegroupFromSparkSql(jsonArgs: JsValue, log: Logger): Unit = {
     //Parse arguments
-    val sqlQuery = preProcessSqlQuery(conf.sqlquery())
-    val hiveDb = conf.hivedb()
-    val featuregroup = conf.featuregroup()
-    val description = preProcessDescription(conf.description())
-    val version = conf.version().toInt
-    val descriptiveStats = conf.descriptivestats()
-    val featureCorrelation = conf.featurecorrelation()
-    val clusterAnalysis = conf.clusteranalysis()
-    val featureHistograms = conf.featurehistograms()
-    val statColumns = preProcessStatColumns(conf.statColumns())
-    val featurestoreToQuery = preProcessFeaturestore(conf.featurestore())
+    val sqlQuery = jsonArgs("sqlQuery").as[String]
+    val hiveDb = jsonArgs("hiveDatabase").as[String]
+    val featuregroup = jsonArgs("featuregroup").as[String]
+    val description = jsonArgs("description").as[String]
+    val version = jsonArgs("version").as[Int]
+    val descriptiveStats = jsonArgs("descriptiveStats").as[Boolean]
+    val featureCorrelation = jsonArgs("featureCorrelation").as[Boolean]
+    val clusterAnalysis = jsonArgs("clusterAnalysis").as[Boolean]
+    val featureHistograms = jsonArgs("featureHistograms").as[Boolean]
+    val statColumns = jsonArgs("statColumns").as[List[String]]
+    val featurestoreToQuery = preProcessFeaturestore(jsonArgs("featurestore"))
 
     //Run SparkSQL Command
     log.info(s"Running SQL Command: ${sqlQuery} against database: ${hiveDb}")
@@ -267,23 +228,23 @@ object Main {
     * Creates a Feature Group in the featurestore based on the result of a JDBC Sql query (as specified in the
     * command-line arguments).
     *
-    * @param conf the command-line arguments
+    * @param jsonArgs the json input arguments
     * @param log  logger
     */
-  def createFeaturegroupFromJdbcSql(conf: Conf, log: Logger): Unit = {
+  def createFeaturegroupFromJdbcSql(jsonArgs: JsValue, log: Logger): Unit = {
     //Parse arguments
-    val sqlQuery = preProcessSqlQuery(conf.sqlquery())
-    val jdbcString = conf.jdbcstring()
-    val jdbcArguments = preProcessJdbcArguments(conf.jdbcarguments())
-    val featuregroup = conf.featuregroup()
-    val description = preProcessDescription(conf.description())
-    val version = conf.version().toInt
-    val descriptiveStats = conf.descriptivestats()
-    val featureCorrelation = conf.featurecorrelation()
-    val clusterAnalysis = conf.clusteranalysis()
-    val featureHistograms = conf.featurehistograms()
-    val statColumns = preProcessStatColumns(conf.statColumns())
-    val featurestoreToQuery = preProcessFeaturestore(conf.featurestore())
+    val sqlQuery = jsonArgs("sqlQuery").as[String]
+    val jdbcString = jsonArgs("jdbcString").as[String]
+    val jdbcArguments = preProcessJdbcArguments(jsonArgs("jdbcArguments"))
+    val featuregroup = jsonArgs("featuregroup").as[String]
+    val description = jsonArgs("description").as[String]
+    val version = jsonArgs("version").as[Int]
+    val descriptiveStats = jsonArgs("descriptiveStats").as[Boolean]
+    val featureCorrelation = jsonArgs("featureCorrelation").as[Boolean]
+    val clusterAnalysis = jsonArgs("clusterAnalysis").as[Boolean]
+    val featureHistograms = jsonArgs("featureHistograms").as[Boolean]
+    val statColumns = jsonArgs("statColumns").as[List[String]]
+    val featurestoreToQuery = preProcessFeaturestore(jsonArgs("featurestore"))
 
     //Setup JDBC
     log.info(s"Setting up JDBC")
@@ -317,34 +278,33 @@ object Main {
       .setStatColumns(statColumns)
       .setDescription(description)
       .setVersion(version).write()
+
   }
 
   /**
     * Creates a training dataset in the featurestore based on command-line arguments
     *
-    * @param conf the command-line arguments
+    * @param jsonArgs the command-line arguments
     * @param log  logger
     */
-  def createTrainingDataset(conf: Conf, log: Logger): Unit = {
-
+  def createTrainingDataset(jsonArgs: JsValue, log: Logger): Unit = {
     //Parse arguments
-    val features = preProcessFeatures(conf.features())
-    val featuregroupsVersionMap = preProcessFeatureGroups(conf.featuregroups())
-    val joinKey = conf.joinkey()
-    val featurestoreToQuery = preProcessFeaturestore(conf.featurestore())
-    val trainingDatasetName = conf.trainingdataset()
-    val trainingDatasetDesc = preProcessDescription(conf.description())
-    val trainingDatasetDataFormat = conf.dataformat()
-    val trainingDatasetVersion = conf.version().toInt
-    val descriptiveStats = conf.descriptivestats()
-    val featureCorrelation = conf.featurecorrelation()
-    val clusterAnalysis = conf.clusteranalysis()
-    val featureHistograms = conf.featurehistograms()
-    val statColumns = preProcessStatColumns(conf.statColumns())
+    val features = preProcessFeatures(jsonArgs("features"))
+    val featuregroupsVersionMap = preProcessFeatureGroups(jsonArgs("featuregroups"))
+    val joinKey = jsonArgs("joinKey").as[String]
+    val featurestoreToQuery = preProcessFeaturestore(jsonArgs("featurestore"))
+    val trainingDatasetName = jsonArgs("trainingDataset").as[String]
+    val trainingDatasetDesc = jsonArgs("description").as[String]
+    val trainingDatasetDataFormat = jsonArgs("dataFormat").as[String]
+    val trainingDatasetVersion = jsonArgs("version").as[Int]
+    val descriptiveStats = jsonArgs("descriptiveStats").as[Boolean]
+    val featureCorrelation = jsonArgs("featureCorrelation").as[Boolean]
+    val clusterAnalysis = jsonArgs("clusterAnalysis").as[Boolean]
+    val featureHistograms = jsonArgs("featureHistograms").as[Boolean]
+    val statColumns = jsonArgs("statColumns").as[List[String]]
 
-    log.info(s"Fetching features: ${
-      conf.features()
-    } from the feature store")
+
+    log.info(s"Fetching features: ${features} from the feature store")
 
     //Get Features
     val featuresDf = Hops.getFeatures(features)
@@ -352,9 +312,7 @@ object Main {
       .setFeaturegroupsAndVersions(featuregroupsVersionMap)
       .read()
 
-    log.info(s"Saving the joined features to a training dataset: ${
-      conf.trainingdataset()
-    }")
+    log.info(s"Saving the joined features to a training dataset: ${trainingDatasetName}")
 
     // Save as Training Dataset
     Hops.createTrainingDataset(trainingDatasetName)
@@ -376,18 +334,18 @@ object Main {
   /**
     * Updates featuregroup statistics based on command-line arguments
     *
-    * @param conf command-line arguments
+    * @param jsonArgs the json arguments
     * @param log  logger
     */
-  def updateFeaturegroupStats(conf: Conf, log: Logger): Unit = {
-    val featuregroup = conf.featuregroup()
-    val version = conf.version().toInt
-    val descriptiveStats = conf.descriptivestats()
-    val featureCorrelation = conf.featurecorrelation()
-    val clusterAnalysis = conf.clusteranalysis()
-    val featureHistograms = conf.featurehistograms()
-    val featurestoreToQuery = preProcessFeaturestore(conf.featurestore())
-    val statColumns = preProcessStatColumns(conf.statColumns())
+  def updateFeaturegroupStats(jsonArgs: JsValue, log: Logger): Unit = {
+    val featuregroup = jsonArgs("featuergroup").as[String]
+    val version = jsonArgs("version").as[Int]
+    val featurestoreToQuery = preProcessFeaturestore(jsonArgs("featurestore"))
+    val descriptiveStats = jsonArgs("descriptiveStats").as[Boolean]
+    val featureCorrelation = jsonArgs("featureCorrelation").as[Boolean]
+    val clusterAnalysis = jsonArgs("clusterAnalysis").as[Boolean]
+    val featureHistograms = jsonArgs("featureHistograms").as[Boolean]
+    val statColumns = jsonArgs("statColumns").as[List[String]]
 
     log.info(s"Updating Feature Group Statistics for Feature Group: ${
       featuregroup
@@ -409,18 +367,18 @@ object Main {
   /**
     * Updates training dataset statistics based on command-line arguments
     *
-    * @param conf command-line arguments
+    * @param jsonArgs input JSON arguments
     * @param log  logger
     */
-  def updateTrainingDatasetStats(conf: Conf, log: Logger): Unit = {
-    val trainingDataset = conf.trainingdataset()
-    val version = conf.version().toInt
-    val descriptiveStats = conf.descriptivestats()
-    val featureCorrelation = conf.featurecorrelation()
-    val clusterAnalysis = conf.clusteranalysis()
-    val featureHistograms = conf.featurehistograms()
-    val featurestoreToQuery = preProcessFeaturestore(conf.featurestore())
-    val statColumns = preProcessStatColumns(conf.statColumns())
+  def updateTrainingDatasetStats(jsonArgs: JsValue, log: Logger): Unit = {
+    val trainingDataset = jsonArgs("trainingDataset").as[String]
+    val version = jsonArgs("version").as[Int]
+    val featurestoreToQuery = preProcessFeaturestore(jsonArgs("featurestore"))
+    val descriptiveStats = jsonArgs("descriptiveStats").as[Boolean]
+    val featureCorrelation = jsonArgs("featureCorrelation").as[Boolean]
+    val clusterAnalysis = jsonArgs("clusterAnalysis").as[Boolean]
+    val featureHistograms = jsonArgs("featureHistograms").as[Boolean]
+    val statColumns = jsonArgs("statColumns").as[List[String]]
 
     log.info(s"Update Training Dataset Stats")
 
