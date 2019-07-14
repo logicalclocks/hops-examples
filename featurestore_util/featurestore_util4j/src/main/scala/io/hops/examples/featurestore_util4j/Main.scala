@@ -338,7 +338,7 @@ object Main {
     * @param log  logger
     */
   def updateFeaturegroupStats(jsonArgs: JsValue, log: Logger): Unit = {
-    val featuregroup = jsonArgs("featuergroup").as[String]
+    val featuregroup = jsonArgs("featuregroup").as[String]
     val version = jsonArgs("version").as[Int]
     val featurestoreToQuery = preProcessFeaturestore(jsonArgs("featurestore"))
     val descriptiveStats = jsonArgs("descriptiveStats").as[Boolean]
