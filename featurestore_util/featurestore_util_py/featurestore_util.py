@@ -3,132 +3,125 @@ featurestore_util.py
 ~~~~~~~~~~
 
 This Python module contains utility functions for starting
-Apache Spark jobs for doing common operations in The Hopsworks Feature Store.
-Such as, (1) creating a training dataset from a set of features. It will take the set of features and a join key as
-input arguments, join the features together into a spark dataframe,
-and write it out as a training dataset; (2) updating feature group or training dataset statistics.
+Apache Spark jobs creating training datasets in the Hopsworks Feature Store.
+It is primarily used for creating training datasets of formats 'petastorm', 'npy' and 'hdf5' as those
+data formats are not supported in the Scala SDK. For other Feature Store Util operations see 'featurestoreutil4j'
 """
 
-from hops import featurestore
+from hops import featurestore, hdfs
 from pyspark.sql import SparkSession
 from pyspark.sql import SQLContext
+import json
 import argparse
 
 def parse_args():
     """Parses the commandline arguments with argparse"""
-    parser = argparse.ArgumentParser(description='Parse flags to configure the json parsing')
-    parser.add_argument("-f", "--features", help="comma separated list of features",
+    parser = argparse.ArgumentParser(description='Input command-line arguments to configure the util4j job')
+    parser.add_argument("-i", "--input", help="path to JSON input arguments",
                         default="")
-    parser.add_argument("-fgs", "--featuregroups", help="comma separated list of featuregroups on the form "
-                                                      "`featuregroup:version` where the features reside",
-                        default="")
-    parser.add_argument("-fs", "--featurestore", help="name of the feature store to apply the operation to",
-                        default=featurestore.project_featurestore())
-    parser.add_argument("-td", "--trainingdataset", help="name of the training dataset",
-                        default="")
-    parser.add_argument("-fg", "--featuregroup", help="name of the feature group",
-                        default="")
-    parser.add_argument("-jk", "--joinkey", help="join key for joining the features together",
-                        default=None)
-    parser.add_argument("-desc", "--description", help="description",
-                        default="")
-    parser.add_argument("-df", "--dataformat", help="format of the training dataset",
-                        default="parquet")
-    parser.add_argument("-v", "--version", help="version",
-                        default="1")
-    parser.add_argument("-ds", "--descriptivestats",
-                        help="flag whether to compute descriptive stats",
-                        action="store_true")
-    parser.add_argument("-fc", "--featurecorrelation",
-                        help="flag whether to compute feature correlations",
-                        action="store_true")
-    parser.add_argument("-ca", "--clusteranalysis",
-                        help="flag whether to compute cluster analysis",
-                        action="store_true")
-    parser.add_argument("-fh", "--featurehistograms",
-                        help="flag whether to compute feature histograms",
-                        action="store_true")
-    parser.add_argument("-sc", "--statcolumns",
-                        help="comma separated list of columns to apply statisics to (if empty use all columns)",
-                        default="")
-    parser.add_argument("-op", "--operation",
-                        help="the feature store operation",
-                        default="create_td")
     args = parser.parse_args()
     return args
+
 
 def setup_spark():
     """
     Setup the spark session
 
-    :return: sparksession, sparkContext, sqlContext
+    Returns:
+        sparksession, sparkContext, sqlContext
     """
     spark=SparkSession.builder.enableHiveSupport().getOrCreate()
     sc=spark.sparkContext
     sqlContext=SQLContext(sc)
     return spark, sc, sqlContext
 
-def pre_process_features(features_str):
-    """
-    Pre process the string passed on command-line
 
-    :param features_str: the strsing passed on command-line
-    :return: a list of features
+def parse_input_json(hdfs_path):
     """
-    if(features_str == ''):
+    Parse input JSON command line arguments for the util job
+
+    Args:
+        :hdfs_path: path to the JSON input on HDFS
+
+    Returns:
+        The parsed JSON (dict)
+    """
+    return json.loads(hdfs.load(hdfs_path))
+
+
+def pre_process_features(features):
+    """
+    Pre process the features passed on command-line
+
+    Args:
+        :features: string with comma-separated features
+
+    Returns:
+        list of features
+    """
+    if(len(features) == 0):
         raise ValueError("features cannot be empty")
-    return features_str.split(",")
+    return features
 
-def pre_process_stat_columns(statcolumns_str):
-    """
-    Pre process the command-line input into a list
 
-    :param statcolumns_str: the string passed on command-line
-    :return: a list of stat columns or None
+def pre_process_stat_columns(statcolumns):
     """
-    if(statcolumns_str == ''):
+    Pre process stat columns passed on command line
+
+    Args:
+        :statcolumns_str: string of comma separated stat-columns
+
+    Returns:
+        the parsed list of stat columns
+    """
+    if(len(statcolumns) == 0):
         return None
     else:
-        return statcolumns_str.split(",")
+        return statcolumns
 
-def pre_process_featuregroups(featuregroups_versions_str):
+
+def pre_process_featuregroups(featuregroups_versions):
     """
     Pre process the command-line input into a dict with fg-->version
 
-    :param featuregroups_versions_str: the string passed on command-line
-    :return: a dict with fg-->version
+    Args:
+        :featuregroups_versions: feature groups json list
+
+    Returns:
+        the parsed dict with fg-->version
     """
-    if(featuregroups_versions_str == ''):
+    if(len(featuregroups_versions) == 0):
         raise ValueError("featuregroups cannot be empty")
-    featuregroups_versions = featuregroups_versions_str.split(",")
     featuregroups_version_dict = {}
-    for fg_v in featuregroups_versions:
-        fg_v_list = fg_v.split(":")
-        featuregroup = fg_v_list[0]
-        version = fg_v_list[1]
-        featuregroups_version_dict[featuregroup] = version
+    for fg in featuregroups_versions:
+        featuregroups_version_dict[fg["name"]] = fg["version"]
     return featuregroups_version_dict
 
-def create_training_dataset(args):
+
+def create_training_dataset(input_json):
     """
     Creates a training dataset based on command-line arguments
 
-    :param args: input arguments
-    :return: None
+    Args:
+        :input_json: input JSON arguments
+
+    Returns:
+        None
     """
-    features = pre_process_features(args.features)
-    featuregroups_version_dict = pre_process_featuregroups(args.featuregroups)
-    join_key = args.joinkey
-    featurestore_query = args.featurestore
-    training_dataset_name = args.trainingdataset
-    training_dataset_desc = args.description
-    training_dataset_data_format = args.dataformat
-    training_dataset_version = args.version
-    descriptive_stats = args.descriptivestats
-    featurecorrelation = args.featurecorrelation
-    clusteranalysis = args.clusteranalysis
-    featurehistograms = args.featurehistograms
-    statcolumns = pre_process_stat_columns(args.statcolumns)
+
+    features = pre_process_features(input_json["features"])
+    featuregroups_version_dict = pre_process_featuregroups(input_json["featuregroups"])
+    join_key = input_json["joinKey"]
+    featurestore_query = input_json["featurestore"]
+    training_dataset_name = input_json["trainingDataset"]
+    training_dataset_desc = input_json["description"]
+    training_dataset_data_format = input_json["dataFormat"]
+    training_dataset_version = input_json["version"]
+    descriptive_stats = input_json["descriptiveStats"]
+    featurecorrelation = input_json["featureCorrelation"]
+    clusteranalysis = input_json["clusterAnalysis"]
+    featurehistograms = input_json["featureHistograms"]
+    statcolumns = pre_process_stat_columns(input_json["statColumns"])
 
     # Get Features
     features_df = featurestore.get_features(
@@ -153,46 +146,6 @@ def create_training_dataset(args):
         stat_columns=statcolumns,
     )
 
-def update_fg_stats(args):
-    """
-    Update feature group statistics based on command-line arguments
-
-    :param args: command-line arguments
-    :return: None
-    """
-    featuregroup = args.featuregroup
-    version = args.version
-    descriptive_stats = args.descriptivestats
-    featurecorrelation = args.featurecorrelation
-    clusteranalysis = args.clusteranalysis
-    featurehistograms = args.featurehistograms
-    featurestore_query = args.featurestore
-    statcolumns = pre_process_stat_columns(args.statcolumns)
-    featurestore.update_featuregroup_stats(featuregroup, featuregroup_version=version,
-                                           featurestore=featurestore_query, descriptive_statistics=descriptive_stats,
-                                           feature_correlation=featurecorrelation, feature_histograms=featurehistograms,
-                                           cluster_analysis=clusteranalysis, stat_columns=statcolumns)
-
-
-def update_td_stats(args):
-    """
-    Update training dataset statistics based on command-line arguments
-
-    :param args: command-line arguments
-    :return: None
-    """
-    training_dataset = args.trainingdataset
-    version = args.version
-    descriptive_stats = args.descriptivestats
-    featurecorrelation = args.featurecorrelation
-    clusteranalysis = args.clusteranalysis
-    featurehistograms = args.featurehistograms
-    featurestore_query = args.featurestore
-    statcolumns = pre_process_stat_columns(args.statcolumns)
-    featurestore.update_training_dataset_stats(training_dataset, training_dataset_version=version,
-                                           featurestore=featurestore_query, descriptive_statistics=descriptive_stats,
-                                           feature_correlation=featurecorrelation, feature_histograms=featurehistograms,
-                                           cluster_analysis=clusteranalysis, stat_columns=statcolumns)
 
 def main():
     """
@@ -204,15 +157,18 @@ def main():
     # Setup Arguments
     args = parse_args()
 
+    # Parse input JSON
+    if args.input is None:
+        raise ValueError("Input path to JSON file cannot be None")
+    input_json = parse_input_json(args.input)
+
     # Perform Operation
-    if args.operation == "create_td":
-        create_training_dataset(args)
-
-    if args.operation == "update_fg_stats":
-        update_fg_stats(args)
-
-    if args.operation == "update_td_stats":
-        update_td_stats(args)
+    if input_json["operation"] == "create_td":
+        create_training_dataset(input_json)
+    else:
+        raise ValueError("Unrecognized featurestore util py operation: {}. The Python util job only supports the "
+                         "operation 'create_td', for other operations, "
+                         "see the featurestoreutil4j job.".format(input_json["operation"]))
 
     #Cleanup
     spark.close()

@@ -18,6 +18,7 @@ object ComputeFeatures {
   val TEAMS_FEATUREGROUP = "teams_features"
   val GAMES_DATASET_FILE = "games.csv"
   val GAMES_FEATUREGROUP = "games_features"
+  val GAMES_FEATUREGROUP_TOUR_ON_DEMAND = "games_features_on_demand_tour"
   val PLAYERS_DATASET_FILE = "players.csv"
   val PLAYERS_FEATUREGROUP = "players_features"
   val ATTENDANCES_DATASET_FILE = "attendances.csv"
@@ -102,6 +103,18 @@ object ComputeFeatures {
     Hops.createFeaturegroup(GAMES_FEATUREGROUP).setDataframe(rawDs.toDF)
       .setDescription("Features of games").setPrimaryKey("home_team_id").write
     log.info(s"Creation of featuregroup $GAMES_FEATUREGROUP complete")
+
+    log.info(s"Creating on-demand featuregroup $GAMES_FEATUREGROUP_TOUR_ON_DEMAND version $FEATUREGROUP_VERSION in " +
+      s"featurestore $featurestore")
+    Hops.createFeaturegroup(GAMES_FEATUREGROUP).setDataframe(rawDs.toDF)
+      .setDescription("Features of games").setPrimaryKey("home_team_id").write
+    val storageConnector = Hops.getProjectName() + "_featurestore"
+    val query = "SELECT * FROM games_features_1 WHERE score > 1"
+    Hops.createFeaturegroup(GAMES_FEATUREGROUP_TOUR_ON_DEMAND).setOnDemand(true)
+                                                              .setJdbcConnector(storageConnector)
+                                                              .setSqlQuery(query)
+                                                              .write()
+    log.info(s"Creation of on-demand featuregroup $GAMES_FEATUREGROUP_TOUR_ON_DEMAND complete")
   }
 
   /**

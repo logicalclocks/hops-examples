@@ -1,54 +1,15 @@
-# Feature Store Util - Training Dataset Creation 
+# Feature Store Util - Python Client 
 
-## `featurestore_create_training_dataset.py`
+## `featurestore_util.py`
 
 A utility program for launching spark jobs to do common operations in the Hopsworks Feature Store such as (1) 
-creating training datasets; (2) computing feature statistics.
+creating training datasets; (2) computing feature statistics. This client is primarily used to create training datasets 
+in the Hopsworks Feature Store that requires python libraries that are not accessible in featurestoreutil4j which contains
+a richer set of functionalities.
 
 ### Usage
 
 Submit as a Spark Job on Hopsworks and configure it using the command line parameters. 
-
-To create a training dataset called ```test_td_job``` with version ```1``` and format ```parquet``` consisting of the features 
-```sum_player_age,sum_player_rating,sum_attendance,average_attendance``` from the feature groups 
-```attendances_features,players_features``` with versions ```1,1``` use the following command line parameters:
-
-```bash
---features "sum_player_age,sum_player_rating,sum_attendance,average_attendance" \
---featuregroups "attendances_features:1,players_features:1" \
---trainingdataset "test_td_job" \
---version "1" \
---dataformat "parquet" \
---joinkey "team_id" \
---description "test create_td job"
-```
-
-To update the feature statistics for a training dataset called ```test_java_td``` with version ```1``` use the 
-following command line parameters:
-```bash
---trainingdataset 'test_java_td' \ 
---operation 'update_td_stats'  \
---descriptivestats  \
---featurecorrelation \
---clusteranalysis \
---featurehistograms \
---version '1' \ 
---featurestore 'demo_featurestore_admin000_featurestore' \a
-```
-
-To update the feature statistics for a feature group called ```pandas_test_example``` with version ```1``` use the 
-following command line parameters:
-```bash
---featuregroup 'pandas_test_example' 
---operation 'update_fg_stats' 
---descriptivestats
---featurecorrelation 
---clusteranalysis 
---featurehistograms 
---version '1' 
---featurestore 
-'demo_featurestore_admin000_featurestore' 
-```
 
 ### Options
 

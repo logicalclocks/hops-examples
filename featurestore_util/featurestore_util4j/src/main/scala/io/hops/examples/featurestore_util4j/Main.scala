@@ -3,8 +3,8 @@ package io.hops.examples.featurestore_util4j
 import org.apache.log4j.{Level, LogManager, Logger}
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.SparkConf
-import org.apache.spark.sql.jdbc.{JdbcDialects, JdbcType, JdbcDialect}
 import io.hops.util.Hops
+import io.hops.util.featurestore.FeaturestoreHelper
 import org.rogach.scallop.ScallopConf
 import play.api.libs.json._
 import scala.collection.JavaConversions._
@@ -93,20 +93,6 @@ object Main {
     val filteredJsonLines = jsonLines.filterNot(controlCode).filterNot(extendedCode)
     val parsedJson = Json.parse(filteredJsonLines)
     return parsedJson
-  }
-
-  /**
-    * Setup JDBC dialect to work with Hive (default one in Spark don't)
-    */
-  def setupJdbc(): Unit = {
-    val HiveDialect = new JdbcDialect {
-      override def canHandle(url: String): Boolean = url.startsWith("jdbc:hive2") || url.contains("hive2")
-
-      override def quoteIdentifier(colName: String): String = {
-        s"$colName"
-      }
-    }
-    JdbcDialects.registerDialect(HiveDialect)
   }
 
   /**
@@ -248,7 +234,7 @@ object Main {
 
     //Setup JDBC
     log.info(s"Setting up JDBC")
-    setupJdbc()
+    FeaturestoreHelper.registerCustomJdbcDialects
     var driver = ""
     if(jdbcString.startsWith("jdbc:hive2") || jdbcString.contains("hive2")){
       driver = "org.apache.hive.jdbc.HiveDriver"
