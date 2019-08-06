@@ -22,7 +22,7 @@
   <packaging>pom</packaging>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <spark.version>2.4.0</spark.version>
+    <spark.version>2.4.3.0</spark.version>
     <scala.base>2.11</scala.base>
     <scala.version>2.11.12</scala.version>
     <hops.version>2.8.2.8</hops.version>
