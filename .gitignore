@@ -10,3 +10,4 @@
 /logs
 .idea/*
 *.iml
+*/.idea/*
