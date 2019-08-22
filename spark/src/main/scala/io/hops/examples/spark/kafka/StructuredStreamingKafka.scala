@@ -75,6 +75,7 @@ object StructuredStreamingKafka {
         option("kafka.ssl.keystore.location", Hops.getKeyStore).
         option("kafka.ssl.keystore.password", Hops.getKeystorePwd).
         option("kafka.ssl.key.password", Hops.getKeystorePwd).
+        option("kafka.ssl.endpoint.identification.algorithm", "").
         option("topic", topic).save()
 
 
@@ -89,6 +90,7 @@ object StructuredStreamingKafka {
         option("kafka.ssl.keystore.location", Hops.getKeyStore).
         option("kafka.ssl.keystore.password", Hops.getKeystorePwd).
         option("kafka.ssl.key.password", Hops.getKeystorePwd).
+        option("kafka.ssl.endpoint.identification.algorithm", "").
         load()
 
       val logsDF = dfFromKafka.select(from_avro(col("value"), Hops.getSchema(topic)) as 'logs)
