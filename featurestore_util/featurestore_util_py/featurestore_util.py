@@ -61,7 +61,14 @@ def pre_process_features(features):
     """
     if(len(features) == 0):
         raise ValueError("features cannot be empty")
+    features = list(map(lambda f: convert_dict_feature_to_name(f), features))
     return features
+
+
+def convert_dict_feature_to_name(feature):
+    if type(feature) is dict:
+        return feature["name"]
+    return feature
 
 
 def pre_process_stat_columns(statcolumns):
