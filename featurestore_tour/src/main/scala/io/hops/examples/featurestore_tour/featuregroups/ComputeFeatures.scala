@@ -4,11 +4,12 @@ import org.apache.log4j.Logger
 import org.apache.spark.sql.SparkSession
 import io.hops.util.Hops
 import collection.JavaConverters._
+import scala.collection.JavaConversions._
 import org.apache.spark.sql.Row
 
 /**
- * Contains logic for computing feature grups for the Hops Feature Store Demo Project
- */
+  * Contains logic for computing feature grups for the Hops Feature Store Demo Project
+  */
 object ComputeFeatures {
 
   /**
@@ -19,12 +20,14 @@ object ComputeFeatures {
   val GAMES_DATASET_FILE = "games.csv"
   val GAMES_FEATUREGROUP = "games_features"
   val GAMES_FEATUREGROUP_TOUR_ON_DEMAND = "games_features_on_demand_tour"
+  val GAMES_FEATUREGROUP_TOUR_HUDI = "games_features_hudi_tour"
   val PLAYERS_DATASET_FILE = "players.csv"
   val PLAYERS_FEATUREGROUP = "players_features"
   val ATTENDANCES_DATASET_FILE = "attendances.csv"
   val ATTENDANCES_FEATUREGROUP = "attendances_features"
   val SEASON_SCORES_DATASET_FILE = "season_scores.csv"
   val SEASON_SCORES_FEATUREGROUP = "season_scores_features"
+  val TOUR_TRAINING_DATASET = "tour_training_dataset_test"
 
   val FEATUREGROUP_VERSION = 1
   val SLASH_DELIMITER = "/"
@@ -33,64 +36,64 @@ object ComputeFeatures {
     * Case classes for parsing the CSV data into typed spark dataframes
     */
   case class RawTeam(
-    team_budget: Double,
-    team_id: Int,
-    team_name: String,
-    team_owner: String,
-    team_position: Int)
+                      team_budget: Double,
+                      team_id: Int,
+                      team_name: String,
+                      team_owner: String,
+                      team_position: Int)
 
   case class TeamFeature(
-    team_budget: Float,
-    team_id: Int,
-    team_position: Int)
+                          team_budget: Float,
+                          team_id: Int,
+                          team_position: Int)
 
   case class RawPlayer(
-    age: Int,
-    rating: Double,
-    team_id: Int,
-    worth: Double)
+                        age: Int,
+                        rating: Double,
+                        team_id: Int,
+                        worth: Double)
 
   case class PlayersTeamFeature(
-    team_id: Int,
-    average_player_rating: Float,
-    average_player_age: Float,
-    average_player_worth: Float,
-    sum_player_rating: Float,
-    sum_player_age: Float,
-    sum_player_worth: Float)
+                                 team_id: Int,
+                                 average_player_rating: Float,
+                                 average_player_age: Float,
+                                 average_player_worth: Float,
+                                 sum_player_rating: Float,
+                                 sum_player_age: Float,
+                                 sum_player_worth: Float)
 
   case class RawAttendance(
-    attendance: Double,
-    team_id: Int,
-    year: Int)
+                            attendance: Double,
+                            team_id: Int,
+                            year: Int)
 
   case class AttendanceTeamFeature(
-    team_id: Int,
-    average_attendance: Float,
-    sum_attendance: Float)
+                                    team_id: Int,
+                                    average_attendance: Float,
+                                    sum_attendance: Float)
 
   case class RawSeasonScore(
-    position: Int,
-    team_id: Int,
-    year: Int)
+                             position: Int,
+                             team_id: Int,
+                             year: Int)
 
   case class SeasonScoreTeamFeature(
-    team_id: Int,
-    average_position: Float,
-    sum_position: Float)
+                                     team_id: Int,
+                                     average_position: Float,
+                                     sum_position: Float)
 
   case class RawGame(
-    away_team_id: Int,
-    home_team_id: Int,
-    score: Int)
+                      away_team_id: Int,
+                      home_team_id: Int,
+                      score: Int)
 
   val featurestore = Hops.getProjectFeaturestore.read
 
   /**
     * Compute features from games.csv and save to a new feature group called games_features
     *
-    * @param spark the spark session
-    * @param log the spark logger
+    * @param spark       the spark session
+    * @param log         the spark logger
     * @param datasetPath the path to the dataset where games.csv resides
     */
   def computeGamesFeatureGroup(spark: SparkSession, log: Logger, datasetPath: String): Unit = {
@@ -106,22 +109,31 @@ object ComputeFeatures {
 
     log.info(s"Creating on-demand featuregroup $GAMES_FEATUREGROUP_TOUR_ON_DEMAND version $FEATUREGROUP_VERSION in " +
       s"featurestore $featurestore")
-    Hops.createFeaturegroup(GAMES_FEATUREGROUP).setDataframe(rawDs.toDF)
-      .setDescription("Features of games").setPrimaryKey("home_team_id").write
     val storageConnector = Hops.getProjectName() + "_featurestore"
     val query = "SELECT * FROM games_features_1 WHERE score > 1"
     Hops.createFeaturegroup(GAMES_FEATUREGROUP_TOUR_ON_DEMAND).setOnDemand(true)
-                                                              .setJdbcConnector(storageConnector)
-                                                              .setSqlQuery(query)
-                                                              .write()
+      .setDescription("Features of games, on demand feature group example")
+      .setJdbcConnector(storageConnector)
+      .setSqlQuery(query)
+      .write()
     log.info(s"Creation of on-demand featuregroup $GAMES_FEATUREGROUP_TOUR_ON_DEMAND complete")
+    log.info(s"Creating hudi featuregroup $GAMES_FEATUREGROUP_TOUR_HUDI version $FEATUREGROUP_VERSION in " +
+      s"featurestore $featurestore")
+    val partitionCols = List("score")
+    Hops.createFeaturegroup(GAMES_FEATUREGROUP_TOUR_HUDI)
+      .setHudi(true)
+      .setDescription("Features of games, HUDI feature group example")
+      .setPartitionBy(partitionCols)
+      .setDataframe(rawDs.toDF)
+      .setPrimaryKey("home_team_id").write
+    log.info(s"Creation Hudi featuregroup $GAMES_FEATUREGROUP_TOUR_HUDI complete")
   }
 
   /**
     * Compute features from season_scores.csv and save to a new feature group called season_scores_features
     *
-    * @param spark the spark session
-    * @param log the spark logger
+    * @param spark       the spark session
+    * @param log         the spark logger
     * @param datasetPath the path to the dataset where season_scores.csv resides
     */
   def computeSeasonScoresFeatureGroup(spark: SparkSession, log: Logger, datasetPath: String): Unit = {
@@ -153,8 +165,8 @@ object ComputeFeatures {
   /**
     * Compute features from attendances.csv and save to a new feature group called attendances_features
     *
-    * @param spark the spark session
-    * @param log the spark logger
+    * @param spark       the spark session
+    * @param log         the spark logger
     * @param datasetPath the path to the dataset where attendances.csv resides
     */
   def computeAttendanceFeatureGroup(spark: SparkSession, log: Logger, datasetPath: String): Unit = {
@@ -186,8 +198,8 @@ object ComputeFeatures {
   /**
     * Compute features from players.csv and save to a new feature group called players_features
     *
-    * @param spark the spark session
-    * @param log the spark logger
+    * @param spark       the spark session
+    * @param log         the spark logger
     * @param datasetPath the path to the dataset where players.csv resides
     */
   def computePlayersFeatureGroup(spark: SparkSession, log: Logger, datasetPath: String): Unit = {
@@ -227,8 +239,8 @@ object ComputeFeatures {
   /**
     * Compute features from teams.csv and save to a new feature group called teams_features
     *
-    * @param spark the spark session
-    * @param log the spark logger
+    * @param spark       the spark session
+    * @param log         the spark logger
     * @param datasetPath the path to the dataset where teams.csv resides
     */
   def computeTeamsFeatureGroup(spark: SparkSession, log: Logger, datasetPath: String): Unit = {
@@ -240,12 +252,26 @@ object ComputeFeatures {
     val featureDs = rawDs.map((rawTeam: RawTeam) => TeamFeature(team_budget = rawTeam.team_budget.toFloat, team_id = rawTeam.team_id, team_position = rawTeam.team_position))
     val description = "Features of football teams"
     val primaryKey = "team_id"
-    val jobName : String = null
+    val jobName: String = null
     log.info(s"Creating featuregroup $TEAMS_FEATUREGROUP version $FEATUREGROUP_VERSION in featurestore $featurestore")
     Hops.createFeaturegroup(TEAMS_FEATUREGROUP).setDataframe(featureDs.toDF)
       .setDescription("Features of football teams").setPrimaryKey("team_id")
       .write
     log.info(s"Creation of featuregroup $TEAMS_FEATUREGROUP complete")
+  }
+
+  /**
+    * Creates a sample training dataset for the tour
+    */
+  def createTrainingDataset(log: Logger): Unit = {
+    log.info(s"Creating Training Dataset: $TOUR_TRAINING_DATASET")
+    val features = List("team_budget", "average_attendance", "average_player_age")
+    val featuresDf = Hops.getFeatures(features).read
+    Hops.createTrainingDataset("tour_training_dataset_test")
+      .setDataframe(featuresDf)
+      .setDescription("Sample Training Dataset for the Feature store Tour")
+      .setVersion(1)
+      .write
   }
 
 }
