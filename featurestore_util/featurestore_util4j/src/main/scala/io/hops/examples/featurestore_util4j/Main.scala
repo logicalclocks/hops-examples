@@ -88,10 +88,7 @@ object Main {
     val inputStream =hdfs.open(filePath)
     val reader = new BufferedReader(new InputStreamReader(inputStream))
     val jsonLines = reader.readLine()
-    val controlCode : (Char) => Boolean = (c:Char) => (c <= 32 || c == 127)
-    val extendedCode : (Char) => Boolean = (c:Char) => (c <= 32 || c > 127)
-    val filteredJsonLines = jsonLines.filterNot(controlCode).filterNot(extendedCode)
-    val parsedJson = Json.parse(filteredJsonLines)
+    val parsedJson = Json.parse(jsonLines)
     return parsedJson
   }
 
@@ -188,6 +185,7 @@ object Main {
     val featureHistograms = jsonArgs("featureHistograms").as[Boolean]
     val statColumns = jsonArgs("statColumns").as[List[String]]
     val featurestoreToQuery = preProcessFeaturestore(jsonArgs("featurestore"))
+    val online = jsonArgs("online").as[Boolean]
 
     //Run SparkSQL Command
     log.info(s"Running SQL Command: ${sqlQuery} against database: ${hiveDb}")
@@ -206,6 +204,7 @@ object Main {
       .setClusterAnalysis(clusterAnalysis)
       .setStatColumns(statColumns)
       .setDescription(description)
+      .setOnline(online)
       .setVersion(version).write()
   }
 
@@ -231,6 +230,7 @@ object Main {
     val featureHistograms = jsonArgs("featureHistograms").as[Boolean]
     val statColumns = jsonArgs("statColumns").as[List[String]]
     val featurestoreToQuery = preProcessFeaturestore(jsonArgs("featurestore"))
+    val online = jsonArgs("online").as[Boolean]
 
     //Setup JDBC
     log.info(s"Setting up JDBC")
@@ -263,6 +263,7 @@ object Main {
       .setClusterAnalysis(clusterAnalysis)
       .setStatColumns(statColumns)
       .setDescription(description)
+      .setOnline(online)
       .setVersion(version).write()
 
   }
