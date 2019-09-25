@@ -52,7 +52,15 @@ args = {
     # DAG should have run 10 minutes before now
     # It will be automatically scheduled to run
     # when we upload the file in Hopsworks
-    'start_date': now + delta
+    'start_date': now + delta,
+
+    # Uncomment the following line if you want Airflow
+    # to authenticate to Hopsworks using API key
+    # instead of JWT
+    #
+    # NOTE: Edit only YOUR_API_KEY
+    #
+    #'params': {'hw_api_key': 'YOUR_API_KEY'}
 }
 
 # Our DAG
