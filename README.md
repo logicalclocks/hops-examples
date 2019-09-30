@@ -78,6 +78,32 @@ here: [Featurestore Documentation](https://hopsworks.readthedocs.io/en/latest/us
 
 API documentation is available here: [Featurestore API Docs](http://hops-py.logicalclocks.com/).
 
+
+
+# TensorFlow Extended (TFX)
+
+This repo comes with notebooks demonstrating how to implement horizontally scalable TFX pipelines. The 
+``chicago_taxi_tfx_hopsworks`` notebook contains all the steps of the pipeline along with visualizations. It is based
+on the TFX Chicago taxi rides example but uses a smaller slice of the original dataset. The notebook downloads the 
+dataset into Hopsworks and then calls the TFX components to go all the way from data preparation to model analysis.
+ 
+That notebook then is split into smaller ones that correspond to the different steps in the pipeline. These notebooks
+can be found under the ``notebookstfx/chicago_taxi/pipeline`` directory in this repo. To execute these, you need to 
+create one Hopsworks Spark job per notebook and then use the Apache Airflow dag ``chicago_tfx_airflow_pipeline.py`` 
+provided in this repo to orchestrate them. Please refer to the Apache Airflow section of the user guide on how to 
+upload manage your dags. There is also a ``Visualizations`` notebook that runs the visualizations steps of the 
+pipeline and can be executed at any time, as the output of the pipeline (statistics, schema, etc.) is persisted to 
+the ``Resources`` dataset in your project. You can catch a demo of the pipeline [here](https://www.youtube
+.com/watch?v=v1DrnY8caVU).
+
+# Beam
+
+Under ``notebooks/beam`` you can find the ``portability_wordcount_python`` notebook, which guides you through running
+a WordCount program in a Python Portable Beam Pipeline. You can download the notebook from this repo, upload it in 
+your Hopsworks project and just run it! Hopsworks transparently manages the entire lifecycle of the notebook and the 
+Beam related services and components.
+
+
 # Hive
 `HiveJDBCClient.java` available in `hops-examples-hive`      }
 , shows how users can remotely execute Hive queries against their Hopsworks projects' Hive databases. Firstly, it 
