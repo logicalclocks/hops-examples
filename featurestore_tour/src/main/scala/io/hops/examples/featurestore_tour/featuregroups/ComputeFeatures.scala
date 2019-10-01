@@ -156,9 +156,13 @@ object ComputeFeatures {
         sum_position = sumPosition)
     })
     log.info(s"Creating featuregroup $SEASON_SCORES_FEATUREGROUP version $FEATUREGROUP_VERSION in featurestore $featurestore")
-    Hops.createFeaturegroup(SEASON_SCORES_FEATUREGROUP).setDataframe(featureDs.toDF)
+    var createFgOp = Hops.createFeaturegroup(SEASON_SCORES_FEATUREGROUP).setDataframe(featureDs.toDF)
       .setDescription("Features of average season scores for football teams").setPrimaryKey("team_id")
-      .write
+      .setPrimaryKey("team_id")
+    if(Hops.getFeaturestoreMetadata.read.getFeaturestore.getOnlineEnabled) {
+      createFgOp = createFgOp.setOnline(true)
+    }
+    createFgOp.write
     log.info(s"Creation of featuregroup $SEASON_SCORES_FEATUREGROUP complete")
   }
 
