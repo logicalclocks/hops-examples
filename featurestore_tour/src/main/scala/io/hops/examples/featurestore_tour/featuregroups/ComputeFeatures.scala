@@ -117,16 +117,16 @@ object ComputeFeatures {
       .setSqlQuery(query)
       .write()
     log.info(s"Creation of on-demand featuregroup $GAMES_FEATUREGROUP_TOUR_ON_DEMAND complete")
-    log.info(s"Creating hudi featuregroup $GAMES_FEATUREGROUP_TOUR_HUDI version $FEATUREGROUP_VERSION in " +
-      s"featurestore $featurestore")
-    val partitionCols = List("score")
-    Hops.createFeaturegroup(GAMES_FEATUREGROUP_TOUR_HUDI)
-      .setHudi(true)
-      .setDescription("Features of games, HUDI feature group example")
-      .setPartitionBy(partitionCols)
-      .setDataframe(rawDs.toDF)
-      .setPrimaryKey("home_team_id").write
-    log.info(s"Creation Hudi featuregroup $GAMES_FEATUREGROUP_TOUR_HUDI complete")
+    //log.info(s"Creating hudi featuregroup $GAMES_FEATUREGROUP_TOUR_HUDI version $FEATUREGROUP_VERSION in " +
+    //  s"featurestore $featurestore")
+    //val partitionCols = List("score")
+    //Hops.createFeaturegroup(GAMES_FEATUREGROUP_TOUR_HUDI)
+    //  .setHudi(true)
+    //  .setDescription("Features of games, HUDI feature group example")
+    //  .setPartitionBy(partitionCols)
+    //  .setDataframe(rawDs.toDF)
+    //  .setPrimaryKey("home_team_id").write
+    //log.info(s"Creation Hudi featuregroup $GAMES_FEATUREGROUP_TOUR_HUDI complete")
   }
 
   /**
