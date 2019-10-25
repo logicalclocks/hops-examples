@@ -104,7 +104,7 @@ object ComputeFeatures {
     val rawDs = rawDf.as[RawGame]
     log.info(s"Creating featuregroup $GAMES_FEATUREGROUP version $FEATUREGROUP_VERSION in featurestore $featurestore")
     Hops.createFeaturegroup(GAMES_FEATUREGROUP).setDataframe(rawDs.toDF)
-      .setDescription("Features of games").setPrimaryKey("home_team_id").write
+      .setDescription("Features of games").setPrimaryKeys(List("home_team_id")).write
     log.info(s"Creation of featuregroup $GAMES_FEATUREGROUP complete")
 
     log.info(s"Creating on-demand featuregroup $GAMES_FEATUREGROUP_TOUR_ON_DEMAND version $FEATUREGROUP_VERSION in " +
@@ -125,7 +125,7 @@ object ComputeFeatures {
       .setDescription("Features of games, HUDI feature group example")
       .setPartitionBy(partitionCols)
       .setDataframe(rawDs.toDF)
-      .setPrimaryKey("home_team_id").write
+      .setPrimaryKeys(List("home_team_id")).write
     log.info(s"Creation Hudi featuregroup $GAMES_FEATUREGROUP_TOUR_HUDI complete")
   }
 
@@ -157,8 +157,7 @@ object ComputeFeatures {
     })
     log.info(s"Creating featuregroup $SEASON_SCORES_FEATUREGROUP version $FEATUREGROUP_VERSION in featurestore $featurestore")
     var createFgOp = Hops.createFeaturegroup(SEASON_SCORES_FEATUREGROUP).setDataframe(featureDs.toDF)
-      .setDescription("Features of average season scores for football teams").setPrimaryKey("team_id")
-      .setPrimaryKey("team_id")
+      .setDescription("Features of average season scores for football teams").setPrimaryKeys(List("team_id"))
     if(Hops.getFeaturestoreMetadata.read.getFeaturestore.getOnlineEnabled) {
       createFgOp = createFgOp.setOnline(true)
     }
@@ -194,7 +193,7 @@ object ComputeFeatures {
     })
     log.info(s"Creating featuregroup $ATTENDANCES_FEATUREGROUP version $FEATUREGROUP_VERSION in featurestore $featurestore")
     Hops.createFeaturegroup(ATTENDANCES_FEATUREGROUP).setDataframe(featureDs.toDF)
-      .setDescription("Features of average attendance of games of football teams").setPrimaryKey("team_id")
+      .setDescription("Features of average attendance of games of football teams").setPrimaryKeys(List("team_id"))
       .write
     log.info(s"Creation of featuregroup $ATTENDANCES_FEATUREGROUP complete")
   }
@@ -235,7 +234,7 @@ object ComputeFeatures {
     })
     log.info(s"Creating featuregroup $PLAYERS_FEATUREGROUP version $FEATUREGROUP_VERSION in featurestore $featurestore")
     Hops.createFeaturegroup(PLAYERS_FEATUREGROUP).setDataframe(featureDs.toDF)
-      .setDescription("Aggregate features of players football teams").setPrimaryKey("team_id")
+      .setDescription("Aggregate features of players football teams").setPrimaryKeys(List("team_id"))
       .write
     log.info(s"Creation of featuregroup $PLAYERS_FEATUREGROUP complete")
   }
@@ -259,7 +258,7 @@ object ComputeFeatures {
     val jobName: String = null
     log.info(s"Creating featuregroup $TEAMS_FEATUREGROUP version $FEATUREGROUP_VERSION in featurestore $featurestore")
     Hops.createFeaturegroup(TEAMS_FEATUREGROUP).setDataframe(featureDs.toDF)
-      .setDescription("Features of football teams").setPrimaryKey("team_id")
+      .setDescription("Features of football teams").setPrimaryKeys(List("team_id"))
       .write
     log.info(s"Creation of featuregroup $TEAMS_FEATUREGROUP complete")
   }
