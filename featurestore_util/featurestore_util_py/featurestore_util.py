@@ -182,7 +182,7 @@ def main():
                          "see the featurestoreutil4j job.".format(input_json["operation"]))
 
     #Cleanup
-    spark.close()
+    spark.stop()
 
     return None
 
