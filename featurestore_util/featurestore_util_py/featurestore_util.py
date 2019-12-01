@@ -129,6 +129,8 @@ def create_training_dataset(input_json):
     clusteranalysis = input_json["clusterAnalysis"]
     featurehistograms = input_json["featureHistograms"]
     statcolumns = pre_process_stat_columns(input_json["statColumns"])
+    sink = input_json["sink"] if "sink" in input_json else None
+    path = input_json["path"] if "path" in input_json else None
 
     # Get Features
     features_df = featurestore.get_features(
@@ -151,6 +153,8 @@ def create_training_dataset(input_json):
         feature_histograms=clusteranalysis,
         cluster_analysis=featurehistograms,
         stat_columns=statcolumns,
+        sink=sink,
+        path=path
     )
 
 

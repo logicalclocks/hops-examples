@@ -289,6 +289,8 @@ object Main {
     val clusterAnalysis = jsonArgs("clusterAnalysis").as[Boolean]
     val featureHistograms = jsonArgs("featureHistograms").as[Boolean]
     val statColumns = jsonArgs("statColumns").as[List[String]]
+    val sink = (jsonArgs \ "sink").asOpt[String].getOrElse(null)
+    val path = (jsonArgs \ "path").asOpt[String].getOrElse(null)
 
 
     log.info(s"Fetching features: ${features} from the feature store")
@@ -313,6 +315,8 @@ object Main {
       .setFeatureHistograms(featureHistograms)
       .setClusterAnalysis(clusterAnalysis)
       .setStatColumns(statColumns)
+      .setSink(sink)
+      .setPath(path)
       .write()
 
     log.info(s"Training Dataset Saved Successfully")
