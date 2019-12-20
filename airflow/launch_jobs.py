@@ -80,6 +80,7 @@ task0 = HopsworksLaunchOperator(dag=dag,
                                 project_name=PROJECT_NAME,
                                 # Arbitrary task name
                                 task_id="run_{0}".format(JOB_NAME_0),
+                                #job_arguments="--key val", #runtime arguments to be passed to the job
                                 job_name=JOB_NAME_0)
 
 # Second task of DAG
@@ -87,6 +88,7 @@ task1 = HopsworksLaunchOperator(dag=dag,
                                 project_name=PROJECT_NAME,
                                 # Arbitrary task name
                                 task_id="run_{0}".format(JOB_NAME_1),
+                                #job_arguments="--key val", #runtime arguments to be passed to the job
                                 job_name=JOB_NAME_1,
 
                                 # Do not wait for the job to complete
@@ -97,6 +99,7 @@ task2 = HopsworksLaunchOperator(dag=dag,
                                 project_name=PROJECT_NAME,
                                 # Arbitrary task name
                                 task_id="run_{0}".format(JOB_NAME_2),
+				#job_arguments="--key val", #runtime arguments to be passed to the job
                                 job_name=JOB_NAME_2,
 
                                 # Do not wait for the job to complete
@@ -107,6 +110,7 @@ task3 = HopsworksLaunchOperator(dag=dag,
                                 project_name=PROJECT_NAME,
                                 # Arbitrary task name
                                 task_id="run_{0}".format(JOB_NAME_3),
+                                #job_arguments="--key val", #runtime arguments to be passed to the job
                                 job_name=JOB_NAME_3,
 
                                 # Do not wait for the job to complete
