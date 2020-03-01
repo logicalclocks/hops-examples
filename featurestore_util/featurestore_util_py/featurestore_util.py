@@ -119,6 +119,7 @@ def create_training_dataset(input_json):
     features = pre_process_features(input_json["features"])
     featuregroups_version_dict = pre_process_featuregroups(input_json["featuregroups"])
     join_key = input_json["joinKey"]
+    training_dataset_desc = input_json["description"]
     featurestore_query = input_json["featurestore"]
     training_dataset_name = input_json["trainingDataset"]
     training_dataset_data_format = input_json["dataFormat"]
@@ -173,16 +174,12 @@ def insert_into_training_dataset(input_json):
     join_key = input_json["joinKey"]
     featurestore_query = input_json["featurestore"]
     training_dataset_name = input_json["trainingDataset"]
-    training_dataset_desc = input_json["description"]
-    training_dataset_data_format = input_json["dataFormat"]
     training_dataset_version = input_json["version"]
     descriptive_stats = input_json["descriptiveStats"]
     featurecorrelation = input_json["featureCorrelation"]
     clusteranalysis = input_json["clusterAnalysis"]
     featurehistograms = input_json["featureHistograms"]
     statcolumns = pre_process_stat_columns(input_json["statColumns"])
-    sink = input_json["sink"] if "sink" in input_json else None
-    path = input_json["path"] if "path" in input_json else None
 
     # Get Features
     features_df = featurestore.get_features(
@@ -197,7 +194,6 @@ def insert_into_training_dataset(input_json):
     featurestore.insert_into_training_dataset(
         features_df, training_dataset_name,
         featurestore=featurestore_query,
-        data_format=training_dataset_data_format,
         training_dataset_version=int(training_dataset_version),
         descriptive_statistics=descriptive_stats,
         feature_correlation=featurecorrelation,
