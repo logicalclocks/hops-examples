@@ -121,7 +121,6 @@ def create_training_dataset(input_json):
     join_key = input_json["joinKey"]
     featurestore_query = input_json["featurestore"]
     training_dataset_name = input_json["trainingDataset"]
-    training_dataset_desc = input_json["description"]
     training_dataset_data_format = input_json["dataFormat"]
     training_dataset_version = input_json["version"]
     descriptive_stats = input_json["descriptiveStats"]
@@ -197,7 +196,6 @@ def insert_into_training_dataset(input_json):
     # Save as Training Dataset
     featurestore.insert_into_training_dataset(
         features_df, training_dataset_name,
-        description=training_dataset_desc,
         featurestore=featurestore_query,
         data_format=training_dataset_data_format,
         training_dataset_version=int(training_dataset_version),
@@ -228,7 +226,7 @@ def main():
     # Perform Operation
     if input_json["operation"] == "create_td":
         create_training_dataset(input_json)
-    elif input_json["operation"] == "insert_into_td": 
+    elif input_json["operation"] == "insert_into_td":
         insert_into_training_dataset(input_json)
     else:
         raise ValueError("Unrecognized featurestore util py operation: {}. The Python util job only supports the "
