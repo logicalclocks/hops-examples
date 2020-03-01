@@ -158,6 +158,58 @@ def create_training_dataset(input_json):
     )
 
 
+def insert_into_training_dataset(input_json):
+    """
+    Creates a training dataset based on command-line arguments
+
+    Args:
+        :input_json: input JSON arguments
+
+    Returns:
+        None
+    """
+
+    features = pre_process_features(input_json["features"])
+    featuregroups_version_dict = pre_process_featuregroups(input_json["featuregroups"])
+    join_key = input_json["joinKey"]
+    featurestore_query = input_json["featurestore"]
+    training_dataset_name = input_json["trainingDataset"]
+    training_dataset_desc = input_json["description"]
+    training_dataset_data_format = input_json["dataFormat"]
+    training_dataset_version = input_json["version"]
+    descriptive_stats = input_json["descriptiveStats"]
+    featurecorrelation = input_json["featureCorrelation"]
+    clusteranalysis = input_json["clusterAnalysis"]
+    featurehistograms = input_json["featureHistograms"]
+    statcolumns = pre_process_stat_columns(input_json["statColumns"])
+    sink = input_json["sink"] if "sink" in input_json else None
+    path = input_json["path"] if "path" in input_json else None
+
+    # Get Features
+    features_df = featurestore.get_features(
+        features,
+        featurestore=featurestore_query,
+        featuregroups_version_dict=featuregroups_version_dict,
+        join_key = join_key,
+        dataframe_type = "spark"
+    )
+
+    # Save as Training Dataset
+    featurestore.insert_into_training_dataset(
+        features_df, training_dataset_name,
+        description=training_dataset_desc,
+        featurestore=featurestore_query,
+        data_format=training_dataset_data_format,
+        training_dataset_version=int(training_dataset_version),
+        descriptive_statistics=descriptive_stats,
+        feature_correlation=featurecorrelation,
+        feature_histograms=clusteranalysis,
+        cluster_analysis=featurehistograms,
+        stat_columns=statcolumns,
+    )
+
+
+
 def main():
     """
     Program orchestrator
@@ -176,6 +228,8 @@ def main():
     # Perform Operation
     if input_json["operation"] == "create_td":
         create_training_dataset(input_json)
+    elif input_json["operation"] == "insert_into_td": 
+        insert_into_training_dataset(input_json)
     else:
         raise ValueError("Unrecognized featurestore util py operation: {}. The Python util job only supports the "
                          "operation 'create_td', for other operations, "
