@@ -27,9 +27,7 @@ class Conf(arguments: Seq[String]) extends ScallopConf(arguments) {
   *
   * This Scala program contains utility functions for starting
   * Apache Spark jobs for doing common operations in The Hopsworks Feature Store.
-  * Such as, (1) creating a training dataset from a set of features. It will take the set of features and a join key as
-  * input arguments, join the features together into a spark dataframe,
-  * and write it out as a training dataset; (2) updating feature group or training dataset statistics.
+  * Such as updating feature group or training dataset statistics.
   */
 object Main {
 
@@ -61,7 +59,6 @@ object Main {
 
     //Perform actions
     operation match {
-      case "create_td" => createTrainingDataset(jsonArgs, log)
       case "update_fg_stats" => updateFeaturegroupStats(jsonArgs, log)
       case "update_td_stats" => updateTrainingDatasetStats(jsonArgs, log)
       case "spark_sql_create_fg" => createFeaturegroupFromSparkSql(jsonArgs, log)
@@ -266,60 +263,6 @@ object Main {
       .setOnline(online)
       .setVersion(version).write()
 
-  }
-
-  /**
-    * Creates a training dataset in the featurestore based on command-line arguments
-    *
-    * @param jsonArgs the command-line arguments
-    * @param log  logger
-    */
-  def createTrainingDataset(jsonArgs: JsValue, log: Logger): Unit = {
-    //Parse arguments
-    val features = preProcessFeatures(jsonArgs("features"))
-    val featuregroupsVersionMap = preProcessFeatureGroups(jsonArgs("featuregroups"))
-    val joinKey = jsonArgs("joinKey").as[String]
-    val featurestoreToQuery = preProcessFeaturestore(jsonArgs("featurestore"))
-    val trainingDatasetName = jsonArgs("trainingDataset").as[String]
-    val trainingDatasetDesc = jsonArgs("description").as[String]
-    val trainingDatasetDataFormat = jsonArgs("dataFormat").as[String]
-    val trainingDatasetVersion = jsonArgs("version").as[Int]
-    val descriptiveStats = jsonArgs("descriptiveStats").as[Boolean]
-    val featureCorrelation = jsonArgs("featureCorrelation").as[Boolean]
-    val clusterAnalysis = jsonArgs("clusterAnalysis").as[Boolean]
-    val featureHistograms = jsonArgs("featureHistograms").as[Boolean]
-    val statColumns = jsonArgs("statColumns").as[List[String]]
-    val sink = (jsonArgs \ "sink").asOpt[String].getOrElse(null)
-    val path = (jsonArgs \ "path").asOpt[String].getOrElse(null)
-
-
-    log.info(s"Fetching features: ${features} from the feature store")
-
-    //Get Features
-    val featuresDf = Hops.getFeatures(features)
-      .setFeaturestore(featurestoreToQuery)
-      .setFeaturegroupsAndVersions(featuregroupsVersionMap)
-      .read()
-
-    log.info(s"Saving the joined features to a training dataset: ${trainingDatasetName}")
-
-    // Save as Training Dataset
-    Hops.createTrainingDataset(trainingDatasetName)
-      .setDataframe(featuresDf)
-      .setFeaturestore(featurestoreToQuery)
-      .setVersion(trainingDatasetVersion)
-      .setDescription(trainingDatasetDesc)
-      .setDataFormat(trainingDatasetDataFormat)
-      .setDescriptiveStats(descriptiveStats)
-      .setFeatureCorr(featureCorrelation)
-      .setFeatureHistograms(featureHistograms)
-      .setClusterAnalysis(clusterAnalysis)
-      .setStatColumns(statColumns)
-      .setSink(sink)
-      .setPath(path)
-      .write()
-
-    log.info(s"Training Dataset Saved Successfully")
   }
 
   /**
