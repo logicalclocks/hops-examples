@@ -11,6 +11,7 @@
 .idea/*
 *.iml
 */.idea/*
+*.ipynb_checkpoints
 
 # MacOS
 .DS_Store
