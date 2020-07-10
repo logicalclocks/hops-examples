@@ -13,6 +13,6 @@ create an API key is available under the User Guide in https://hopsworks.readthe
   
 You can run the spark-client with:
  
-`jobs_spark_client.py -w <ABSOLUTE_PATH_TO_user_program> -p demo_spark_admin000 -u localhost:20642 -m code/pi.py 1`
+`jobs_spark_client.py -w <ABSOLUTE_PATH_TO_user_program> -p demo_spark_admin000 -u localhost:443 -m code/pi.py 1`
  
 you can get more information by doing `jobs_spark_client.py -h`.
