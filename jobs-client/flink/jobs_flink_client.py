@@ -38,8 +38,11 @@ jar_id = response.json()["filename"].split("/")[-1]
 print(jar_id)
 job_args = urllib.parse.quote(args.job_arguments)
 print("jobs_args:" + job_args)
+base_url += "/jars/" + jar_id + "/run?entry-class=" + args.main + "&program-args=" + job_args
+print(base_url)
+
 response = requests.post(
-    base_url + "/jars/" + jar_id + "/run?entry-class=" + args.main + "&program-arg=" + job_args,
+    base_url,
     headers={"Content-Type" : "application/json", "Authorization": "Apikey " + args.apikey}
 )
 print(response)
