@@ -18,14 +18,14 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>io.hops</groupId>
   <artifactId>hops-examples</artifactId>
-  <version>1.3.0-SNAPSHOT</version>
+  <version>1.4.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <spark.version>2.4.3.0</spark.version>
     <scala.base>2.11</scala.base>
     <scala.version>2.11.12</scala.version>
-    <hops.version>2.8.2.10-SNAPSHOT</hops.version>
+    <hops.version>2.8.2.10-RC0</hops.version>
   </properties>
   <name>hops-examples</name>
 
@@ -34,7 +34,7 @@
     <dependency>
       <groupId>io.hops</groupId>
       <artifactId>hops-util</artifactId>
-      <version>1.3.0-SNAPSHOT</version>
+      <version>1.4.0-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -154,29 +154,9 @@
 
   <repositories>
     <repository>
-      <id>sics-release</id>
-      <name>SICS Release Repository</name>
-      <url>http://kompics.sics.se/maven/repository</url>
-      <releases>
-      </releases>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </repository>
-    <repository>
-      <id>sics-snapshot</id>
-      <name>SICS Snapshot Repository</name>
-      <url>http://kompics.sics.se/maven/snapshotrepository</url>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-      <snapshots>
-      </snapshots>
-    </repository>
-    <repository>
       <id>Hops</id>
       <name>Hops Repo</name>
-      <url>https://bbc1.sics.se/archiva/repository/Hops/</url>
+      <url>https://archiva.hops.works/repository/Hops/</url>
       <releases>
         <enabled>true</enabled>
       </releases>
