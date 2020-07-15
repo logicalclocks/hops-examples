@@ -3,9 +3,10 @@ import requests
 import argparse
 import urllib.parse
 import time
+import json
 from json.decoder import JSONDecodeError
 
-from hops import project, beam, jobs, util
+from hops import project, beam, jobs, util, constants, hdfs
 from hops.exceptions import APIKeyFileNotFound, RestAPIError
 
 parser = argparse.ArgumentParser()
@@ -23,10 +24,38 @@ parser.add_argument("-ytm", "--yarntaskManagerMemory", default="4096", help="Mem
 parser.add_argument("-ys", "--yarnslots", default="1", help="Number of slots per TaskManager")
 parser.add_argument("-parallelism", "--parallelism", default="1", help="Flink job parallelimsThe file containing the API key to be used to submit the job")
 parser.add_argument("-args", "--job-arguments", help="Flink job runtime arguments")
-args = parser.parse_args()
+parser.add_argument("action", type=str, nargs=argparse.REMAINDER, help="Job action")
 
+args = parser.parse_args()
+print(args)
 hopsworks_url = args.hopsworks_url.split(":")
 project.connect(args.project, hopsworks_url[0], port=hopsworks_url[1], api_key=args.apikey)
+
+if 'stop' in args.action:
+    method = constants.HTTP_CONFIG.HTTP_PUT
+    headers = {constants.HTTP_CONFIG.HTTP_CONTENT_TYPE: constants.HTTP_CONFIG.HTTP_APPLICATION_JSON}
+    resource_url = constants.DELIMITERS.SLASH_DELIMITER + \
+                   constants.REST_CONFIG.HOPSWORKS_REST_RESOURCE + constants.DELIMITERS.SLASH_DELIMITER + \
+                   constants.REST_CONFIG.HOPSWORKS_PROJECT_RESOURCE + constants.DELIMITERS.SLASH_DELIMITER + \
+                   hdfs.project_id() + constants.DELIMITERS.SLASH_DELIMITER + \
+                   constants.REST_CONFIG.HOPSWORKS_JOBS_RESOURCE + constants.DELIMITERS.SLASH_DELIMITER + \
+                   args.job + constants.DELIMITERS.SLASH_DELIMITER + \
+                   constants.REST_CONFIG.HOPSWORKS_EXECUTIONS_RESOURCE + constants.DELIMITERS.SLASH_DELIMITER + \
+                   "{EXECUTION_ID}" + constants.DELIMITERS.SLASH_DELIMITER + \
+                   "status"
+
+    status = {"status":"stopped"}
+    # If no execution_id was provided, stop all active executions
+    # Get all active execution IDs
+    executions = jobs.get_executions(args.job,
+                                "?filter_by=state:INITIALIZING,RUNNING,ACCEPTED,NEW,NEW_SAVING,SUBMITTED,"
+                                "STARTING_APP_MASTER")
+    if executions['count'] > 0:
+        for execution in executions['items']:
+            util.http(resource_url.replace("{EXECUTION_ID}", str(execution['id'])), headers, method,
+                      json.dumps(status))
+    print("Stopped Flink cluster.")
+    exit(0)
 
 # Check if Flink job with this name is already running
 execution = jobs.get_executions(args.job,
@@ -65,7 +94,6 @@ else:
     print("Found Flink cluster with this name already running, will use it to submit the Flink job")
 
 base_url = "https://" + args.hopsworks_url + "/hopsworks-api/flinkmaster/" + app_id
-print("base_url:" + base_url)
 
 try:
     with open(args.apikey) as f:
@@ -88,9 +116,7 @@ response = requests.post(
 
 # Run job
 jar_id = response.json()["filename"].split("/")[-1]
-print(jar_id)
 job_args = urllib.parse.quote(args.job_arguments)
-print("jobs_args:" + job_args)
 base_url += "/jars/" + jar_id + "/run?entry-class=" + args.main + "&program-args=" + job_args
 print("Submitting job to: " + base_url)
 
@@ -98,10 +124,12 @@ response = requests.post(
     base_url,
     headers={"Content-Type" : "application/json", "Authorization": "Apikey " + args.apikey}
 )
+
 try:
     response_object = response.json()
 except JSONDecodeError:
     response_object = None
+
 if (response.status_code // 100) != 2:
     if response_object:
         error_code, error_msg, user_msg = util._parse_rest_error(response_object)
@@ -111,3 +139,5 @@ if (response.status_code // 100) != 2:
     raise RestAPIError("Could not execute HTTP request (url: {}), server response: \n "
                        "HTTP code: {}, HTTP reason: {}, error code: {}, error msg: {}, user msg: {}".format(
         base_url, response.status_code, response.reason, error_code, error_msg, user_msg))
+else:
+    print("Flink job was submitted successfully")
