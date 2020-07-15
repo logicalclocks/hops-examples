@@ -16,8 +16,8 @@ parser.add_argument("-jar", help="The Flink job jar file")
 parser.add_argument("-p", "--project", help="The Hopsworks project name")
 parser.add_argument("-j", "--job", default='flinkcluster', help="The Hopsworks job name")
 parser.add_argument("-m", "--main", help="The entry point to the application, file with main function")
-parser.add_argument("-a", "--apikey", help="The file containing the API key to be used to connect to the project and "
-                                           "submit the job")
+parser.add_argument("-a", "--apikey", default="jobs.token",
+                    help="The file containing the API key to be used to connect to the project and submit the job")
 parser.add_argument("-tm", "--task-managers", default="1", help="Number of Flink task managers")
 parser.add_argument("-yjm", "--yarnjobManagerMemory", default="2048", help="Memory of the Flink job manager in MB")
 parser.add_argument("-ytm", "--yarntaskManagerMemory", default="4096", help="Memory of the Flink task managers in MB")
@@ -27,7 +27,6 @@ parser.add_argument("-args", "--job-arguments", help="Flink job runtime argument
 parser.add_argument("action", type=str, nargs=argparse.REMAINDER, help="Job action")
 
 args = parser.parse_args()
-print(args)
 hopsworks_url = args.hopsworks_url.split(":")
 project.connect(args.project, hopsworks_url[0], port=hopsworks_url[1], api_key=args.apikey)
 
@@ -140,4 +139,4 @@ if (response.status_code // 100) != 2:
                        "HTTP code: {}, HTTP reason: {}, error code: {}, error msg: {}, user msg: {}".format(
         base_url, response.status_code, response.reason, error_code, error_msg, user_msg))
 else:
-    print("Flink job was submitted successfully")
+    print("Flink job was submitted successfully, please check Hopsworks UI for progress.")
