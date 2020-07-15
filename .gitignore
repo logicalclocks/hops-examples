@@ -1,4 +1,5 @@
 /target/
+*/target/
 /examples-kafka/target/
 /examples-spark/target/
 /examples-flink (copy)/target/
@@ -11,6 +12,7 @@
 .idea/*
 *.iml
 */.idea/*
-
+*.ipynb_checkpoints
+*.ipynb_checkpoints/*
 # MacOS
 .DS_Store
