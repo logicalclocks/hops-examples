@@ -26,7 +26,7 @@
   <name>hops-examples-hive</name>
 
   <properties>
-    <hive.version>3.0.0.1</hive.version>
+    <hive.version>3.0.0.5</hive.version>
   </properties>
 
   <build>
