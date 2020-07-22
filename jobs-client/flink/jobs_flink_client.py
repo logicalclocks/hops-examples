@@ -31,28 +31,7 @@ hopsworks_url = args.hopsworks_url.split(":")
 project.connect(args.project, hopsworks_url[0], port=hopsworks_url[1], api_key=args.apikey)
 
 if 'stop' in args.action:
-    method = constants.HTTP_CONFIG.HTTP_PUT
-    headers = {constants.HTTP_CONFIG.HTTP_CONTENT_TYPE: constants.HTTP_CONFIG.HTTP_APPLICATION_JSON}
-    resource_url = constants.DELIMITERS.SLASH_DELIMITER + \
-                   constants.REST_CONFIG.HOPSWORKS_REST_RESOURCE + constants.DELIMITERS.SLASH_DELIMITER + \
-                   constants.REST_CONFIG.HOPSWORKS_PROJECT_RESOURCE + constants.DELIMITERS.SLASH_DELIMITER + \
-                   hdfs.project_id() + constants.DELIMITERS.SLASH_DELIMITER + \
-                   constants.REST_CONFIG.HOPSWORKS_JOBS_RESOURCE + constants.DELIMITERS.SLASH_DELIMITER + \
-                   args.job + constants.DELIMITERS.SLASH_DELIMITER + \
-                   constants.REST_CONFIG.HOPSWORKS_EXECUTIONS_RESOURCE + constants.DELIMITERS.SLASH_DELIMITER + \
-                   "{EXECUTION_ID}" + constants.DELIMITERS.SLASH_DELIMITER + \
-                   "status"
-
-    status = {"status":"stopped"}
-    # If no execution_id was provided, stop all active executions
-    # Get all active execution IDs
-    executions = jobs.get_executions(args.job,
-                                "?filter_by=state:INITIALIZING,RUNNING,ACCEPTED,NEW,NEW_SAVING,SUBMITTED,"
-                                "STARTING_APP_MASTER")
-    if executions['count'] > 0:
-        for execution in executions['items']:
-            util.http(resource_url.replace("{EXECUTION_ID}", str(execution['id'])), headers, method,
-                      json.dumps(status))
+    print(jobs.stop_job(args.job))
     print("Stopped Flink cluster.")
     exit(0)
 
