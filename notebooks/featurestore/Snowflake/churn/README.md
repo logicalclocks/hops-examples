@@ -1,2 +1,0 @@
-# churn
-Telecom churn example
