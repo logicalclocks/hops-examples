@@ -1,0 +1,11 @@
+conda:
+statsmodels
+py-xgboost
+more-itertools
+
+pip:
+yellowbrick
+awesome-slugify
+imblearn
+
+s3fs
