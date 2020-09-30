@@ -1,5 +1,6 @@
 package io.hops.examples.featurestore_util4j
 
+import com.logicalclocks.hsfs.{HopsworksConnection, Storage, DataFormat}
 import org.apache.log4j.{Level, LogManager, Logger}
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.SparkConf
@@ -7,11 +8,11 @@ import io.hops.util.Hops
 import io.hops.util.featurestore.FeaturestoreHelper
 import org.rogach.scallop.ScallopConf
 import play.api.libs.json._
+
 import scala.collection.JavaConversions._
 import scala.collection.JavaConversions
 import scala.language.implicitConversions
-
-import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.conf.Configuration
 import java.io.BufferedReader
 import java.io.InputStreamReader
 /**
@@ -178,7 +179,6 @@ object Main {
     val version = jsonArgs("version").as[Int]
     val descriptiveStats = jsonArgs("descriptiveStats").as[Boolean]
     val featureCorrelation = jsonArgs("featureCorrelation").as[Boolean]
-    val clusterAnalysis = jsonArgs("clusterAnalysis").as[Boolean]
     val featureHistograms = jsonArgs("featureHistograms").as[Boolean]
     val statColumns = jsonArgs("statColumns").as[List[String]]
     val featurestoreToQuery = preProcessFeaturestore(jsonArgs("featurestore"))
@@ -190,19 +190,22 @@ object Main {
     spark.sql("use " + hiveDb)
     val resultDf = spark.sql(sqlQuery)
 
+    val connection = HopsworksConnection.builder.build
+    val fs = connection.getFeatureStore(featurestoreToQuery)
+
     //Create Feature Group of the Results
     log.info(s"Creating Feature Group ${featuregroup}")
-    Hops.createFeaturegroup(featuregroup)
-      .setDataframe(resultDf)
-      .setFeaturestore(featurestoreToQuery)
-      .setDescriptiveStats(descriptiveStats)
-      .setFeatureCorr(featureCorrelation)
-      .setFeatureHistograms(featureHistograms)
-      .setClusterAnalysis(clusterAnalysis)
-      .setStatColumns(statColumns)
-      .setDescription(description)
-      .setOnline(online)
-      .setVersion(version).write()
+    val games_fg = fs.createFeatureGroup()
+      .name(featuregroup)
+      .version(version)
+      .description(description)
+      .statisticsEnabled(descriptiveStats)
+      .histograms(featureHistograms)
+      .correlations(featureCorrelation)
+      .statisticColumns(statColumns)
+      .onlineEnabled(online)
+      .build()
+    games_fg.save(resultDf)
   }
 
 
@@ -223,7 +226,6 @@ object Main {
     val version = jsonArgs("version").as[Int]
     val descriptiveStats = jsonArgs("descriptiveStats").as[Boolean]
     val featureCorrelation = jsonArgs("featureCorrelation").as[Boolean]
-    val clusterAnalysis = jsonArgs("clusterAnalysis").as[Boolean]
     val featureHistograms = jsonArgs("featureHistograms").as[Boolean]
     val statColumns = jsonArgs("statColumns").as[List[String]]
     val featurestoreToQuery = preProcessFeaturestore(jsonArgs("featurestore"))
@@ -249,20 +251,22 @@ object Main {
     val schemaNames = resultDf.schema.map((field) => field.name.replace("fs_q.", ""))
     val castedDf =  resultDf.toDF(schemaNames: _*)
 
+    val connection = HopsworksConnection.builder.build
+    val fs = connection.getFeatureStore(featurestoreToQuery)
+
     //Create Feature Group
     log.info(s"Creating Feature Group ${featuregroup}")
-    Hops.createFeaturegroup(featuregroup)
-      .setDataframe(castedDf)
-      .setFeaturestore(featurestoreToQuery)
-      .setDescriptiveStats(descriptiveStats)
-      .setFeatureCorr(featureCorrelation)
-      .setFeatureHistograms(featureHistograms)
-      .setClusterAnalysis(clusterAnalysis)
-      .setStatColumns(statColumns)
-      .setDescription(description)
-      .setOnline(online)
-      .setVersion(version).write()
-
+    val games_fg = fs.createFeatureGroup()
+      .name(featuregroup)
+      .version(version)
+      .description(description)
+      .statisticsEnabled(descriptiveStats)
+      .histograms(featureHistograms)
+      .correlations(featureCorrelation)
+      .statisticColumns(statColumns)
+      .onlineEnabled(online)
+      .build()
+    games_fg.save(castedDf)
   }
 
   /**
@@ -277,7 +281,6 @@ object Main {
     val featurestoreToQuery = preProcessFeaturestore(jsonArgs("featurestore"))
     val descriptiveStats = jsonArgs("descriptiveStats").as[Boolean]
     val featureCorrelation = jsonArgs("featureCorrelation").as[Boolean]
-    val clusterAnalysis = jsonArgs("clusterAnalysis").as[Boolean]
     val featureHistograms = jsonArgs("featureHistograms").as[Boolean]
     val statColumns = jsonArgs("statColumns").as[List[String]]
 
@@ -285,15 +288,16 @@ object Main {
       featuregroup
     }")
 
-    Hops.updateFeaturegroupStats(featuregroup)
-      .setFeaturestore(featurestoreToQuery)
-      .setVersion(version)
-      .setDescriptiveStats(descriptiveStats)
-      .setFeatureCorr(featureCorrelation)
-      .setFeatureHistograms(featureHistograms)
-      .setClusterAnalysis(clusterAnalysis)
-      .setStatColumns(statColumns)
-      .write()
+    val connection = HopsworksConnection.builder.build
+    val fs = connection.getFeatureStore(featurestoreToQuery)
+
+    val fg = fs.getFeatureGroup(featuregroup, version)
+    fg.setStatisticsEnabled(descriptiveStats)
+    fg.setCorrelations(featureCorrelation)
+    fg.setHistograms(featureHistograms)
+    fg.setStatisticColumns(statColumns)
+    fg.updateStatisticsConfig()
+    fg.computeStatistics()
 
     log.info(s"Statistics updated successfully")
   }
@@ -316,15 +320,15 @@ object Main {
 
     log.info(s"Update Training Dataset Stats")
 
-    Hops.updateTrainingDatasetStats(trainingDataset)
-      .setFeaturestore(featurestoreToQuery)
-      .setVersion(version)
-      .setDescriptiveStats(descriptiveStats)
-      .setFeatureCorr(featureCorrelation)
-      .setFeatureHistograms(featureHistograms)
-      .setClusterAnalysis(clusterAnalysis)
-      .setStatColumns(statColumns)
-      .write()
+    val connection = HopsworksConnection.builder.build
+    val fs = connection.getFeatureStore(featurestoreToQuery)
+
+    val td = fs.getTrainingDataset(trainingDataset, version)
+    td.setStatisticsEnabled(descriptiveStats)
+    td.setCorrelations(featureCorrelation)
+    td.setHistograms(featureHistograms)
+    td.setStatisticColumns(statColumns)
+    td.computeStatistics()
 
     log.info(s"Training Dataset Stats updated Successfully")
   }
