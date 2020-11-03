@@ -1,6 +1,6 @@
 package io.hops.examples.featurestore_tour.featuregroups
 
-import com.logicalclocks.hsfs.{HopsworksConnection, Storage, DataFormat}
+import com.logicalclocks.hsfs.{HopsworksConnection, Storage, DataFormat, TimeTravelFormat}
 import org.apache.log4j.Logger
 import org.apache.spark.sql.SparkSession
 import io.hops.util.Hops
@@ -108,6 +108,7 @@ object ComputeFeatures {
       .name(GAMES_FEATUREGROUP)
       .version(FEATUREGROUP_VERSION)
       .description("Features of games")
+      .timeTravelFormat(TimeTravelFormat.NONE)
       .primaryKeys(Seq("home_team_id"))
       .defaultStorage(Storage.OFFLINE)
       .statisticsEnabled(true)
@@ -170,6 +171,7 @@ object ComputeFeatures {
       .name(SEASON_SCORES_FEATUREGROUP)
       .version(FEATUREGROUP_VERSION)
       .description("Features of average season scores for football teams")
+      .timeTravelFormat(TimeTravelFormat.NONE)
       .onlineEnabled(true)
       .defaultStorage(Storage.OFFLINE)
       .primaryKeys(Seq("team_id"))
@@ -212,6 +214,7 @@ object ComputeFeatures {
       .name(ATTENDANCES_FEATUREGROUP)
       .version(FEATUREGROUP_VERSION)
       .description("Features of average attendance of games of football teams")
+      .timeTravelFormat(TimeTravelFormat.NONE)
       .primaryKeys(Seq("team_id"))
       .defaultStorage(Storage.OFFLINE)
       .statisticsEnabled(true)
@@ -261,6 +264,7 @@ object ComputeFeatures {
       .name(PLAYERS_FEATUREGROUP)
       .version(FEATUREGROUP_VERSION)
       .description("Aggregate features of players football teams")
+      .timeTravelFormat(TimeTravelFormat.NONE)
       .primaryKeys(Seq("team_id"))
       .defaultStorage(Storage.OFFLINE)
       .statisticsEnabled(true)
@@ -293,6 +297,7 @@ object ComputeFeatures {
       .name(TEAMS_FEATUREGROUP)
       .version(FEATUREGROUP_VERSION)
       .description("Features of football teams")
+      .timeTravelFormat(TimeTravelFormat.NONE)
       .primaryKeys(Seq("team_id"))
       .defaultStorage(Storage.OFFLINE)
       .statisticsEnabled(true)
