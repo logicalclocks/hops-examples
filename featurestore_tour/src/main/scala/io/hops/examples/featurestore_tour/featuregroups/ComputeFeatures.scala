@@ -131,12 +131,19 @@ object ComputeFeatures {
     log.info(s"Creating hudi featuregroup $GAMES_FEATUREGROUP_TOUR_HUDI version $FEATUREGROUP_VERSION in " +
       s"featurestore ${fs.getName}")
     val partitionCols = List("score")
-    Hops.createFeaturegroup(GAMES_FEATUREGROUP_TOUR_HUDI)
-      .setHudi(true)
-      .setDescription("Features of games, HUDI feature group example")
-      .setPartitionBy(partitionCols)
-      .setDataframe(rawDs.toDF)
-      .setPrimaryKey(List("home_team_id")).write
+    val hudi_fg = fs.createFeatureGroup()
+      .name(GAMES_FEATUREGROUP_TOUR_HUDI)
+      .version(FEATUREGROUP_VERSION)
+      .description("Features of games, HUDI feature group example")
+      .timeTravelFormat(TimeTravelFormat.HUDI)
+      .primaryKeys(Seq("home_team_id"))
+      .partitionKeys(partitionCols)
+      .defaultStorage(Storage.OFFLINE)
+      .statisticsEnabled(true)
+      .histograms(true)
+      .correlations(true)
+      .build()
+    hudi_fg.save(rawDs.toDF)
     log.info(s"Creation Hudi featuregroup $GAMES_FEATUREGROUP_TOUR_HUDI complete")
   }
 
