@@ -137,7 +137,6 @@ object ComputeFeatures {
       .timeTravelFormat(TimeTravelFormat.HUDI)
       .primaryKeys(Seq("home_team_id"))
       .partitionKeys(partitionCols)
-      .defaultStorage(Storage.OFFLINE)
       .statisticsEnabled(true)
       .histograms(true)
       .correlations(true)
