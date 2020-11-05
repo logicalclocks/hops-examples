@@ -1,6 +1,6 @@
 package io.hops.examples.featurestore_tour.featuregroups
 
-import com.logicalclocks.hsfs.{HopsworksConnection, Storage, DataFormat}
+import com.logicalclocks.hsfs.{HopsworksConnection, Storage, DataFormat, TimeTravelFormat}
 import org.apache.log4j.Logger
 import org.apache.spark.sql.SparkSession
 import io.hops.util.Hops
@@ -108,6 +108,7 @@ object ComputeFeatures {
       .name(GAMES_FEATUREGROUP)
       .version(FEATUREGROUP_VERSION)
       .description("Features of games")
+      .timeTravelFormat(TimeTravelFormat.NONE)
       .primaryKeys(Seq("home_team_id"))
       .statisticsEnabled(true)
       .histograms(true)
@@ -129,12 +130,19 @@ object ComputeFeatures {
     log.info(s"Creating hudi featuregroup $GAMES_FEATUREGROUP_TOUR_HUDI version $FEATUREGROUP_VERSION in " +
       s"featurestore ${fs.getName}")
     val partitionCols = List("score")
-    Hops.createFeaturegroup(GAMES_FEATUREGROUP_TOUR_HUDI)
-      .setHudi(true)
-      .setDescription("Features of games, HUDI feature group example")
-      .setPartitionBy(partitionCols)
-      .setDataframe(rawDs.toDF)
-      .setPrimaryKey(List("home_team_id")).write
+    val hudi_fg = fs.createFeatureGroup()
+      .name(GAMES_FEATUREGROUP_TOUR_HUDI)
+      .version(FEATUREGROUP_VERSION)
+      .description("Features of games, HUDI feature group example")
+      .timeTravelFormat(TimeTravelFormat.HUDI)
+      .primaryKeys(Seq("home_team_id"))
+      .partitionKeys(partitionCols)
+      .defaultStorage(Storage.OFFLINE)
+      .statisticsEnabled(true)
+      .histograms(true)
+      .correlations(true)
+      .build()
+    hudi_fg.save(rawDs.toDF)
     log.info(s"Creation Hudi featuregroup $GAMES_FEATUREGROUP_TOUR_HUDI complete")
   }
 
@@ -169,6 +177,7 @@ object ComputeFeatures {
       .name(SEASON_SCORES_FEATUREGROUP)
       .version(FEATUREGROUP_VERSION)
       .description("Features of average season scores for football teams")
+      .timeTravelFormat(TimeTravelFormat.NONE)
       .onlineEnabled(true)
       .primaryKeys(Seq("team_id"))
       .statisticsEnabled(true)
@@ -210,6 +219,7 @@ object ComputeFeatures {
       .name(ATTENDANCES_FEATUREGROUP)
       .version(FEATUREGROUP_VERSION)
       .description("Features of average attendance of games of football teams")
+      .timeTravelFormat(TimeTravelFormat.NONE)
       .primaryKeys(Seq("team_id"))
       .statisticsEnabled(true)
       .histograms(true)
@@ -258,6 +268,7 @@ object ComputeFeatures {
       .name(PLAYERS_FEATUREGROUP)
       .version(FEATUREGROUP_VERSION)
       .description("Aggregate features of players football teams")
+      .timeTravelFormat(TimeTravelFormat.NONE)
       .primaryKeys(Seq("team_id"))
       .statisticsEnabled(true)
       .histograms(true)
@@ -289,6 +300,7 @@ object ComputeFeatures {
       .name(TEAMS_FEATUREGROUP)
       .version(FEATUREGROUP_VERSION)
       .description("Features of football teams")
+      .timeTravelFormat(TimeTravelFormat.NONE)
       .primaryKeys(Seq("team_id"))
       .statisticsEnabled(true)
       .histograms(true)
