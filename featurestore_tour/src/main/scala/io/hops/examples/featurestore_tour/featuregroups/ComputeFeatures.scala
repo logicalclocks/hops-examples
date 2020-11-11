@@ -20,7 +20,7 @@ object ComputeFeatures {
   val TEAMS_FEATUREGROUP = "teams_features"
   val GAMES_DATASET_FILE = "games.csv"
   val GAMES_FEATUREGROUP = "games_features"
-  val GAMES_FEATUREGROUP_TOUR_ON_DEMAND = "games_features_on_demand_tour"
+  val SEASON_FEATUREGROUP_TOUR_ON_DEMAND = "season_features_on_demand"
   val GAMES_FEATUREGROUP_TOUR_HUDI = "games_features_hudi_tour"
   val PLAYERS_DATASET_FILE = "players.csv"
   val PLAYERS_FEATUREGROUP = "players_features"
@@ -118,22 +118,8 @@ object ComputeFeatures {
     games_fg.save(rawDs.toDF)
     log.info(s"Creation of featuregroup $GAMES_FEATUREGROUP complete")
 
-    log.info(s"Creating on-demand featuregroup $GAMES_FEATUREGROUP_TOUR_ON_DEMAND version $FEATUREGROUP_VERSION in " +
-      s"featurestore ${fs.getName}")
-    val storageConnector = fs.getStorageConnector(Hops.getProjectName() + "_featurestore", StorageConnectorType.JDBC);
-    val onDmdFg = fs.createOnDemandFeatureGroup()
-        .name(GAMES_FEATUREGROUP_TOUR_ON_DEMAND)
-        .description("Features of games, on demand feature group example")
-        .version(FEATUREGROUP_VERSION)
-        .query("SELECT * FROM games_features_1 WHERE score > 1")
-        .storageConnector(storageConnector)
-        .build()
-    onDmdFg.save()
-
-    log.info(s"Creation of on-demand featuregroup $GAMES_FEATUREGROUP_TOUR_ON_DEMAND complete")
     log.info(s"Creating hudi featuregroup $GAMES_FEATUREGROUP_TOUR_HUDI version $FEATUREGROUP_VERSION in " +
       s"featurestore ${fs.getName}")
-
     val partitionCols = List("score")
     val hudi_fg = fs.createFeatureGroup()
       .name(GAMES_FEATUREGROUP_TOUR_HUDI)
@@ -176,6 +162,7 @@ object ComputeFeatures {
         average_position = avgPosition,
         sum_position = sumPosition)
     })
+
     log.info(s"Creating featuregroup $SEASON_SCORES_FEATUREGROUP version $FEATUREGROUP_VERSION in featurestore ${fs.getName}")
     val scores_fg = fs.createFeatureGroup()
       .name(SEASON_SCORES_FEATUREGROUP)
@@ -190,6 +177,21 @@ object ComputeFeatures {
       .build()
     scores_fg.save(featureDs.toDF)
     log.info(s"Creation of featuregroup $SEASON_SCORES_FEATUREGROUP complete")
+
+    log.info(s"Creating on-demand featuregroup $SEASON_FEATUREGROUP_TOUR_ON_DEMAND version $FEATUREGROUP_VERSION in " +
+      s"featurestore ${fs.getName}")
+
+    val storageConnector = fs.getStorageConnector(System.getenv("HADOOP_USER_NAME").replace("__", "_")
+      + "_onlinefeaturestore", StorageConnectorType.JDBC);
+    val onDmdFg = fs.createOnDemandFeatureGroup()
+      .name(SEASON_FEATUREGROUP_TOUR_ON_DEMAND)
+      .description("Features of games, on demand feature group example")
+      .version(FEATUREGROUP_VERSION)
+      .query("SELECT * FROM season_scores_features_1 WHERE average_position > 3")
+      .storageConnector(storageConnector)
+      .build()
+    onDmdFg.save()
+    log.info(s"Creation of on-demand featuregroup $SEASON_FEATUREGROUP_TOUR_ON_DEMAND complete")
   }
 
   /**
