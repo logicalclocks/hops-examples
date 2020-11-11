@@ -1,9 +1,10 @@
 package io.hops.examples.featurestore_tour.featuregroups
 
-import com.logicalclocks.hsfs.{HopsworksConnection, Storage, DataFormat, TimeTravelFormat}
+import com.logicalclocks.hsfs.{DataFormat, HopsworksConnection, Storage, StorageConnectorType, TimeTravelFormat}
 import org.apache.log4j.Logger
 import org.apache.spark.sql.SparkSession
 import io.hops.util.Hops
+
 import scala.collection.JavaConversions._
 import org.apache.spark.sql.Row
 
@@ -119,16 +120,20 @@ object ComputeFeatures {
 
     log.info(s"Creating on-demand featuregroup $GAMES_FEATUREGROUP_TOUR_ON_DEMAND version $FEATUREGROUP_VERSION in " +
       s"featurestore ${fs.getName}")
-    val storageConnector = Hops.getProjectName() + "_featurestore"
-    val query = "SELECT * FROM games_features_1 WHERE score > 1"
-    Hops.createFeaturegroup(GAMES_FEATUREGROUP_TOUR_ON_DEMAND).setOnDemand(true)
-      .setDescription("Features of games, on demand feature group example")
-      .setJdbcConnector(storageConnector)
-      .setSqlQuery(query)
-      .write()
+    val storageConnector = fs.getStorageConnector(Hops.getProjectName() + "_featurestore", StorageConnectorType.JDBC);
+    val onDmdFg = fs.createOnDemandFeatureGroup()
+        .name(GAMES_FEATUREGROUP_TOUR_ON_DEMAND)
+        .description("Features of games, on demand feature group example")
+        .version(FEATUREGROUP_VERSION)
+        .query("SELECT * FROM games_features_1 WHERE score > 1")
+        .storageConnector(storageConnector)
+        .build()
+    onDmdFg.save()
+
     log.info(s"Creation of on-demand featuregroup $GAMES_FEATUREGROUP_TOUR_ON_DEMAND complete")
     log.info(s"Creating hudi featuregroup $GAMES_FEATUREGROUP_TOUR_HUDI version $FEATUREGROUP_VERSION in " +
       s"featurestore ${fs.getName}")
+
     val partitionCols = List("score")
     val hudi_fg = fs.createFeatureGroup()
       .name(GAMES_FEATUREGROUP_TOUR_HUDI)
