@@ -125,3 +125,4 @@ keystore_pw=[keystore_password]
 
 Users can export their project's certificates by navigating to the *Settings* page in Hopsworks. An email is then sent
  with the password for the truststore and keystore.
+
