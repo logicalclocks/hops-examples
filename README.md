@@ -93,8 +93,7 @@ create one Hopsworks Spark job per notebook and then use the Apache Airflow dag 
 provided in this repo to orchestrate them. Please refer to the Apache Airflow section of the user guide on how to 
 upload manage your dags. There is also a ``Visualizations`` notebook that runs the visualizations steps of the 
 pipeline and can be executed at any time, as the output of the pipeline (statistics, schema, etc.) is persisted to 
-the ``Resources`` dataset in your project. You can catch a demo of the pipeline [here](https://www.youtube
-.com/watch?v=v1DrnY8caVU).
+the ``Resources`` dataset in your project. You can catch a demo of the pipeline [here](https://www.youtube.com/watch?v=v1DrnY8caVU).
 
 # Beam
 
