@@ -181,8 +181,8 @@ object ComputeFeatures {
     log.info(s"Creating on-demand featuregroup $SEASON_FEATUREGROUP_TOUR_ON_DEMAND version $FEATUREGROUP_VERSION in " +
       s"featurestore ${fs.getName}")
 
-    val storageConnector = fs.getStorageConnector(System.getenv("HADOOP_USER_NAME").replace("__", "_")
-      + "_onlinefeaturestore", StorageConnectorType.JDBC);
+    val storageConnector =
+      fs.getStorageConnector(System.getenv("HADOOP_USER_NAME").replace("__", "_") + "_onlinefeaturestore");
     val onDmdFg = fs.createOnDemandFeatureGroup()
       .name(SEASON_FEATUREGROUP_TOUR_ON_DEMAND)
       .description("Features of games, on demand feature group example")
