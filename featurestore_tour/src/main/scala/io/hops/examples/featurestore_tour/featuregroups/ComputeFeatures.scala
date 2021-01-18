@@ -1,6 +1,7 @@
 package io.hops.examples.featurestore_tour.featuregroups
 
-import com.logicalclocks.hsfs.{DataFormat, HopsworksConnection, Storage, StorageConnectorType, TimeTravelFormat}
+import com.logicalclocks.hsfs.{DataFormat, HopsworksConnection, Storage, StorageConnectorType, TimeTravelFormat,
+  StatisticsConfig}
 import org.apache.log4j.Logger
 import org.apache.spark.sql.SparkSession
 import io.hops.util.Hops
@@ -111,9 +112,7 @@ object ComputeFeatures {
       .description("Features of games")
       .timeTravelFormat(TimeTravelFormat.NONE)
       .primaryKeys(Seq("home_team_id"))
-      .statisticsEnabled(true)
-      .histograms(true)
-      .correlations(true)
+      .statisticsConfig(new StatisticsConfig(true, true, true))
       .build()
     games_fg.save(rawDs.toDF)
     log.info(s"Creation of featuregroup $GAMES_FEATUREGROUP complete")
@@ -128,9 +127,7 @@ object ComputeFeatures {
       .timeTravelFormat(TimeTravelFormat.HUDI)
       .primaryKeys(Seq("home_team_id"))
       .partitionKeys(partitionCols)
-      .statisticsEnabled(true)
-      .histograms(true)
-      .correlations(true)
+      .statisticsConfig(new StatisticsConfig(true, true, true))
       .build()
     hudi_fg.save(rawDs.toDF)
     log.info(s"Creation Hudi featuregroup $GAMES_FEATUREGROUP_TOUR_HUDI complete")
@@ -171,9 +168,7 @@ object ComputeFeatures {
       .timeTravelFormat(TimeTravelFormat.NONE)
       .onlineEnabled(true)
       .primaryKeys(Seq("team_id"))
-      .statisticsEnabled(true)
-      .histograms(true)
-      .correlations(true)
+      .statisticsConfig(new StatisticsConfig(true, true, true))
       .build()
     scores_fg.save(featureDs.toDF)
     log.info(s"Creation of featuregroup $SEASON_SCORES_FEATUREGROUP complete")
@@ -227,9 +222,7 @@ object ComputeFeatures {
       .description("Features of average attendance of games of football teams")
       .timeTravelFormat(TimeTravelFormat.NONE)
       .primaryKeys(Seq("team_id"))
-      .statisticsEnabled(true)
-      .histograms(true)
-      .correlations(true)
+      .statisticsConfig(new StatisticsConfig(true, true, true))
       .build()
     attendances_fg.save(featureDs.toDF)
     log.info(s"Creation of featuregroup $ATTENDANCES_FEATUREGROUP complete")
@@ -276,9 +269,7 @@ object ComputeFeatures {
       .description("Aggregate features of players football teams")
       .timeTravelFormat(TimeTravelFormat.NONE)
       .primaryKeys(Seq("team_id"))
-      .statisticsEnabled(true)
-      .histograms(true)
-      .correlations(true)
+      .statisticsConfig(new StatisticsConfig(true, true, true))
       .build()
     players_fg.save(featureDs.toDF)
     log.info(s"Creation of featuregroup $PLAYERS_FEATUREGROUP complete")
@@ -308,9 +299,7 @@ object ComputeFeatures {
       .description("Features of football teams")
       .timeTravelFormat(TimeTravelFormat.NONE)
       .primaryKeys(Seq("team_id"))
-      .statisticsEnabled(true)
-      .histograms(true)
-      .correlations(true)
+      .statisticsConfig(new StatisticsConfig(true, true, true))
       .build()
     teams_fg.save(featureDs.toDF)
     log.info(s"Creation of featuregroup $TEAMS_FEATUREGROUP complete")
@@ -328,9 +317,7 @@ object ComputeFeatures {
       .version(1)
       .description("Sample Training Dataset for the Feature store Tour")
       .dataFormat(DataFormat.TFRECORD)
-      .statisticsEnabled(true)
-      .histograms(true)
-      .correlations(true)
+      .statisticsConfig(new StatisticsConfig(true, true, true))
       .build()
     td.save(featuresDf)
   }
