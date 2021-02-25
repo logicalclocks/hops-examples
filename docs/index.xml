@@ -12,6 +12,15 @@
     
     
     <item>
+      <title>Azure ML Feature Store Tour</title>
+      <link>https://examples.hopsworks.ai/featurestore/azure/azure-ml-studio/</link>
+      <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://examples.hopsworks.ai/featurestore/azure/azure-ml-studio/</guid>
+      <description>Azure ML and the Hopsworks Feature Store The Hopsworks Feature Store is an open platform that connects to the largest number of data stores, and data science platforms with the most comprehensive API support - Python, Spark (Python, Java/Scala). It supports Azure ML Studio Notebooks or Designer for feature engineering and as your data science platform. You can design and ingest features and you can browse existing features, along with creating training datasets as either DataFrames or as files on Azure Blob storage.</description>
+    </item>
+    
+    <item>
       <title>Benchmark GPU vs CPU with TensorFlow</title>
       <link>https://examples.hopsworks.ai/ml/benchmarks/benchmark/</link>
       <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
@@ -51,6 +60,17 @@ Have a feature request or encountered an issue? Please let us know on github.</d
       <guid>https://examples.hopsworks.ai/featurestore/image_datasets/imagedatasetfeaturestore/</guid>
       <description>Example of Using a Raw Image Dataset in the Feature Store Images are often stored in binary formats for training machine learning models, such as tfrecords or parquet. However, sometimes it can be useful to store a large image dataset in a folder with one file per image, such as .jpg or .png.
 This notebook will demonstrate how to create a training dataset with .jpg files in the Hopsworks Feature Store</description>
+    </item>
+    
+    <item>
+      <title>Dataset Titanic on the Feature Store</title>
+      <link>https://examples.hopsworks.ai/featurestore/datasets/titanictrainingdatasetpython/</link>
+      <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://examples.hopsworks.ai/featurestore/datasets/titanictrainingdatasetpython/</guid>
+      <description>Titanic Dataset for the Feature Store This notebook prepares the Titanic dataset to be used with the feature store.
+The Titanic dataset contains information about the passengers of the famous Titanic ship. The training and test data come in form of two CSV files, which can be downloaded from the Titanic Competition page on Kaggle.
+Download the train.csv and test.csv files, and upload them to the Resources folder of your Hopsworks Project.</description>
     </item>
     
     <item>
@@ -156,6 +176,26 @@ Import the Module from hops import hdfs Getting Project Information When interac
     </item>
     
     <item>
+      <title>Hsfs - Data Validation with Python</title>
+      <link>https://examples.hopsworks.ai/featurestore/hsfs/data_validation/feature_validation_python/</link>
+      <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://examples.hopsworks.ai/featurestore/hsfs/data_validation/feature_validation_python/</guid>
+      <description>Feature Validation with the Hopsworks Feature Store In this notebook we introduce feature validation operations with the Hopsworks Feature Store and its client API, hsfs.
+Background Motivation Data ingested into the Feature Store form the basis for the data fed as input to algorithms that develope machine learning models. The Feature store is a place where curated feature data is stored, therefore it is important that this data is validated against different rules to it adheres to business requirements.</description>
+    </item>
+    
+    <item>
+      <title>Hsfs - Data Validation with Scala</title>
+      <link>https://examples.hopsworks.ai/featurestore/hsfs/data_validation/feature_validation_scala/</link>
+      <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://examples.hopsworks.ai/featurestore/hsfs/data_validation/feature_validation_scala/</guid>
+      <description>Feature Validation with the Hopsworks Feature Store In this notebook we introduce feature validation operations with the Hopsworks Feature Store and its client API, hsfs.
+Background Motivation Data ingested into the Feature Store form the basis for the data fed as input to algorithms that develope machine learning models. The Feature store is a place where curated feature data is stored, therefore it is important that this data is validated against different rules to it adheres to business requirements.</description>
+    </item>
+    
+    <item>
       <title>Hsfs - Feature Engineering</title>
       <link>https://examples.hopsworks.ai/featurestore/hsfs/feature_engineering/</link>
       <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
@@ -176,23 +216,23 @@ A key component of the Hopsworks feature store is to enable sharing and re-using
     </item>
     
     <item>
-      <title>Hsfs - Feature Validation with Python</title>
-      <link>https://examples.hopsworks.ai/featurestore/hsfs/data_validation/feature_validation_python/</link>
+      <title>Hsfs - Time-Travel with PySpark</title>
+      <link>https://examples.hopsworks.ai/featurestore/hsfs/time_travel/time_travel_python/</link>
       <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://examples.hopsworks.ai/featurestore/hsfs/data_validation/feature_validation_python/</guid>
-      <description>Feature Validation with the Hopsworks Feature Store In this notebook we introduce feature validation operations with the Hopsworks Feature Store and its client API, hsfs.
-Background Motivation Data ingested into the Feature Store form the basis for the data fed as input to algorithms that develope machine learning models. The Feature store is a place where curated feature data is stored, therefore it is important that this data is validated against different rules to it adheres to business requirements.</description>
+      <guid>https://examples.hopsworks.ai/featurestore/hsfs/time_travel/time_travel_python/</guid>
+      <description>Time travel operations in Hopsworks Feature Store In this notebook we will introduce time travel operations in Hopsworks Feature Store (HSFS). Currently HSFS supports Apache Hudi (http://hudi.apache.org/) a storage abstraction/library for doing incremental data ingestion to a Hopsworks Feature Store.
+Background Motivation Traditional ETL typically involves taking a snapshot of a production database and doing a full load into a data lake (typically stored on a distributed file system). Using the snapshot approach for ETL is simple since the snapshot is immutable and can be loaded as an atomic unit into the data lake.</description>
     </item>
     
     <item>
-      <title>Hsfs - Feature Validation with Scala</title>
-      <link>https://examples.hopsworks.ai/featurestore/hsfs/data_validation/feature_validation_scala/</link>
+      <title>Hsfs - Time-Travel with Scala/Spark</title>
+      <link>https://examples.hopsworks.ai/featurestore/hsfs/time_travel/time_travel_scala/</link>
       <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://examples.hopsworks.ai/featurestore/hsfs/data_validation/feature_validation_scala/</guid>
-      <description>Feature Validation with the Hopsworks Feature Store In this notebook we introduce feature validation operations with the Hopsworks Feature Store and its client API, hsfs.
-Background Motivation Data ingested into the Feature Store form the basis for the data fed as input to algorithms that develope machine learning models. The Feature store is a place where curated feature data is stored, therefore it is important that this data is validated against different rules to it adheres to business requirements.</description>
+      <guid>https://examples.hopsworks.ai/featurestore/hsfs/time_travel/time_travel_scala/</guid>
+      <description>Time travel operations in Hopsworks Feature Store In this notebook we will introduce time travel operations in Hopsworks Feature Store (HSFS). Currently HSFS supports Apache Hudi (http://hudi.apache.org/) a storage abstraction/library for doing incremental data ingestion to a Hopsworks Feature Store.
+Background Motivation Traditional ETL typically involves taking a snapshot of a production database and doing a full load into a data lake (typically stored on a distributed file system). Using the snapshot approach for ETL is simple since the snapshot is immutable and can be loaded as an atomic unit into the data lake.</description>
     </item>
     
     <item>
@@ -570,47 +610,6 @@ The following featuregroups should exist in the featurestore:
       <guid>https://examples.hopsworks.ai/beam/portability_wordcount_python/</guid>
       <description>Apache Beam Portability Framework WordCount example This notebook demonstrates how to run the Beam wordcount.py in Hopsworks.
 Do the imports and start the Beam jobservice from __future__ import absolute_import import argparse import logging import re from past.builtins import unicode import apache_beam as beam from apache_beam.io import ReadFromText from apache_beam.io import WriteToText from apache_beam.metrics import Metrics from apache_beam.metrics.metric import MetricsFilter from apache_beam.options.pipeline_options import PipelineOptions from apache_beam.options.pipeline_options import SetupOptions import os from hops import beam as hops_beam from apache_beam.</description>
-    </item>
-    
-    <item>
-      <title></title>
-      <link>https://examples.hopsworks.ai/featurestore/azure/azure-ml-studio/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://examples.hopsworks.ai/featurestore/azure/azure-ml-studio/</guid>
-      <description>--- title: &amp;#34;Azure ML Feature Store Tour&amp;#34; date: 2021-02-24 type: technical_note draft: false --- Azure ML and the Hopsworks Feature Store The Hopsworks Feature Store is an open platform that connects to the largest number of data stores, and data science platforms with the most comprehensive API support - Python, Spark (Python, Java/Scala). It supports Azure ML Studio Notebooks or Designer for feature engineering and as your data science platform.</description>
-    </item>
-    
-    <item>
-      <title></title>
-      <link>https://examples.hopsworks.ai/featurestore/datasets/titanictrainingdatasetpython/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://examples.hopsworks.ai/featurestore/datasets/titanictrainingdatasetpython/</guid>
-      <description>Titanic Dataset for the Feature Store title: &amp;ldquo;Dataset Titanic on the Feature Store&amp;rdquo; date: 2021-02-24 type: technical_note
-draft: false This notebook prepares the Titanic dataset to be used with the feature store.
-The Titanic dataset contains information about the passengers of the famous Titanic ship. The training and test data come in form of two CSV files, which can be downloaded from the Titanic Competition page on Kaggle.
-Download the train.</description>
-    </item>
-    
-    <item>
-      <title></title>
-      <link>https://examples.hopsworks.ai/featurestore/hsfs/time_travel_python/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://examples.hopsworks.ai/featurestore/hsfs/time_travel_python/</guid>
-      <description>Time travel operations in Hopsworks Feature Store In this notebook we will introduce time travel operations in Hopsworks Feature Store (HSFS). Currently HSFS supports Apache Hudi (http://hudi.apache.org/) a storage abstraction/library for doing incremental data ingestion to a Hopsworks Feature Store.
-Background Motivation Traditional ETL typically involves taking a snapshot of a production database and doing a full load into a data lake (typically stored on a distributed file system). Using the snapshot approach for ETL is simple since the snapshot is immutable and can be loaded as an atomic unit into the data lake.</description>
-    </item>
-    
-    <item>
-      <title></title>
-      <link>https://examples.hopsworks.ai/featurestore/hsfs/time_travel_scala/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://examples.hopsworks.ai/featurestore/hsfs/time_travel_scala/</guid>
-      <description>Time travel operations in Hopsworks Feature Store In this notebook we will introduce time travel operations in Hopsworks Feature Store (HSFS). Currently HSFS supports Apache Hudi (http://hudi.apache.org/) a storage abstraction/library for doing incremental data ingestion to a Hopsworks Feature Store.
-Background Motivation Traditional ETL typically involves taking a snapshot of a production database and doing a full load into a data lake (typically stored on a distributed file system). Using the snapshot approach for ETL is simple since the snapshot is immutable and can be loaded as an atomic unit into the data lake.</description>
     </item>
     
     <item>

@@ -159,7 +159,7 @@ MathJax.Hub.Config({
 <li><p>When training deep learning models it is important that you can stream data in a way taht does not starve your GPUs, Petastorm is designed to be performant and usable for deep learning from the beginning. Moreover, petastorm have support partitioning data to optimize for distributed deep learning</p></li>
 </ul>
 
-<p><img src="petastorm1.png" alt="Petastorm 1" title="Petastorm 1" /></p>
+<p><img src="./../images/petastorm1.png" alt="Petastorm 1" title="Petastorm 1" /></p>
 
 <h3 id="background">Background</h3>
 
@@ -169,7 +169,7 @@ MathJax.Hub.Config({
 
 <p>Petastorm stores tensors as binary blobs in Parquet but also stores the necessary schema with information about the name of the tensors, the shape/dimensions, and the data type inside the tensor. Petastorm also provides a set of codecs for specifying how to compress the  data. All of this is specified in a Petastorm schema called a <strong>Unischema</strong>.</p>
 
-<p><img src="petastorm2.png" alt="Petastorm 2" title="Petastorm 2" /></p>
+<p><img src="./../images/petastorm2.png" alt="Petastorm 2" title="Petastorm 2" /></p>
 
 <p>To be able to utilize the added metadata to the Parquet we use the Petastorm client library which uses Apache Arrow to manipulat the dataset in memory:</p>
 <div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="kn">import</span> <span class="nn">petastorm</span></code></pre></div>

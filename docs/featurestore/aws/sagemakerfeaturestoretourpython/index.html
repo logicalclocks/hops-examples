@@ -145,7 +145,7 @@ MathJax.Hub.Config({
 
 <p>Which will produce the following model of feature groups in your project&rsquo;s feature store:</p>
 
-<p><img src="model.png" alt="Feature Store Model" title="Feature Store Model" /></p>
+<p><img src="../images/model.png" alt="Feature Store Model" title="Feature Store Model" /></p>
 
 <p>In this notebook we will run queries over this feature store model. We will also create new feature groups and training datasets.</p>
 
@@ -174,7 +174,7 @@ MathJax.Hub.Config({
 
 <p>Feature Stores can be shared across projects in a multi-tenant manner, just like any Hopsworks-dataset can. You can read more about sharing datasets at <a href="hops.io">hops.io</a>, but in essence to share a dataset you just have to right click on it in your project. The feature groups in the feature store are located in a dataset called <code>&lt;project_name&gt;_featurestore.db</code> in your project.</p>
 
-<p><img src="share_featurestore.png" alt="Share Feature Store" title="Share Feature Store" /></p>
+<p><img src="./images/share_featurestore.png" alt="Share Feature Store" title="Share Feature Store" /></p>
 <div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">featurestore</span><span class="o">.</span><span class="n">get_project_featurestores</span><span class="p">()</span></code></pre></div>
 <pre><code>['demo_fs_meb10179_featurestore']
 </code></pre>
@@ -183,7 +183,7 @@ MathJax.Hub.Config({
 
 <p>The feature store can be queried programmatically and with raw SQL. When you query the feature store programmatically, the library will infer how to fetch the different features using a <strong>query planner</strong>.</p>
 
-<p><img src="query_optimizer.png" alt="Feature Store Query Planner" title="Feature Store Query Planner" /></p>
+<p><img src="../images/query_optimizer.png" alt="Feature Store Query Planner" title="Feature Store Query Planner" /></p>
 
 <p>When interacting with the feature store it is sufficient to be familiar with three concepts:</p>
 
@@ -195,7 +195,7 @@ MathJax.Hub.Config({
 
 <p>A feature group contains a group of features and a training dataset contains a set of features, potentially from many different feature groups.</p>
 
-<p><img src="concepts.png" alt="Feature Store Concepts" title="Feature Store Contents" /></p>
+<p><img src="../images/concepts.png" alt="Feature Store Concepts" title="Feature Store Contents" /></p>
 
 <p>When you query the feature store you will always get back the results in a pandas dataframe. This is for scalability reasons. If the dataset is small and you want to work with it in memory you can convert it into a pandas dataframe or a numpy matrix using one line of code as we will demonstrate later on in this notebook.</p>
 

@@ -154,7 +154,7 @@ MathJax.Hub.Config({
 
 <p>A feature is not restricted to an numeric value, it could be a string representing an address, or an image.</p>
 
-<p><img src="overview.svg" alt="Feature Store Overview" title="Feature Store Overview" /></p>
+<p><img src="./images/overview.svg" alt="Feature Store Overview" title="Feature Store Overview" /></p>
 
 <p>A feature store is not a pure storage service, it goes hand-in-hand with feature computation. Feature engineering is the process of transforming raw data into a format that is compatible and understandable for predictive models.</p>
 
@@ -353,14 +353,14 @@ duplicated work in terms of for example data preparation. The tagging feature is
 <p>The first step is to define a set of tags that can be attached. Such as for example “Country” to tag data as being from
 a certain geographic location and “Sport” to further associate a type of Sport with the data.</p>
 
-<p><img src="creating_tags.gif" alt="Define tags that can be attached" /></p>
+<p><img src="images/creating_tags.gif" alt="Define tags that can be attached" /></p>
 
 <h4 id="attach-tags-using-the-ui">Attach tags using the UI</h4>
 
 <p>Tags can then be attached using the feature store UI or programmatically using the API.
 Attaching tags to feature group.</p>
 
-<p><img src="attach_tags.gif" alt="Attach tags using the UI" /></p>
+<p><img src="images/attach_tags.gif" alt="Attach tags using the UI" /></p>
 
 <h4 id="attach-tags-using-hsfs-api">Attach tags using HSFS API</h4>
 <div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">sales_fg</span> <span class="o">=</span> <span class="n">fs</span><span class="o">.</span><span class="n">get_feature_group</span><span class="p">(</span><span class="s1">&#39;sales_fg&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>

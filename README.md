@@ -6,6 +6,20 @@ This repository provides users with examples on how to program Big Data and Deep
 You can find the latest Hopsworks documentation on the [project's webpage](https://hopsworks.readthedocs.io/en/latest/), 
 including Hopsworks user and developer guides as well as a list of versions for all supported services. This README file is meant to provide basic instructions and codebase on how to build and run the examples.
 
+# Website Generation (Hugo)
+
+Install dependencies first:
+
+    pip3 install jupyter
+    pip3 install nbconvert
+
+
+Generate the webpages and run the webserver:
+
+    python3 make.py
+    ./bin/hugo server
+
+
 # Building the examples
 
 ```

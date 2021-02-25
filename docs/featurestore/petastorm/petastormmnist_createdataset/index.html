@@ -208,9 +208,9 @@ data
 
 <p>To upload the files, (1) download them from here: <a href="http://yann.lecun.com/exdb/mnist/">http://yann.lecun.com/exdb/mnist/</a>; (2) Go to the dataset browser in Hopsworks in your project and click the button &lsquo;Create new dataset&rsquo; and name the new dataset &ldquo;mnist&rdquo;; (3) Click on the dataset and upload the files.</p>
 
-<p><img src="petastorm3.png" alt="Petastorm 3" title="Petastorm 3" /></p>
+<p><img src="./../images/petastorm3.png" alt="Petastorm 3" title="Petastorm 3" /></p>
 
-<p><img src="petastorm4.png" alt="Petastorm 4" title="Petastorm 4" /></p>
+<p><img src="./../images/petastorm4.png" alt="Petastorm 4" title="Petastorm 4" /></p>
 <div class="highlight"><pre class="chroma"><code class="language-pyspark" data-lang="pyspark">files = hdfs.ls(hdfs.project_path() + &#34;mnist&#34;)
 for i in range(len(files)):
     print(files[i])</code></pre></div>
@@ -315,28 +315,28 @@ plot_train_example(0)</code></pre></div>
 <pre><code>label:5
 </code></pre>
 
-<p><img src="PetastormMNIST_CreateDataset_17_1.png" alt="png" /></p>
+<p><img src="PetastormMNIST_CreateDataset_files/PetastormMNIST_CreateDataset_17_1.png" alt="png" /></p>
 <div class="highlight"><pre class="chroma"><code class="language-pyspark" data-lang="pyspark">%%local
 %matplotlib inline
 plot_train_example(1)</code></pre></div>
 <pre><code>label:0
 </code></pre>
 
-<p><img src="PetastormMNIST_CreateDataset_18_1.png" alt="png" /></p>
+<p><img src="PetastormMNIST_CreateDataset_files/PetastormMNIST_CreateDataset_18_1.png" alt="png" /></p>
 <div class="highlight"><pre class="chroma"><code class="language-pyspark" data-lang="pyspark">%%local
 %matplotlib inline
 plot_test_example(0)</code></pre></div>
 <pre><code>label:7
 </code></pre>
 
-<p><img src="PetastormMNIST_CreateDataset_19_1.png" alt="png" /></p>
+<p><img src="PetastormMNIST_CreateDataset_files/PetastormMNIST_CreateDataset_19_1.png" alt="png" /></p>
 <div class="highlight"><pre class="chroma"><code class="language-pyspark" data-lang="pyspark">%%local
 %matplotlib inline
 plot_test_example(1)</code></pre></div>
 <pre><code>label:2
 </code></pre>
 
-<p><img src="PetastormMNIST_CreateDataset_20_1.png" alt="png" /></p>
+<p><img src="PetastormMNIST_CreateDataset_files/PetastormMNIST_CreateDataset_20_1.png" alt="png" /></p>
 
 <h3 id="step-4-save-the-numpy-dataset-as-a-petastorm-dataset">Step 4: Save  the Numpy Dataset as a Petastorm Dataset</h3>
 
@@ -420,7 +420,7 @@ mnist_data = {
 <li><p><a href="PetastormMNIST_PyTorch.ipynb">PyTorch Example</a></p></li>
 </ul>
 
-<p><img src="petastorm5.png" alt="Petastorm 5" title="Petastorm 5" /></p>
+<p><img src="./../images/petastorm5.png" alt="Petastorm 5" title="Petastorm 5" /></p>
 <div class="highlight"><pre class="chroma"><code class="language-pyspark" data-lang="pyspark"></code></pre></div>
     </div>
     <aside>

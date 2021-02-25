@@ -3,6 +3,11 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>https://examples.hopsworks.ai/featurestore/azure/azure-ml-studio/</loc>
+    <lastmod>2021-02-24T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://examples.hopsworks.ai/ml/benchmarks/benchmark/</loc>
     <lastmod>2021-02-24T00:00:00+00:00</lastmod>
   </url>
@@ -19,6 +24,11 @@
   
   <url>
     <loc>https://examples.hopsworks.ai/featurestore/image_datasets/imagedatasetfeaturestore/</loc>
+    <lastmod>2021-02-24T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://examples.hopsworks.ai/featurestore/datasets/titanictrainingdatasetpython/</loc>
     <lastmod>2021-02-24T00:00:00+00:00</lastmod>
   </url>
   
@@ -68,6 +78,16 @@
   </url>
   
   <url>
+    <loc>https://examples.hopsworks.ai/featurestore/hsfs/data_validation/feature_validation_python/</loc>
+    <lastmod>2021-02-24T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://examples.hopsworks.ai/featurestore/hsfs/data_validation/feature_validation_scala/</loc>
+    <lastmod>2021-02-24T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://examples.hopsworks.ai/featurestore/hsfs/feature_engineering/</loc>
     <lastmod>2021-02-24T00:00:00+00:00</lastmod>
   </url>
@@ -78,12 +98,12 @@
   </url>
   
   <url>
-    <loc>https://examples.hopsworks.ai/featurestore/hsfs/data_validation/feature_validation_python/</loc>
+    <loc>https://examples.hopsworks.ai/featurestore/hsfs/time_travel/time_travel_python/</loc>
     <lastmod>2021-02-24T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://examples.hopsworks.ai/featurestore/hsfs/data_validation/feature_validation_scala/</loc>
+    <loc>https://examples.hopsworks.ai/featurestore/hsfs/time_travel/time_travel_scala/</loc>
     <lastmod>2021-02-24T00:00:00+00:00</lastmod>
   </url>
   
@@ -259,22 +279,6 @@
   
   <url>
     <loc>https://examples.hopsworks.ai/beam/portability_wordcount_python/</loc>
-  </url>
-  
-  <url>
-    <loc>https://examples.hopsworks.ai/featurestore/azure/azure-ml-studio/</loc>
-  </url>
-  
-  <url>
-    <loc>https://examples.hopsworks.ai/featurestore/datasets/titanictrainingdatasetpython/</loc>
-  </url>
-  
-  <url>
-    <loc>https://examples.hopsworks.ai/featurestore/hsfs/time_travel_python/</loc>
-  </url>
-  
-  <url>
-    <loc>https://examples.hopsworks.ai/featurestore/hsfs/time_travel_scala/</loc>
   </url>
   
   <url>

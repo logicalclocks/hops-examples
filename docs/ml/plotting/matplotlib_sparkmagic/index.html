@@ -330,13 +330,13 @@ Output()
 <pre><code>&lt;matplotlib.axes._subplots.AxesSubplot at 0x7fe2c5c3ce48&gt;
 </code></pre>
 
-<p><img src="matplotlib_sparkmagic_22_1.png" alt="png" /></p>
+<p><img src="matplotlib_sparkmagic_files/matplotlib_sparkmagic_22_1.png" alt="png" /></p>
 <div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="o">%%</span><span class="n">local</span>
 <span class="n">sns</span><span class="o">.</span><span class="n">catplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;Legendary&#39;</span><span class="p">,</span><span class="n">kind</span><span class="o">=</span><span class="s1">&#39;count&#39;</span><span class="p">,</span><span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">,</span><span class="n">height</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span><span class="n">aspect</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></code></pre></div>
 <pre><code>&lt;seaborn.axisgrid.FacetGrid at 0x7fe2c5b22d30&gt;
 </code></pre>
 
-<p><img src="matplotlib_sparkmagic_23_1.png" alt="png" /></p>
+<p><img src="matplotlib_sparkmagic_files/matplotlib_sparkmagic_23_1.png" alt="png" /></p>
 <div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="o">%%</span><span class="n">local</span>
 <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Type 2&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Type 1&#39;</span><span class="p">]</span> <span class="p">,</span> <span class="n">inplace</span> <span class="o">=</span> <span class="bp">True</span><span class="p">)</span>
 <span class="c1"># Visualize &#39;Generation&#39; via Pie-Chart</span>
@@ -352,32 +352,32 @@ Output()
 <span class="n">fig</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">gcf</span><span class="p">()</span>
 <span class="n">fig</span><span class="o">.</span><span class="n">set_size_inches</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></code></pre></div>
-<p><img src="matplotlib_sparkmagic_24_0.png" alt="png" /></p>
+<p><img src="matplotlib_sparkmagic_files/matplotlib_sparkmagic_24_0.png" alt="png" /></p>
 <div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="o">%%</span><span class="n">local</span>
 <span class="n">sns</span><span class="o">.</span><span class="n">catplot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">,</span><span class="n">kind</span><span class="o">=</span><span class="s1">&#39;box&#39;</span><span class="p">,</span><span class="n">height</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span><span class="n">aspect</span><span class="o">=</span><span class="mf">1.5</span><span class="p">)</span></code></pre></div>
 <pre><code>&lt;seaborn.axisgrid.FacetGrid at 0x7fe2c53bb940&gt;
 </code></pre>
 
-<p><img src="matplotlib_sparkmagic_25_1.png" alt="png" /></p>
+<p><img src="matplotlib_sparkmagic_files/matplotlib_sparkmagic_25_1.png" alt="png" /></p>
 <div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="o">%%</span><span class="n">local</span>
 <span class="k">def</span> <span class="nf">comp</span><span class="p">(</span><span class="n">Type</span><span class="p">,</span><span class="n">category</span><span class="p">,</span><span class="n">feature1</span><span class="p">,</span><span class="n">feature2</span><span class="p">,</span><span class="n">color</span><span class="p">):</span>
     <span class="n">type_poke</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="n">Type</span><span class="p">]</span><span class="o">==</span><span class="n">category</span><span class="p">]</span>
     <span class="n">ax</span><span class="o">=</span><span class="n">sns</span><span class="o">.</span><span class="n">kdeplot</span><span class="p">(</span><span class="n">type_poke</span><span class="p">[</span><span class="n">feature1</span><span class="p">],</span><span class="n">type_poke</span><span class="p">[</span><span class="n">feature2</span><span class="p">],</span><span class="n">cmap</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">shade</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">shade_lowest</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span></code></pre></div><div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="o">%%</span><span class="n">local</span>
 <span class="n">comp</span><span class="p">(</span><span class="s1">&#39;Type 1&#39;</span><span class="p">,</span><span class="s1">&#39;Grass&#39;</span><span class="p">,</span><span class="s1">&#39;Attack&#39;</span><span class="p">,</span><span class="s1">&#39;Speed&#39;</span><span class="p">,</span><span class="s1">&#39;Reds&#39;</span><span class="p">)</span></code></pre></div>
-<p><img src="matplotlib_sparkmagic_27_0.png" alt="png" /></p>
+<p><img src="matplotlib_sparkmagic_files/matplotlib_sparkmagic_27_0.png" alt="png" /></p>
 <div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="o">%%</span><span class="n">local</span>
 <span class="n">comp</span><span class="p">(</span><span class="s1">&#39;Type 1&#39;</span><span class="p">,</span><span class="s1">&#39;Water&#39;</span><span class="p">,</span><span class="s1">&#39;Attack&#39;</span><span class="p">,</span><span class="s1">&#39;Defense&#39;</span><span class="p">,</span><span class="s1">&#39;Blues&#39;</span><span class="p">)</span></code></pre></div>
-<p><img src="matplotlib_sparkmagic_28_0.png" alt="png" /></p>
+<p><img src="matplotlib_sparkmagic_files/matplotlib_sparkmagic_28_0.png" alt="png" /></p>
 <div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="o">%%</span><span class="n">local</span>
 <span class="n">comp</span><span class="p">(</span><span class="s1">&#39;Type 1&#39;</span><span class="p">,</span><span class="s1">&#39;Bug&#39;</span><span class="p">,</span><span class="s1">&#39;Sp. Atk&#39;</span><span class="p">,</span><span class="s1">&#39;HP&#39;</span><span class="p">,</span><span class="s1">&#39;Oranges&#39;</span><span class="p">)</span></code></pre></div>
-<p><img src="matplotlib_sparkmagic_29_0.png" alt="png" /></p>
+<p><img src="matplotlib_sparkmagic_files/matplotlib_sparkmagic_29_0.png" alt="png" /></p>
 <div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="o">%%</span><span class="n">local</span>
 <span class="n">comp</span><span class="p">(</span><span class="s1">&#39;Type 2&#39;</span><span class="p">,</span><span class="s1">&#39;Electric&#39;</span><span class="p">,</span><span class="s1">&#39;Speed&#39;</span><span class="p">,</span><span class="s1">&#39;HP&#39;</span><span class="p">,</span><span class="s1">&#39;Greens&#39;</span><span class="p">)</span></code></pre></div>
-<p><img src="matplotlib_sparkmagic_30_0.png" alt="png" /></p>
+<p><img src="matplotlib_sparkmagic_files/matplotlib_sparkmagic_30_0.png" alt="png" /></p>
 <div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="o">%%</span><span class="n">local</span>
 <span class="n">g</span><span class="o">=</span><span class="n">sns</span><span class="o">.</span><span class="n">pairplot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">,</span><span class="n">y_vars</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Total&#39;</span><span class="p">],</span><span class="n">x_vars</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Speed&#39;</span><span class="p">,</span><span class="s1">&#39;HP&#39;</span><span class="p">,</span><span class="s1">&#39;Attack&#39;</span><span class="p">,</span><span class="s1">&#39;Defense&#39;</span><span class="p">,</span><span class="s1">&#39;Sp. Atk&#39;</span><span class="p">,</span><span class="s1">&#39;Sp. Def&#39;</span><span class="p">])</span>
 <span class="n">g</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">set_size_inches</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span><span class="mi">10</span><span class="p">)</span></code></pre></div>
-<p><img src="matplotlib_sparkmagic_31_0.png" alt="png" /></p>
+<p><img src="matplotlib_sparkmagic_files/matplotlib_sparkmagic_31_0.png" alt="png" /></p>
 <div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="o">%%</span><span class="n">local</span>
 <span class="k">def</span> <span class="nf">comp2</span><span class="p">(</span><span class="n">Type</span><span class="p">,</span><span class="n">Attribute</span><span class="p">):</span>
     <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
@@ -386,22 +386,22 @@ Output()
     <span class="n">sns</span><span class="o">.</span><span class="n">violinplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">Type</span><span class="p">,</span><span class="n">y</span><span class="o">=</span><span class="n">Attribute</span><span class="p">,</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">)</span>
     <span class="n">sns</span><span class="o">.</span><span class="n">barplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">Type</span><span class="p">,</span><span class="n">y</span><span class="o">=</span><span class="n">Attribute</span><span class="p">,</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span><span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">)</span></code></pre></div><div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="o">%%</span><span class="n">local</span>
 <span class="n">comp2</span><span class="p">(</span><span class="s1">&#39;Type 1&#39;</span><span class="p">,</span><span class="s1">&#39;Attack&#39;</span><span class="p">)</span></code></pre></div>
-<p><img src="matplotlib_sparkmagic_33_0.png" alt="png" /></p>
+<p><img src="matplotlib_sparkmagic_files/matplotlib_sparkmagic_33_0.png" alt="png" /></p>
 <div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="o">%%</span><span class="n">local</span>
 <span class="n">comp2</span><span class="p">(</span><span class="s1">&#39;Type 1&#39;</span><span class="p">,</span><span class="s1">&#39;HP&#39;</span><span class="p">)</span></code></pre></div>
-<p><img src="matplotlib_sparkmagic_34_0.png" alt="png" /></p>
+<p><img src="matplotlib_sparkmagic_files/matplotlib_sparkmagic_34_0.png" alt="png" /></p>
 <div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="o">%%</span><span class="n">local</span>
 <span class="n">comp2</span><span class="p">(</span><span class="s1">&#39;Type 2&#39;</span><span class="p">,</span> <span class="s1">&#39;Sp. Atk&#39;</span><span class="p">)</span></code></pre></div>
-<p><img src="matplotlib_sparkmagic_35_0.png" alt="png" /></p>
+<p><img src="matplotlib_sparkmagic_files/matplotlib_sparkmagic_35_0.png" alt="png" /></p>
 <div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="o">%%</span><span class="n">local</span>
 <span class="k">def</span> <span class="nf">comp_hex</span><span class="p">(</span><span class="n">Attribute1</span><span class="p">,</span><span class="n">Attribute2</span><span class="p">,</span><span class="n">Color</span><span class="p">):</span>
     <span class="n">sns</span><span class="o">.</span><span class="n">jointplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">Attribute1</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">Attribute2</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span><span class="n">Color</span> <span class="p">,</span> <span class="n">kind</span> <span class="o">=</span><span class="s1">&#39;hex&#39;</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="mf">8.0</span><span class="p">)</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></code></pre></div><div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="o">%%</span><span class="n">local</span>
 <span class="n">comp_hex</span><span class="p">(</span><span class="s1">&#39;Sp. Atk&#39;</span><span class="p">,</span><span class="s1">&#39;Speed&#39;</span><span class="p">,</span><span class="s1">&#39;Red&#39;</span><span class="p">)</span></code></pre></div>
-<p><img src="matplotlib_sparkmagic_37_0.png" alt="png" /></p>
+<p><img src="matplotlib_sparkmagic_files/matplotlib_sparkmagic_37_0.png" alt="png" /></p>
 <div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="o">%%</span><span class="n">local</span>
 <span class="n">comp_hex</span><span class="p">(</span><span class="s1">&#39;Defense&#39;</span><span class="p">,</span><span class="s1">&#39;Speed&#39;</span><span class="p">,</span><span class="s1">&#39;Blue&#39;</span><span class="p">)</span></code></pre></div>
-<p><img src="matplotlib_sparkmagic_38_0.png" alt="png" /></p>
+<p><img src="matplotlib_sparkmagic_files/matplotlib_sparkmagic_38_0.png" alt="png" /></p>
 <div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="o">%%</span><span class="n">local</span>
 <span class="n">group_df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s1">&#39;#&#39;</span><span class="p">,</span> <span class="s1">&#39;Legendary&#39;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">pokemon_groups</span> <span class="o">=</span> <span class="n">group_df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;Generation&#39;</span><span class="p">)</span>
@@ -415,7 +415,7 @@ Output()
 <span class="n">sns</span><span class="o">.</span><span class="n">pointplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">pokemon_groups_mean</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">pokemon_groups_mean</span><span class="p">[</span><span class="s1">&#39;Sp. Def&#39;</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;purple&#39;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></code></pre></div>
-<p><img src="matplotlib_sparkmagic_40_0.png" alt="png" /></p>
+<p><img src="matplotlib_sparkmagic_files/matplotlib_sparkmagic_40_0.png" alt="png" /></p>
 <div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="o">%%</span><span class="n">local</span>
 <span class="n">pkmn</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s2">&#34;Generation&#34;</span><span class="p">,</span> <span class="s2">&#34;Legendary&#34;</span><span class="p">],</span> <span class="mi">1</span><span class="p">)</span> <span class="c1"># [dataframe].drop([COLUMN NAMES]) will remove</span>
 <span class="c1"># certain columns from a data frame. Generation and Legendary data are not important for this </span>
@@ -494,7 +494,7 @@ Output()
 
 
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span> <span class="c1"># This command shows the graphs we&#39;ve plotted</span></code></pre></div>
-<p><img src="matplotlib_sparkmagic_41_0.png" alt="png" /></p>
+<p><img src="matplotlib_sparkmagic_files/matplotlib_sparkmagic_41_0.png" alt="png" /></p>
 <div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="o">%%</span><span class="n">local</span>
 <span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="n">figsize</span> <span class="o">=</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span> <span class="c1"># I changed the figure size as well as the number </span>
 <span class="c1"># of rows and columns in my final figure because now I want a (2 x 3) display of images!</span>
@@ -544,7 +544,7 @@ Output()
 <span class="n">sns</span><span class="o">.</span><span class="n">set_context</span><span class="p">(</span><span class="s2">&#34;paper&#34;</span><span class="p">)</span> <span class="c1"># aesthetics</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></code></pre></div>
-<p><img src="matplotlib_sparkmagic_42_0.png" alt="png" /></p>
+<p><img src="matplotlib_sparkmagic_files/matplotlib_sparkmagic_42_0.png" alt="png" /></p>
 <div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="o">%%</span><span class="n">local</span>
 <span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">figsize</span> <span class="o">=</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">8</span><span class="p">))</span> <span class="c1"># I changed the figure size as well as the number </span>
 <span class="c1"># of rows and columns in my final figure because now I want a (3 x 2) display of images!</span>
@@ -626,7 +626,7 @@ Output()
 <span class="n">sns</span><span class="o">.</span><span class="n">set_context</span><span class="p">(</span><span class="s2">&#34;paper&#34;</span><span class="p">)</span> <span class="c1"># aesthetics</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></code></pre></div>
-<p><img src="matplotlib_sparkmagic_43_0.png" alt="png" /></p>
+<p><img src="matplotlib_sparkmagic_files/matplotlib_sparkmagic_43_0.png" alt="png" /></p>
 <div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="o">%%</span><span class="n">local</span>
 <span class="n">pokemon_color_palette</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">({</span><span class="s2">&#34;Water&#34;</span><span class="p">:</span><span class="s2">&#34;#0D4EE5&#34;</span><span class="p">,</span> <span class="s2">&#34;Normal&#34;</span><span class="p">:</span><span class="s2">&#34;#ABABAB&#34;</span><span class="p">,</span> <span class="s2">&#34;Bug&#34;</span><span class="p">:</span><span class="s2">&#34;#13EA5D&#34;</span><span class="p">,</span> <span class="s2">&#34;Grass&#34;</span><span class="p">:</span><span class="s2">&#34;#0C8D39&#34;</span><span class="p">,</span> <span class="s2">&#34;Psychic&#34;</span><span class="p">:</span><span class="s2">&#34;#5823A8&#34;</span><span class="p">,</span>
  <span class="s2">&#34;Fire&#34;</span><span class="p">:</span><span class="s2">&#34;#EF341B&#34;</span><span class="p">,</span> <span class="s2">&#34;Electric&#34;</span><span class="p">:</span><span class="s2">&#34;#ffe500&#34;</span><span class="p">,</span> <span class="s2">&#34;Rock&#34;</span><span class="p">:</span><span class="s2">&#34;#6A3D11&#34;</span><span class="p">,</span> <span class="s2">&#34;Dragon&#34;</span><span class="p">:</span><span class="s2">&#34;#85BAE5&#34;</span><span class="p">,</span> <span class="s2">&#34;Fairy&#34;</span><span class="p">:</span><span class="s2">&#34;#AC2ABE&#34;</span><span class="p">,</span>
@@ -689,19 +689,19 @@ Output()
     <span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">rotation</span><span class="o">=</span> <span class="mi">45</span><span class="p">)</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></code></pre></div>
-<p><img src="matplotlib_sparkmagic_44_0.png" alt="png" /></p>
+<p><img src="matplotlib_sparkmagic_files/matplotlib_sparkmagic_44_0.png" alt="png" /></p>
 <div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="o">%%</span><span class="n">local</span>
 <span class="n">sns</span><span class="o">.</span><span class="n">jointplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;Defense&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Speed&#39;</span><span class="p">,</span> 
               <span class="n">data</span><span class="o">=</span><span class="n">pkmn</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span><span class="s1">&#39;green&#39;</span><span class="p">,</span> <span class="n">kind</span> <span class="o">=</span><span class="s1">&#39;scatter&#39;</span><span class="p">,</span> 
               <span class="n">height</span> <span class="o">=</span> <span class="mf">8.0</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></code></pre></div>
-<p><img src="matplotlib_sparkmagic_45_0.png" alt="png" /></p>
+<p><img src="matplotlib_sparkmagic_files/matplotlib_sparkmagic_45_0.png" alt="png" /></p>
 <div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="o">%%</span><span class="n">local</span>
 <span class="n">sns</span><span class="o">.</span><span class="n">jointplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;Defense&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Speed&#39;</span><span class="p">,</span> 
               <span class="n">data</span><span class="o">=</span><span class="n">pkmn</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span><span class="s1">&#39;purple&#39;</span><span class="p">,</span> <span class="n">kind</span> <span class="o">=</span><span class="s1">&#39;reg&#39;</span><span class="p">,</span> 
               <span class="n">height</span> <span class="o">=</span> <span class="mf">8.0</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></code></pre></div>
-<p><img src="matplotlib_sparkmagic_46_0.png" alt="png" /></p>
+<p><img src="matplotlib_sparkmagic_files/matplotlib_sparkmagic_46_0.png" alt="png" /></p>
 
     </div>
     <aside>
