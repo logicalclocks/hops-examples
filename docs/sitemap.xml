@@ -13,6 +13,16 @@
   </url>
   
   <url>
+    <loc>https://examples.hopsworks.ai/featurestore/hsfs/data_validation/feature_validation_python/</loc>
+    <lastmod>2021-02-24T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://examples.hopsworks.ai/featurestore/hsfs/data_validation/feature_validation_scala/</loc>
+    <lastmod>2021-02-24T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://examples.hopsworks.ai/featurestore/databricks/featurestorequickstartdatabricksazure/</loc>
     <lastmod>2021-02-24T00:00:00+00:00</lastmod>
   </url>
@@ -24,11 +34,6 @@
   
   <url>
     <loc>https://examples.hopsworks.ai/featurestore/image_datasets/imagedatasetfeaturestore/</loc>
-    <lastmod>2021-02-24T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://examples.hopsworks.ai/featurestore/datasets/titanictrainingdatasetpython/</loc>
     <lastmod>2021-02-24T00:00:00+00:00</lastmod>
   </url>
   
@@ -48,6 +53,16 @@
   </url>
   
   <url>
+    <loc>https://examples.hopsworks.ai/featurestore/hsfs/basics/feature_engineering/</loc>
+    <lastmod>2021-02-24T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://examples.hopsworks.ai/featurestore/hsfs/basics/feature_exploration/</loc>
+    <lastmod>2021-02-24T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://examples.hopsworks.ai/featurestore/aws/redshift/redshift_pyspark/</loc>
     <lastmod>2021-02-24T00:00:00+00:00</lastmod>
   </url>
@@ -58,7 +73,17 @@
   </url>
   
   <url>
+    <loc>https://examples.hopsworks.ai/featurestore/aws/s3-featurestore/</loc>
+    <lastmod>2021-02-24T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://examples.hopsworks.ai/featurestore/aws/s3/s3-featurestore/</loc>
+    <lastmod>2021-02-24T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://examples.hopsworks.ai/featurestore/hsfs/basics/training_datasets/</loc>
     <lastmod>2021-02-24T00:00:00+00:00</lastmod>
   </url>
   
@@ -78,37 +103,12 @@
   </url>
   
   <url>
-    <loc>https://examples.hopsworks.ai/featurestore/hsfs/data_validation/feature_validation_python/</loc>
-    <lastmod>2021-02-24T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://examples.hopsworks.ai/featurestore/hsfs/data_validation/feature_validation_scala/</loc>
-    <lastmod>2021-02-24T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://examples.hopsworks.ai/featurestore/hsfs/basics/feature_engineering/</loc>
-    <lastmod>2021-02-24T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://examples.hopsworks.ai/featurestore/hsfs/basics/feature_exploration/</loc>
-    <lastmod>2021-02-24T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
     <loc>https://examples.hopsworks.ai/featurestore/hsfs/time_travel/time_travel_python/</loc>
     <lastmod>2021-02-24T00:00:00+00:00</lastmod>
   </url>
   
   <url>
     <loc>https://examples.hopsworks.ai/featurestore/hsfs/time_travel/time_travel_scala/</loc>
-    <lastmod>2021-02-24T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://examples.hopsworks.ai/featurestore/hsfs/basics/training_datasets/</loc>
     <lastmod>2021-02-24T00:00:00+00:00</lastmod>
   </url>
   
@@ -218,6 +218,11 @@
   </url>
   
   <url>
+    <loc>https://examples.hopsworks.ai/featurestore/aws/sagemakerfeaturestoretourpython/</loc>
+    <lastmod>2021-02-24T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://examples.hopsworks.ai/featurestore/aws/sagemaker/sagemakerfeaturestoretourpython/</loc>
     <lastmod>2021-02-24T00:00:00+00:00</lastmod>
   </url>
@@ -249,6 +254,11 @@
   
   <url>
     <loc>https://examples.hopsworks.ai/featurestore/petastorm/petastormmnist_tensorflow/</loc>
+    <lastmod>2021-02-24T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://examples.hopsworks.ai/featurestore/datasets/titanictrainingdatasetpython/</loc>
     <lastmod>2021-02-24T00:00:00+00:00</lastmod>
   </url>
   

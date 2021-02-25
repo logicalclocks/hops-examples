@@ -37,32 +37,19 @@
                             {{ range (where .Pages "File.Dir" "in" "/featurestore/hsfs/basics/").ByTitle }}
                             <li>
                                 <a href="{{.Permalink}}">{{.Title}}</a>
-                            </li>
+                            </li>			    
                             {{ end }}
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-sm-12">
-                <div class="card">
-                    <h4 class="card-header" id="titanic_training_data">Titanic Training Dataset</h4>
-                    <div class="card-body">
-                        <ul>
                             {{ range (where .Pages "File.Dir" "in" "/featurestore/datasets/").ByTitle }}
                             <li>
                                 <a href="{{.Permalink}}">{{.Title}}</a>
                             </li>
-                            {{ end }}
+                            {{ end }}			    
                         </ul>
                     </div>
                 </div>
             </div>
         </div>
 
-	
         <div class="row">
             <div class="col-sm-12">
                 <div class="card">
@@ -210,17 +197,43 @@
 
         <div class="row" id="spark-fs">
             <div class="col-sm-12">
-                <h3 class="category_header">Spark and the Feature Store</h3>
+                <h3 class="category_header">General Feature Store</h3>
             </div>
         </div>
 
         <div class="row">
             <div class="col-sm-12">
                 <div class="card">
-                    <h4 class="card-header" id="image_petastore">Spark and the Feature Store</h4>
+                    <h4 class="card-header" id="image_petastore">Elastic, Hive, Kafka, and Spark</h4>
                     <div class="card-body">
                         <ul>
                             {{ range (where .Pages "File.Dir" "in" "/featurestore/spark/").ByTitle }}
+                            <li>
+                                <a href="{{.Permalink}}">{{.Title}}</a>
+                            </li>
+                            {{ end }}
+                            {{ range (where .Pages "File.Dir" "in" "/featurestore/kafka/").ByTitle }}
+                            <li>
+                                <a href="{{.Permalink}}">{{.Title}}</a>
+                            </li>
+                            {{ end }}
+                            {{ range (where .Pages "File.Dir" "in" "/featurestore/hive/").ByTitle }}
+                            <li>
+                                <a href="{{.Permalink}}">{{.Title}}</a>
+                            </li>
+                            {{ end }}			    
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <h4 class="card-header" id="image_petastore">Petastorm and the Feature Store</h4>
+                    <div class="card-body">
+                        <ul>
+                            {{ range (where .Pages "File.Dir" "in" "/featurestore/petastorm/").ByTitle }}
                             <li>
                                 <a href="{{.Permalink}}">{{.Title}}</a>
                             </li>
@@ -253,70 +266,7 @@
                 </div>
             </div>
         </div>
-
-        <div class="row">
-            <div class="col-sm-12">
-                <div class="card">
-                    <h4 class="card-header" id="image_petastore">Petastorm and the Feature Store</h4>
-                    <div class="card-body">
-                        <ul>
-                            {{ range (where .Pages "File.Dir" "in" "/featurestore/petastorm/").ByTitle }}
-                            <li>
-                                <a href="{{.Permalink}}">{{.Title}}</a>
-                            </li>
-                            {{ end }}
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-
 	
-        <div class="row" id="hive-fs">
-            <div class="col-sm-12">
-                <h3 class="category_header">Hive and the Feature Store</h3>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-sm-12">
-                <div class="card">
-                    <h4 class="card-header" id="image_petastore">Hive and the Feature Store</h4>
-                    <div class="card-body">
-                        <ul>
-                            {{ range (where .Pages "File.Dir" "in" "/featurestore/hive/").ByTitle }}
-                            <li>
-                                <a href="{{.Permalink}}">{{.Title}}</a>
-                            </li>
-                            {{ end }}
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="row" id="kafka-fs">
-            <div class="col-sm-12">
-                <h3 class="category_header">Kafka and the Feature Store</h3>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-sm-12">
-                <div class="card">
-                    <h4 class="card-header" id="image_petastore">Kafka and the Feature Store</h4>
-                    <div class="card-body">
-                        <ul>
-                            {{ range (where .Pages "File.Dir" "in" "/featurestore/kafka/").ByTitle }}
-                            <li>
-                                <a href="{{.Permalink}}">{{.Title}}</a>
-                            </li>
-                            {{ end }}
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
 
         <div class="row" id="ml-fs">
             <div class="col-sm-12">

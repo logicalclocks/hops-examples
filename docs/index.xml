@@ -33,6 +33,26 @@ Have a feature request or encountered an issue? Please let us know on github.</d
     </item>
     
     <item>
+      <title>Data Validation with Python</title>
+      <link>https://examples.hopsworks.ai/featurestore/hsfs/data_validation/feature_validation_python/</link>
+      <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://examples.hopsworks.ai/featurestore/hsfs/data_validation/feature_validation_python/</guid>
+      <description>Feature Validation with the Hopsworks Feature Store In this notebook we introduce feature validation operations with the Hopsworks Feature Store and its client API, hsfs.
+Background Motivation Data ingested into the Feature Store form the basis for the data fed as input to algorithms that develope machine learning models. The Feature store is a place where curated feature data is stored, therefore it is important that this data is validated against different rules to it adheres to business requirements.</description>
+    </item>
+    
+    <item>
+      <title>Data Validation with Scala</title>
+      <link>https://examples.hopsworks.ai/featurestore/hsfs/data_validation/feature_validation_scala/</link>
+      <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://examples.hopsworks.ai/featurestore/hsfs/data_validation/feature_validation_scala/</guid>
+      <description>Feature Validation with the Hopsworks Feature Store In this notebook we introduce feature validation operations with the Hopsworks Feature Store and its client API, hsfs.
+Background Motivation Data ingested into the Feature Store form the basis for the data fed as input to algorithms that develope machine learning models. The Feature store is a place where curated feature data is stored, therefore it is important that this data is validated against different rules to it adheres to business requirements.</description>
+    </item>
+    
+    <item>
       <title>Databricks Azure Feature Store Quickstart</title>
       <link>https://examples.hopsworks.ai/featurestore/databricks/featurestorequickstartdatabricksazure/</link>
       <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
@@ -60,17 +80,6 @@ Have a feature request or encountered an issue? Please let us know on github.</d
       <guid>https://examples.hopsworks.ai/featurestore/image_datasets/imagedatasetfeaturestore/</guid>
       <description>Example of Using a Raw Image Dataset in the Feature Store Images are often stored in binary formats for training machine learning models, such as tfrecords or parquet. However, sometimes it can be useful to store a large image dataset in a folder with one file per image, such as .jpg or .png.
 This notebook will demonstrate how to create a training dataset with .jpg files in the Hopsworks Feature Store</description>
-    </item>
-    
-    <item>
-      <title>Dataset Titanic on the Feature Store</title>
-      <link>https://examples.hopsworks.ai/featurestore/datasets/titanictrainingdatasetpython/</link>
-      <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
-      
-      <guid>https://examples.hopsworks.ai/featurestore/datasets/titanictrainingdatasetpython/</guid>
-      <description>Titanic Dataset for the Feature Store This notebook prepares the Titanic dataset to be used with the feature store.
-The Titanic dataset contains information about the passengers of the famous Titanic ship. The training and test data come in form of two CSV files, which can be downloaded from the Titanic Competition page on Kaggle.
-Download the train.csv and test.csv files, and upload them to the Resources folder of your Hopsworks Project.</description>
     </item>
     
     <item>
@@ -110,18 +119,38 @@ wget -O akc_breed_info.csv https://query.data.world/s/msmjhcmdjslsvjzcaqmtreu52g
     </item>
     
     <item>
-      <title>Feature Ingestion from Redshift</title>
+      <title>Feature Engineering/Ingestion</title>
+      <link>https://examples.hopsworks.ai/featurestore/hsfs/basics/feature_engineering/</link>
+      <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://examples.hopsworks.ai/featurestore/hsfs/basics/feature_engineering/</guid>
+      <description>Feature Store Tour - Python API This set of notebooks contain a tour/reference for the Hopsworks feature store Scala/Java API. The notebook is meant to be run from feature store demo projects on Hopsworks. We will go over best practices for using the API as well as common pitfalls.
+There are 3 notebooks: - Feature groups: Discover how to work with features and feature groups, both offline and online - Feature Exploration: Discover how to join features from different feature groups - Training datasets: Discover how to save training datasets to be used by ML models</description>
+    </item>
+    
+    <item>
+      <title>Feature Exploration</title>
+      <link>https://examples.hopsworks.ai/featurestore/hsfs/basics/feature_exploration/</link>
+      <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://examples.hopsworks.ai/featurestore/hsfs/basics/feature_exploration/</guid>
+      <description>HSFS feature exploration In this notebook we are going to walk through how to use the HSFS library to explore feature groups and features in the Hopsworks Feature Store.
+A key component of the Hopsworks feature store is to enable sharing and re-using of features across models and use cases. As such, the HSFS libraries allows user to join features from different feature groups and use them to create training datasets.</description>
+    </item>
+    
+    <item>
+      <title>Feature Ingestion from Redshift with PySpark</title>
       <link>https://examples.hopsworks.ai/featurestore/aws/redshift/redshift_pyspark/</link>
       <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
       
       <guid>https://examples.hopsworks.ai/featurestore/aws/redshift/redshift_pyspark/</guid>
       <description>Redshift Integration This notebooks guides through the ingestion of Redshift data in the Hopsworks feature store. To follow this notebook users should have an existing Redshift cluster, if not, they can follow the AWS documentation.
-The data for this tutorial is available in CSV format [here]() Users should create the following table in Redshift
+The data for this tutorial is available in CSV format here Users should create the following table in Redshift
 CREATE TABLE telco( customer_id varchar(200), gender varchar(200), senior_citizen integer, partner varchar(200), dependents varchar(200), tenure integer, phone_service varchar(200), multiple_lines varchar(200), internet_service varchar(200), online_security varchar(200), online_backup varchar(200), device_protection varchar(200), tech_support varchar(200), streaming_tv varchar(200), streaming_movies varchar(200), contract varchar(200), paperless_billing varchar(200), payment_method varchar(200), monthly_charges double precision, total_charges varchar(200), churn varchar(200) ) and populate the table using the copy command:</description>
     </item>
     
     <item>
-      <title>Feature Ingestion from Redshift</title>
+      <title>Feature Ingestion from Redshift with Spark</title>
       <link>https://examples.hopsworks.ai/featurestore/aws/redshift/redshift_spark/</link>
       <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
       
@@ -133,6 +162,17 @@ CREATE TABLE telco( customer_id varchar(200), gender varchar(200), senior_citize
     
     <item>
       <title>Feature Ingestion from S3</title>
+      <link>https://examples.hopsworks.ai/featurestore/aws/s3-featurestore/</link>
+      <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://examples.hopsworks.ai/featurestore/aws/s3-featurestore/</guid>
+      <description>Get started with S3 and the Feature Store This tutorial notebook will help you get started with working with the Hopsworks feature store and S3.
+To execute this tutorial, you can use the sample data from here - and place it in a S3 bucket.
+Before starting with the execution, you should also create a S3 storage connector pointing to the bucket where you uploaded the data. You can follow the Hopsworks documentation to see how you can create the storage connector from the feature store UI.</description>
+    </item>
+    
+    <item>
+      <title>Feature Ingestion from S3</title>
       <link>https://examples.hopsworks.ai/featurestore/aws/s3/s3-featurestore/</link>
       <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
       
@@ -140,6 +180,17 @@ CREATE TABLE telco( customer_id varchar(200), gender varchar(200), senior_citize
       <description>Get started with S3 and the Feature Store This tutorial notebook will help you get started with working with the Hopsworks feature store and S3.
 To execute this tutorial, you can use the sample data from here - and place it in a S3 bucket.
 Before starting with the execution, you should also create a S3 storage connector pointing to the bucket where you uploaded the data. You can follow the Hopsworks documentation to see how you can create the storage connector from the feature store UI.</description>
+    </item>
+    
+    <item>
+      <title>Feature Selection and Training Dataset Creation</title>
+      <link>https://examples.hopsworks.ai/featurestore/hsfs/basics/training_datasets/</link>
+      <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://examples.hopsworks.ai/featurestore/hsfs/basics/training_datasets/</guid>
+      <description>HSFS training datasets Training datasets is the third building block of the Hopsworks Feature Store. Data scientists can query the feature store (see feature_exploration notebook) and materialize their query in training datasets.
+Training datasets can be saved in a ML framework friendly format (eg. TfRecords, CSV, Numpy) and then be fed to a machine learning model for training.
+Training datasets can also be stored on external storage systems like Amazon S3 or GCS to be read by external model training platforms.</description>
     </item>
     
     <item>
@@ -176,46 +227,6 @@ Import the Module from hops import hdfs Getting Project Information When interac
     </item>
     
     <item>
-      <title>Hsfs - Data Validation with Python</title>
-      <link>https://examples.hopsworks.ai/featurestore/hsfs/data_validation/feature_validation_python/</link>
-      <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
-      
-      <guid>https://examples.hopsworks.ai/featurestore/hsfs/data_validation/feature_validation_python/</guid>
-      <description>Feature Validation with the Hopsworks Feature Store In this notebook we introduce feature validation operations with the Hopsworks Feature Store and its client API, hsfs.
-Background Motivation Data ingested into the Feature Store form the basis for the data fed as input to algorithms that develope machine learning models. The Feature store is a place where curated feature data is stored, therefore it is important that this data is validated against different rules to it adheres to business requirements.</description>
-    </item>
-    
-    <item>
-      <title>Hsfs - Data Validation with Scala</title>
-      <link>https://examples.hopsworks.ai/featurestore/hsfs/data_validation/feature_validation_scala/</link>
-      <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
-      
-      <guid>https://examples.hopsworks.ai/featurestore/hsfs/data_validation/feature_validation_scala/</guid>
-      <description>Feature Validation with the Hopsworks Feature Store In this notebook we introduce feature validation operations with the Hopsworks Feature Store and its client API, hsfs.
-Background Motivation Data ingested into the Feature Store form the basis for the data fed as input to algorithms that develope machine learning models. The Feature store is a place where curated feature data is stored, therefore it is important that this data is validated against different rules to it adheres to business requirements.</description>
-    </item>
-    
-    <item>
-      <title>Hsfs - Feature Engineering</title>
-      <link>https://examples.hopsworks.ai/featurestore/hsfs/basics/feature_engineering/</link>
-      <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
-      
-      <guid>https://examples.hopsworks.ai/featurestore/hsfs/basics/feature_engineering/</guid>
-      <description>Feature Store Tour - Python API This set of notebooks contain a tour/reference for the Hopsworks feature store Scala/Java API. The notebook is meant to be run from feature store demo projects on Hopsworks. We will go over best practices for using the API as well as common pitfalls.
-There are 3 notebooks: - Feature groups: Discover how to work with features and feature groups, both offline and online - Feature Exploration: Discover how to join features from different feature groups - Training datasets: Discover how to save training datasets to be used by ML models</description>
-    </item>
-    
-    <item>
-      <title>Hsfs - Feature Exploration</title>
-      <link>https://examples.hopsworks.ai/featurestore/hsfs/basics/feature_exploration/</link>
-      <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
-      
-      <guid>https://examples.hopsworks.ai/featurestore/hsfs/basics/feature_exploration/</guid>
-      <description>HSFS feature exploration In this notebook we are going to walk through how to use the HSFS library to explore feature groups and features in the Hopsworks Feature Store.
-A key component of the Hopsworks feature store is to enable sharing and re-using of features across models and use cases. As such, the HSFS libraries allows user to join features from different feature groups and use them to create training datasets.</description>
-    </item>
-    
-    <item>
       <title>Hsfs - Time-Travel with PySpark</title>
       <link>https://examples.hopsworks.ai/featurestore/hsfs/time_travel/time_travel_python/</link>
       <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
@@ -233,17 +244,6 @@ Background Motivation Traditional ETL typically involves taking a snapshot of a 
       <guid>https://examples.hopsworks.ai/featurestore/hsfs/time_travel/time_travel_scala/</guid>
       <description>Time travel operations in Hopsworks Feature Store In this notebook we will introduce time travel operations in Hopsworks Feature Store (HSFS). Currently HSFS supports Apache Hudi (http://hudi.apache.org/) a storage abstraction/library for doing incremental data ingestion to a Hopsworks Feature Store.
 Background Motivation Traditional ETL typically involves taking a snapshot of a production database and doing a full load into a data lake (typically stored on a distributed file system). Using the snapshot approach for ETL is simple since the snapshot is immutable and can be loaded as an atomic unit into the data lake.</description>
-    </item>
-    
-    <item>
-      <title>Hsfs - Training Dataset Creation</title>
-      <link>https://examples.hopsworks.ai/featurestore/hsfs/basics/training_datasets/</link>
-      <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
-      
-      <guid>https://examples.hopsworks.ai/featurestore/hsfs/basics/training_datasets/</guid>
-      <description>HSFS training datasets Training datasets is the third building block of the Hopsworks Feature Store. Data scientists can query the feature store (see feature_exploration notebook) and materialize their query in training datasets.
-Training datasets can be saved in a ML framework friendly format (eg. TfRecords, CSV, Numpy) and then be fed to a machine learning model for training.
-Training datasets can also be stored on external storage systems like Amazon S3 or GCS to be read by external model training platforms.</description>
     </item>
     
     <item>
@@ -477,6 +477,16 @@ This notebook assumes that you have already created the training datasets in the
     
     <item>
       <title>Sagemaker Feature Store Tour</title>
+      <link>https://examples.hopsworks.ai/featurestore/aws/sagemakerfeaturestoretourpython/</link>
+      <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://examples.hopsworks.ai/featurestore/aws/sagemakerfeaturestoretourpython/</guid>
+      <description>Feature Store Tour - Python API This notebook contains a tour/reference for the Hopsworks feature store Python API on Amazon SageMaker. The notebook is meant to be run on Amazon SageMaker after setting up Hopsworks to work with AWS (see here).
+The notebook is designed to be used in combination with the Feature Store Tour on Hopsworks, it assumes that you have run the following feature engineering job: job (the job is added automatically when you start the feature store tour in Hopsworks.</description>
+    </item>
+    
+    <item>
+      <title>Sagemaker Feature Store Tour</title>
       <link>https://examples.hopsworks.ai/featurestore/aws/sagemaker/sagemakerfeaturestoretourpython/</link>
       <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
       
@@ -545,6 +555,17 @@ Using the experiment module To be able to run your Machine Learning code in Hops
       <guid>https://examples.hopsworks.ai/featurestore/petastorm/petastormmnist_tensorflow/</guid>
       <description>Image Classification with MNIST Using a Petastorm Dataset In this notebook we will read a training dataset saved in the Petastorm format in the project&amp;rsquo;s feature store and use that to train a Deep CNN defined in Keras/Tensorflow to classify images of digits in the MNIST dataset.
 This notebook assumes that you have already created the training datasets in the feature store, which you can do by running this notebook:</description>
+    </item>
+    
+    <item>
+      <title>Titanic Dataset with the Feature Store</title>
+      <link>https://examples.hopsworks.ai/featurestore/datasets/titanictrainingdatasetpython/</link>
+      <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://examples.hopsworks.ai/featurestore/datasets/titanictrainingdatasetpython/</guid>
+      <description>Titanic Dataset for the Feature Store This notebook prepares the Titanic dataset to be used with the feature store.
+The Titanic dataset contains information about the passengers of the famous Titanic ship. The training and test data come in form of two CSV files, which can be downloaded from the Titanic Competition page on Kaggle.
+Download the train.csv and test.csv files, and upload them to the Resources folder of your Hopsworks Project.</description>
     </item>
     
     <item>
