@@ -106,8 +106,8 @@ MathJax.Hub.Config({
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="nav navbar-nav mr-auto"></ul>
                 <ul class="nav navbar-nav">
-                    <li><a href="https://hopsworks.ai" title="Hopsworks.ai">hopsworks.ai</a></li>
-                    <li><a href="https://docs.hopsworks.ai" title="Docs">docs.hopsworks.ai</a></li>
+                    <li><a href="https://hopsworks.ai" title="Hopsworks.ai">Hopsworks</a></li>
+                    <li><a href="https://docs.hopsworks.ai" title="Docs">Docs</a></li>
                 </ul>
             </div>
         </div>
@@ -330,15 +330,15 @@ Finished copying
         <span class="k">return</span> <span class="s2">&#34;not implemented&#34;</span></code></pre></div>
 <p>Then upload this python script to some folder in your project and go to the &ldquo;Model Serving&rdquo; service in Hopsworks:</p>
 
-<p><img src="./../../images/sklearn_serving1.png" alt="sklearn_serving1.png" /></p>
+<p><img src="./../../../../images/sklearn_serving1.png" alt="sklearn_serving1.png" /></p>
 
 <p>Then click on &ldquo;create serving&rdquo; and configure your serving:</p>
 
-<p><img src="./../../images/sklearn_serving2.png" alt="sklearn_serving2.png" /></p>
+<p><img src="./../../../../images/sklearn_serving2.png" alt="sklearn_serving2.png" /></p>
 
 <p>Once the serving is created, you can start it and view information like server-logs and which kafka topic it is logging inference requests to.</p>
 
-<p><img src="./../../images/sklearn_serving3.png" alt="sklearn_serving3.png" /></p>
+<p><img src="./../../../../images/sklearn_serving3.png" alt="sklearn_serving3.png" /></p>
 
 <p>It is a best-practice to put the script together with the trained model, below is the code for exporting the script from <code>Jupyter/Serving/sklearn/iris_flower_classifier.py</code> to <code>Models/irisFlowerClassifier/1/iris_flower_classifier.py</code>.</p>
 <div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">script_path</span> <span class="o">=</span> <span class="s2">&#34;Jupyter/Serving/sklearn/iris_flower_classifier.py&#34;</span>
@@ -570,7 +570,7 @@ prediction:0, prediction_label:Virginica, http_response_code: 200, serving_type:
 
     <footer class="footer text-center">
         <div class="container">
-            <span class="text-muted">This project contains 59 pages and is available on <a href="https://github.com/napsterinblue/notes">GitHub</a>. Copyright &copy; NapsterInBlue, <time datetime="2018">2018</time>.</span>
+            <span class="text-muted">There are 59 notebooks and they are available on <a href="https://github.com/logicalclocks/hops-examples">GitHub</a>. Copyright &copy; Logical Clocks AB, <time datetime="2021">2021</time>.</span>
         </div>
     </footer>
 

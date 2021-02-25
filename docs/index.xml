@@ -26,10 +26,9 @@
       <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
       
       <guid>https://examples.hopsworks.ai/ml/benchmarks/benchmark/</guid>
-      <description>Benchmark GPU vs CPU &amp;amp; multi-host vs single host This notebook can be used to benchmark performance using CPU, a single GPU or many GPUs.
+      <description> Benchmark GPU vs CPU &amp;amp; multi-host vs single host This notebook can be used to benchmark performance using CPU, a single GPU or many GPUs.
 Tested with TensorFlow 2.4.0
- Machine Learning on Hopsworks  The hops python module hops is a helper library for Hops that facilitates development by hiding the complexity of running applications and iteracting with services.
-Have a feature request or encountered an issue? Please let us know on github.</description>
+ Machine Learning on Hopsworks  </description>
     </item>
     
     <item>
@@ -133,10 +132,10 @@ CREATE TABLE telco( customer_id varchar(200), gender varchar(200), senior_citize
     
     <item>
       <title>Feature Ingestion from S3</title>
-      <link>https://examples.hopsworks.ai/featurestore/aws/s3-featurestore/</link>
+      <link>https://examples.hopsworks.ai/featurestore/aws/s3/s3-featurestore/</link>
       <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://examples.hopsworks.ai/featurestore/aws/s3-featurestore/</guid>
+      <guid>https://examples.hopsworks.ai/featurestore/aws/s3/s3-featurestore/</guid>
       <description>Get started with S3 and the Feature Store This tutorial notebook will help you get started with working with the Hopsworks feature store and S3.
 To execute this tutorial, you can use the sample data from here - and place it in a S3 bucket.
 Before starting with the execution, you should also create a S3 storage connector pointing to the bucket where you uploaded the data. You can follow the Hopsworks documentation to see how you can create the storage connector from the feature store UI.</description>
@@ -197,20 +196,20 @@ Background Motivation Data ingested into the Feature Store form the basis for th
     
     <item>
       <title>Hsfs - Feature Engineering</title>
-      <link>https://examples.hopsworks.ai/featurestore/hsfs/feature_engineering/</link>
+      <link>https://examples.hopsworks.ai/featurestore/hsfs/basics/feature_engineering/</link>
       <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://examples.hopsworks.ai/featurestore/hsfs/feature_engineering/</guid>
+      <guid>https://examples.hopsworks.ai/featurestore/hsfs/basics/feature_engineering/</guid>
       <description>Feature Store Tour - Python API This set of notebooks contain a tour/reference for the Hopsworks feature store Scala/Java API. The notebook is meant to be run from feature store demo projects on Hopsworks. We will go over best practices for using the API as well as common pitfalls.
 There are 3 notebooks: - Feature groups: Discover how to work with features and feature groups, both offline and online - Feature Exploration: Discover how to join features from different feature groups - Training datasets: Discover how to save training datasets to be used by ML models</description>
     </item>
     
     <item>
       <title>Hsfs - Feature Exploration</title>
-      <link>https://examples.hopsworks.ai/featurestore/hsfs/feature_exploration/</link>
+      <link>https://examples.hopsworks.ai/featurestore/hsfs/basics/feature_exploration/</link>
       <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://examples.hopsworks.ai/featurestore/hsfs/feature_exploration/</guid>
+      <guid>https://examples.hopsworks.ai/featurestore/hsfs/basics/feature_exploration/</guid>
       <description>HSFS feature exploration In this notebook we are going to walk through how to use the HSFS library to explore feature groups and features in the Hopsworks Feature Store.
 A key component of the Hopsworks feature store is to enable sharing and re-using of features across models and use cases. As such, the HSFS libraries allows user to join features from different feature groups and use them to create training datasets.</description>
     </item>
@@ -237,10 +236,10 @@ Background Motivation Traditional ETL typically involves taking a snapshot of a 
     
     <item>
       <title>Hsfs - Training Dataset Creation</title>
-      <link>https://examples.hopsworks.ai/featurestore/hsfs/training_datasets/</link>
+      <link>https://examples.hopsworks.ai/featurestore/hsfs/basics/training_datasets/</link>
       <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://examples.hopsworks.ai/featurestore/hsfs/training_datasets/</guid>
+      <guid>https://examples.hopsworks.ai/featurestore/hsfs/basics/training_datasets/</guid>
       <description>HSFS training datasets Training datasets is the third building block of the Hopsworks Feature Store. Data scientists can query the feature store (see feature_exploration notebook) and materialize their query in training datasets.
 Training datasets can be saved in a ML framework friendly format (eg. TfRecords, CSV, Numpy) and then be fed to a machine learning model for training.
 Training datasets can also be stored on external storage systems like Amazon S3 or GCS to be read by external model training platforms.</description>
@@ -477,10 +476,10 @@ This notebook assumes that you have already created the training datasets in the
     
     <item>
       <title>Sagemaker Feature Store Tour</title>
-      <link>https://examples.hopsworks.ai/featurestore/aws/sagemakerfeaturestoretourpython/</link>
+      <link>https://examples.hopsworks.ai/featurestore/aws/sagemaker/sagemakerfeaturestoretourpython/</link>
       <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://examples.hopsworks.ai/featurestore/aws/sagemakerfeaturestoretourpython/</guid>
+      <guid>https://examples.hopsworks.ai/featurestore/aws/sagemaker/sagemakerfeaturestoretourpython/</guid>
       <description>Feature Store Tour - Python API This notebook contains a tour/reference for the Hopsworks feature store Python API on Amazon SageMaker. The notebook is meant to be run on Amazon SageMaker after setting up Hopsworks to work with AWS (see here).
 The notebook is designed to be used in combination with the Feature Store Tour on Hopsworks, it assumes that you have run the following feature engineering job: job (the job is added automatically when you start the feature store tour in Hopsworks.</description>
     </item>

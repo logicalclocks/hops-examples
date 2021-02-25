@@ -58,7 +58,7 @@
   </url>
   
   <url>
-    <loc>https://examples.hopsworks.ai/featurestore/aws/s3-featurestore/</loc>
+    <loc>https://examples.hopsworks.ai/featurestore/aws/s3/s3-featurestore/</loc>
     <lastmod>2021-02-24T00:00:00+00:00</lastmod>
   </url>
   
@@ -88,12 +88,12 @@
   </url>
   
   <url>
-    <loc>https://examples.hopsworks.ai/featurestore/hsfs/feature_engineering/</loc>
+    <loc>https://examples.hopsworks.ai/featurestore/hsfs/basics/feature_engineering/</loc>
     <lastmod>2021-02-24T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://examples.hopsworks.ai/featurestore/hsfs/feature_exploration/</loc>
+    <loc>https://examples.hopsworks.ai/featurestore/hsfs/basics/feature_exploration/</loc>
     <lastmod>2021-02-24T00:00:00+00:00</lastmod>
   </url>
   
@@ -108,7 +108,7 @@
   </url>
   
   <url>
-    <loc>https://examples.hopsworks.ai/featurestore/hsfs/training_datasets/</loc>
+    <loc>https://examples.hopsworks.ai/featurestore/hsfs/basics/training_datasets/</loc>
     <lastmod>2021-02-24T00:00:00+00:00</lastmod>
   </url>
   
@@ -218,7 +218,7 @@
   </url>
   
   <url>
-    <loc>https://examples.hopsworks.ai/featurestore/aws/sagemakerfeaturestoretourpython/</loc>
+    <loc>https://examples.hopsworks.ai/featurestore/aws/sagemaker/sagemakerfeaturestoretourpython/</loc>
     <lastmod>2021-02-24T00:00:00+00:00</lastmod>
   </url>
   

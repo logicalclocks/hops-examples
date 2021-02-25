@@ -110,8 +110,8 @@ MathJax.Hub.Config({
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="nav navbar-nav mr-auto"></ul>
                 <ul class="nav navbar-nav">
-                    <li><a href="https://hopsworks.ai" title="Hopsworks.ai">hopsworks.ai</a></li>
-                    <li><a href="https://docs.hopsworks.ai" title="Docs">docs.hopsworks.ai</a></li>
+                    <li><a href="https://hopsworks.ai" title="Hopsworks.ai">Hopsworks</a></li>
+                    <li><a href="https://docs.hopsworks.ai" title="Docs">Docs</a></li>
                 </ul>
             </div>
         </div>
@@ -230,7 +230,7 @@ bulkInsertDf: org.apache.spark.sql.DataFrame = [id: int, date: date ... 2 more f
 <div class="highlight"><pre class="chroma"><code class="language-scala" data-lang="scala"><span class="n">bulkInsertDf</span><span class="o">.</span><span class="n">write</span><span class="o">.</span><span class="n">format</span><span class="o">(</span><span class="s">&#34;delta&#34;</span><span class="o">).</span><span class="n">save</span><span class="o">(</span><span class="s">s&#34;hdfs:///Projects/</span><span class="si">${</span><span class="nc">Hops</span><span class="o">.</span><span class="n">getProjectName</span><span class="si">}</span><span class="s">/Resources/hello_delta&#34;</span><span class="o">)</span></code></pre></div>
 <p>A Delta dataset keep tracks of a commit log to support ACID transactions.</p>
 
-<p><img src="./../images/delta_dataset.png" alt="Delta Dataset" title="Delta Dataset" /></p>
+<p><img src="./../../../images/delta_dataset.png" alt="Delta Dataset" title="Delta Dataset" /></p>
 <div class="highlight"><pre class="chroma"><code class="language-scala" data-lang="scala"><span class="k">val</span> <span class="n">df</span> <span class="k">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">format</span><span class="o">(</span><span class="s">&#34;delta&#34;</span><span class="o">).</span><span class="n">load</span><span class="o">(</span><span class="s">s&#34;hdfs:///Projects/</span><span class="si">${</span><span class="nc">Hops</span><span class="o">.</span><span class="n">getProjectName</span><span class="si">}</span><span class="s">/Resources/hello_delta&#34;</span><span class="o">)</span>
 <span class="n">df</span><span class="o">.</span><span class="n">show</span><span class="o">()</span></code></pre></div>
 <p>Delta also provides time-travel functionality that lets you inspect the value of a dataset at a particular point in time:</p>
@@ -427,7 +427,7 @@ import org.apache.spark.sql.functions._
 
     <footer class="footer text-center">
         <div class="container">
-            <span class="text-muted">This project contains 59 pages and is available on <a href="https://github.com/napsterinblue/notes">GitHub</a>. Copyright &copy; NapsterInBlue, <time datetime="2018">2018</time>.</span>
+            <span class="text-muted">There are 59 notebooks and they are available on <a href="https://github.com/logicalclocks/hops-examples">GitHub</a>. Copyright &copy; Logical Clocks AB, <time datetime="2021">2021</time>.</span>
         </div>
     </footer>
 

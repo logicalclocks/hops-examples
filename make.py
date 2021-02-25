@@ -23,7 +23,8 @@ ipynb_files = [ x for x in all_ipynb_files if ".ipynb_checkpoints" not in x ]
 # For each file
 for file in ipynb_files:
     # Convert into markdown
-    os.system("jupyter nbconvert --to markdown '{file}'".format(file=file))
+#    os.system("jupyter nbconvert --to markdown '{file}'".format(file=file))
+    print("b")
 
 # Get all folders in directory
 folders = [x[0] for x in os.walk(path)]
@@ -76,7 +77,7 @@ all_md_files = [os.path.join(root, name)
                if name.endswith((".md"))]
 
 for file in all_md_files:
-    with open(file,'r') as f:
+    with open(file,'r', encoding="utf-8") as f:
         filedata = f.read()
         # Find all markdown link syntaxes
         md_links = re.findall('!\\[[^\\]]+\\]\\([^)]+\\)', filedata)
@@ -88,6 +89,11 @@ for file in all_md_files:
             md_image_filename = os.path.basename(md_image_path)
             md_image_title = re.search(r'\[(.*?)\]', link).group(1)
 
-            new_link = "!["+md_image_title+"]("+md_image_filename+")"
+#            new_link = "!["+md_image_title+"]("+md_image_filename+")"
+            new_link = "!["+md_image_title+"]("+md_image_path+")"
+            new_link = new_link.replace("images","../images",1)
+            print("Old link: {0}".format(link))
+            print("New link: {0}".format(new_link))
+
 
             replaceAll(file, link, new_link)
