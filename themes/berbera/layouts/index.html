@@ -79,23 +79,6 @@
             </div>
         </div>
 
-        <div class="row">
-            <div class="col-sm-12">
-                <div class="card">
-                    <h4 class="card-header" id="titanic_training_data">Titanic Training Dataset</h4>
-                    <div class="card-body">
-                        <ul>
-                            {{ range (where .Pages "File.Dir" "in" "/featurestore/datasets/").ByTitle }}
-                            <li>
-                                <a href="{{.Permalink}}">{{.Title}}</a>
-                            </li>
-                            {{ end }}
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-
 	
         <div class="row" id="aws">
             <div class="col-sm-12">
@@ -105,7 +88,7 @@
         <div class="row">
             <div class="col-sm-12">
                 <div class="card">
-                    <h4 class="card-header" id="redshift_pyspark">Redshift Ingestion with PySpark</h4>
+                    <h4 class="card-header" id="redshift_pyspark">Redshift and S3 Feature Ingestion</h4>
                     <div class="card-body">
                         <ul>
                             {{ range (where .Pages "File.Dir" "in" "/featurestore/aws/redshift/").ByTitle }}
@@ -113,31 +96,22 @@
                                 <a href="{{.Permalink}}">{{.Title}}</a>
                             </li>
                             {{ end }}
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-sm-12">
-                <div class="card">
-                    <h4 class="card-header" id="s3_pyspark">S3 Ingestion with PySpark</h4>
-                    <div class="card-body">
-                        <ul>
                             {{ range (where .Pages "File.Dir" "in" "/featurestore/aws/s3/").ByTitle }}
                             <li>
                                 <a href="{{.Permalink}}">{{.Title}}</a>
                             </li>
                             {{ end }}
+                            
                         </ul>
                     </div>
                 </div>
             </div>
         </div>
+
         <div class="row">
             <div class="col-sm-12">
                 <div class="card">
-                    <h4 class="card-header" id="sagemaker_tour">Sagemaker Tour with Feature Store</h4>
+                    <h4 class="card-header" id="sagemaker_tour">Sagemaker</h4>
                     <div class="card-body">
                         <ul>
                             {{ range (where .Pages "File.Dir" "in" "/featurestore/aws/sagemaker/").ByTitle }}
@@ -152,7 +126,7 @@
         </div>
 
 
-        <div class="row" id="azure">
+        <div class="row" id="databricks">
             <div class="col-sm-12">
                 <h3 class="category_header">Databricks and the Feature Store</h3>
             </div>
@@ -185,22 +159,6 @@
         <div class="row">
             <div class="col-sm-12">
                 <div class="card">
-                    <h4 class="card-header" id="databricks_azure_pyspark">Azure Databricks Ingestion with PySpark</h4>
-                    <div class="card-body">
-                        <ul>
-                            {{ range (where .Pages "File.Dir" "in" "/featurestore/databricks/featurestorequickstartdatabricksazure/").ByTitle }}
-                            <li>
-                                <a href="{{.Permalink}}">{{.Title}}</a>
-                            </li>
-                            {{ end }}
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-sm-12">
-                <div class="card">
                     <h4 class="card-header" id="aml_azure">Azure Machine Learning with the Feature Store</h4>
                     <div class="card-body">
                         <ul>
@@ -215,7 +173,45 @@
             </div>
         </div>
 
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <h4 class="card-header" id="delta_featurestore">Delta Lake and the Feature Store</h4>
+                    <div class="card-body">
+                        <ul>
+                            {{ range (where .Pages "File.Dir" "in" "/featurestore/delta/").ByTitle }}
+                            <li>
+                                <a href="{{.Permalink}}">{{.Title}}</a>
+                            </li>
+                            {{ end }}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
 
+        <div class="row" id="spark-fs">
+            <div class="col-sm-12">
+                <h3 class="category_header">Spark and the Feature Store</h3>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <h4 class="card-header" id="image_petastore">Spark and the Feature Store</h4>
+                    <div class="card-body">
+                        <ul>
+                            {{ range (where .Pages "File.Dir" "in" "/featurestore/spark/").ByTitle }}
+                            <li>
+                                <a href="{{.Permalink}}">{{.Title}}</a>
+                            </li>
+                            {{ end }}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
 
 	
         <div class="row" id="connectors">
@@ -240,61 +236,6 @@
             </div>
         </div>
 
-
-	
-        <div class="row" id="delta">
-            <div class="col-sm-12">
-                <h3 class="category_header">Delta</h3>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-sm-12">
-                <div class="card">
-                    <h4 class="card-header" id="delta_featurestore">Delta Lake and the Feature Store</h4>
-                    <div class="card-body">
-                        <ul>
-                            {{ range (where .Pages "File.Dir" "in" "/featurestore/delta/").ByTitle }}
-                            <li>
-                                <a href="{{.Permalink}}">{{.Title}}</a>
-                            </li>
-                            {{ end }}
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="row" id="images-fs">
-            <div class="col-sm-12">
-                <h3 class="category_header">Images in the Feature Store</h3>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-sm-12">
-                <div class="card">
-                    <h4 class="card-header" id="image_featurestore">Images in the Feature Store</h4>
-                    <div class="card-body">
-                        <ul>
-                            {{ range (where .Pages "File.Dir" "in" "/featurestore/image_datasets/").ByTitle }}
-                            <li>
-                                <a href="{{.Permalink}}">{{.Title}}</a>
-                            </li>
-                            {{ end }}
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-
-        <div class="row" id="petastorm-fs">
-            <div class="col-sm-12">
-                <h3 class="category_header">Petastorm and the Feature Store</h3>
-            </div>
-        </div>
-
         <div class="row">
             <div class="col-sm-12">
                 <div class="card">
@@ -312,8 +253,7 @@
             </div>
         </div>
 
-
-
+	
         <div class="row" id="hive-fs">
             <div class="col-sm-12">
                 <h3 class="category_header">Hive and the Feature Store</h3>
@@ -359,30 +299,6 @@
                 </div>
             </div>
         </div>
-
-        <div class="row" id="spark-fs">
-            <div class="col-sm-12">
-                <h3 class="category_header">Spark and the Feature Store</h3>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-sm-12">
-                <div class="card">
-                    <h4 class="card-header" id="image_petastore">Spark and the Feature Store</h4>
-                    <div class="card-body">
-                        <ul>
-                            {{ range (where .Pages "File.Dir" "in" "/featurestore/spark/").ByTitle }}
-                            <li>
-                                <a href="{{.Permalink}}">{{.Title}}</a>
-                            </li>
-                            {{ end }}
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-
 
         <div class="row" id="ml-fs">
             <div class="col-sm-12">
@@ -513,6 +429,14 @@
                 </div>
             </div>
         </div>
+
+
+        <div class="row" id="miscellaneous">
+            <div class="col-sm-12">
+                <h3 class="category_header">Miscellaneous Notebooks</h3>
+            </div>
+        </div>
+
         <div class="row">
             <div class="col-sm-12">
                 <div class="card">
@@ -543,10 +467,44 @@
         <div class="row">
             <div class="col-sm-12">
                 <div class="card">
+                    <h4 class="card-header" id="image_featurestore">Images in the Feature Store</h4>
+                    <div class="card-body">
+                        <ul>
+                            {{ range (where .Pages "File.Dir" "in" "/featurestore/image_datasets/").ByTitle }}
+                            <li>
+                                <a href="{{.Permalink}}">{{.Title}}</a>
+                            </li>
+                            {{ end }}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
                     <h4 class="card-header" id="bench">Benchmarks</h4>
                     <div class="card-body">
                         <ul>
                             {{ range (where .Pages "File.Dir" "in" "/featurestore/ml/Benchmarks/").ByTitle }}
+                            <li>
+                                <a href="{{.Permalink}}">{{.Title}}</a>
+                            </li>
+                            {{ end }}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <h4 class="card-header" id="titanic_training_data">Titanic Training Dataset</h4>
+                    <div class="card-body">
+                        <ul>
+                            {{ range (where .Pages "File.Dir" "in" "/featurestore/datasets/").ByTitle }}
                             <li>
                                 <a href="{{.Permalink}}">{{.Title}}</a>
                             </li>
