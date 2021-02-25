@@ -23,8 +23,7 @@ ipynb_files = [ x for x in all_ipynb_files if ".ipynb_checkpoints" not in x ]
 # For each file
 for file in ipynb_files:
     # Convert into markdown
-#    os.system("jupyter nbconvert --to markdown '{file}'".format(file=file))
-    print("b")
+    os.system("jupyter nbconvert --to markdown '{file}'".format(file=file))
 
 # Get all folders in directory
 folders = [x[0] for x in os.walk(path)]

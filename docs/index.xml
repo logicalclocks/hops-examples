@@ -26,9 +26,10 @@
       <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
       
       <guid>https://examples.hopsworks.ai/ml/benchmarks/benchmark/</guid>
-      <description> Benchmark GPU vs CPU &amp;amp; multi-host vs single host This notebook can be used to benchmark performance using CPU, a single GPU or many GPUs.
+      <description>Benchmark GPU vs CPU &amp;amp; multi-host vs single host This notebook can be used to benchmark performance using CPU, a single GPU or many GPUs.
 Tested with TensorFlow 2.4.0
- Machine Learning on Hopsworks  </description>
+ Machine Learning on Hopsworks  The hops python module hops is a helper library for Hops that facilitates development by hiding the complexity of running applications and iteracting with services.
+Have a feature request or encountered an issue? Please let us know on github.</description>
     </item>
     
     <item>
