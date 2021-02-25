@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-66582-32"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-66582-32');
+    </script>
+
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+<meta property="og:title" content="Pandas Example with HopsFS" />
+<meta property="og:description" content=" Pandas - read/write CSV files with HopsFS (HDFS) from hops import hdfs from hops import pandas_helper as pandas import pandas as pd features = [&#34;Age&#34;, &#34;Workclass&#34;, &#34;fnlwgt&#34;, &#34;Education&#34;, &#34;Education-Num&#34;, &#34;Marital Status&#34;, &#34;Occupation&#34;, &#34;Relationship&#34;, &#34;Race&#34;, &#34;Sex&#34;, &#34;Capital Gain&#34;, &#34;Capital Loss&#34;, &#34;Hours per week&#34;, &#34;Country&#34;, &#34;Target&#34;] train_data = pandas.read_csv(hdfs.project_path() &#43; &#34;/TourData/census/adult.data&#34;, names=features, sep=r&#39;\s*,\s*&#39;, engine=&#39;python&#39;, na_values=&#34;?&#34;) train_data.info() pandas.write_csv(&#34;Resources/relative-path.csv&#34;, train_data) pandas.write_csv(hdfs.project_path() &#43; &#34;/Resources/full-path.csv&#34;, train_data)" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://examples.hopsworks.ai/ml/pandas/pandas-hdfs/" />
+
+
+
+<meta property="article:published_time" content="2021-02-24T00:00:00&#43;00:00"/>
+
+<meta property="article:modified_time" content="2021-02-24T00:00:00&#43;00:00"/>
+
+
+
+
+
+
+
+
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Pandas Example with HopsFS"/>
+<meta name="twitter:description" content=" Pandas - read/write CSV files with HopsFS (HDFS) from hops import hdfs from hops import pandas_helper as pandas import pandas as pd features = [&#34;Age&#34;, &#34;Workclass&#34;, &#34;fnlwgt&#34;, &#34;Education&#34;, &#34;Education-Num&#34;, &#34;Marital Status&#34;, &#34;Occupation&#34;, &#34;Relationship&#34;, &#34;Race&#34;, &#34;Sex&#34;, &#34;Capital Gain&#34;, &#34;Capital Loss&#34;, &#34;Hours per week&#34;, &#34;Country&#34;, &#34;Target&#34;] train_data = pandas.read_csv(hdfs.project_path() &#43; &#34;/TourData/census/adult.data&#34;, names=features, sep=r&#39;\s*,\s*&#39;, engine=&#39;python&#39;, na_values=&#34;?&#34;) train_data.info() pandas.write_csv(&#34;Resources/relative-path.csv&#34;, train_data) pandas.write_csv(hdfs.project_path() &#43; &#34;/Resources/full-path.csv&#34;, train_data)"/>
+<meta name="generator" content="Hugo 0.40.3" />
+
+    
+<script type="application/ld+json">
+  {
+  "@context": "http://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Pandas Example with HopsFS",
+  "url": "https://examples.hopsworks.ai/ml/pandas/pandas-hdfs/",
+  "wordCount": "60",
+  "datePublished": "2021-02-24T00:00:00&#43;00:00",
+  "dateModified": "2021-02-24T00:00:00&#43;00:00",
+  "author": {
+  "@type": "Person",
+  "name": ""
+  }
+  }
+</script> 
+
+    <title>Pandas Example with HopsFS</title>
+
+    
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb"
+        crossorigin="anonymous">
+
+    
+    <link href="https://examples.hopsworks.ai/css/custom.css" rel="stylesheet">
+    <link href="https://examples.hopsworks.ai/css/syntax.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Muli:400,500,700" rel="stylesheet">
+
+    <link href="" rel="alternate" type="application/rss+xml" title="Hopsworks Examples" />
+
+    <script type="text/javascript" async
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[','\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre','code'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+</script>
+
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-sm fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="https://examples.hopsworks.ai">Hopsworks Examples</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="nav navbar-nav mr-auto"></ul>
+                <ul class="nav navbar-nav">
+                    <li><a href="https://hopsworks.ai" title="Hopsworks.ai">hopsworks.ai</a></li>
+                    <li><a href="https://docs.hopsworks.ai" title="Docs">docs.hopsworks.ai</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+
+    
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+
+                 
+
+
+<article>
+  <div class="technical_note">
+    <header>
+      <div class="alert alert-warning flashcard_ad" role="alert">
+	Want to learn machine learning? Try my <a href="https://machinelearningflashcards.com" class="alert-link">machine learning flashcards</a>, <a href='https://amzn.to/2HwnWty' class="alert-link">book</a>, or <a href='https://www.youtube.com/channel/UCnd4Fi-ODvuPbxR2fO2j7kA' class="alert-link">study with me.</a>.
+      </div>
+      <h1 class="technical_note_title">Pandas Example with HopsFS</h1>
+      <div class="technical_note_date">
+	<time datetime=" 2021-02-24T00:00:00Z "> 24 Feb 2021</time>
+      </div>
+    </header>
+    <div class="content">
+
+      
+
+<h2 id="pandas-read-write-csv-files-with-hopsfs-hdfs">Pandas - read/write CSV files with HopsFS (HDFS)</h2>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="kn">from</span> <span class="nn">hops</span> <span class="kn">import</span> <span class="n">hdfs</span>
+<span class="kn">from</span> <span class="nn">hops</span> <span class="kn">import</span> <span class="n">pandas_helper</span> <span class="k">as</span> <span class="n">pandas</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<span class="n">features</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&#34;Age&#34;</span><span class="p">,</span> <span class="s2">&#34;Workclass&#34;</span><span class="p">,</span> <span class="s2">&#34;fnlwgt&#34;</span><span class="p">,</span> <span class="s2">&#34;Education&#34;</span><span class="p">,</span> <span class="s2">&#34;Education-Num&#34;</span><span class="p">,</span> <span class="s2">&#34;Marital Status&#34;</span><span class="p">,</span>
+            <span class="s2">&#34;Occupation&#34;</span><span class="p">,</span> <span class="s2">&#34;Relationship&#34;</span><span class="p">,</span> <span class="s2">&#34;Race&#34;</span><span class="p">,</span> <span class="s2">&#34;Sex&#34;</span><span class="p">,</span> <span class="s2">&#34;Capital Gain&#34;</span><span class="p">,</span> <span class="s2">&#34;Capital Loss&#34;</span><span class="p">,</span>
+            <span class="s2">&#34;Hours per week&#34;</span><span class="p">,</span> <span class="s2">&#34;Country&#34;</span><span class="p">,</span> <span class="s2">&#34;Target&#34;</span><span class="p">]</span>
+<span class="n">train_data</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">hdfs</span><span class="o">.</span><span class="n">project_path</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&#34;/TourData/census/adult.data&#34;</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="n">features</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;\s*,\s*&#39;</span><span class="p">,</span> <span class="n">engine</span><span class="o">=</span><span class="s1">&#39;python&#39;</span><span class="p">,</span> <span class="n">na_values</span><span class="o">=</span><span class="s2">&#34;?&#34;</span><span class="p">)</span>
+
+<span class="n">train_data</span><span class="o">.</span><span class="n">info</span><span class="p">()</span>
+
+<span class="n">pandas</span><span class="o">.</span><span class="n">write_csv</span><span class="p">(</span><span class="s2">&#34;Resources/relative-path.csv&#34;</span><span class="p">,</span> <span class="n">train_data</span><span class="p">)</span>
+<span class="n">pandas</span><span class="o">.</span><span class="n">write_csv</span><span class="p">(</span><span class="n">hdfs</span><span class="o">.</span><span class="n">project_path</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&#34;/Resources/full-path.csv&#34;</span><span class="p">,</span> <span class="n">train_data</span><span class="p">)</span></code></pre></div>
+    </div>
+    <aside>
+      <div class="bug_reporting">
+	<h4>Find an error or bug?</h4>
+	<p>Everything on this site is available on GitHub. Head to <a href='https://github.com/chrisalbon/notes/issues/new'>and submit a suggested change</a>. Include the tutorial's URL in the issue.</p>
+      </div>
+    </aside>
+
+  </div>
+</article>
+
+
+
+
+            </div>
+
+        </div>
+    </div>
+
+    
+
+    <footer class="footer text-center">
+        <div class="container">
+            <span class="text-muted">This project contains 59 pages and is available on <a href="https://github.com/napsterinblue/notes">GitHub</a>. Copyright &copy; NapsterInBlue, <time datetime="2018">2018</time>.</span>
+        </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ"
+        crossorigin="anonymous"></script>
+
+</body>
+
+</html>

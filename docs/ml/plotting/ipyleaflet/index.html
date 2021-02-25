@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-66582-32"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-66582-32');
+    </script>
+
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+<meta property="og:title" content="Visualization - ipyleaflet" />
+<meta property="og:description" content="from __future__ import print_function from ipyleaflet import ( Map, Marker, TileLayer, ImageOverlay, Polyline, Polygon, Rectangle, Circle, CircleMarker, GeoJSON, DrawControl ) from traitlets import linkcenter = [34.6252978589571, -77.34580993652344] zoom = 7m = Map(center=center, zoom=zoom) mm.zoom Now create the DrawControl and add it to the Map using add_control. We also register a handler for draw events. This will fire when a drawn path is created, edited or deleted (there are the actions). The geo_json argument is the serialized geometry of the drawn path, along with its embedded style." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://examples.hopsworks.ai/ml/plotting/ipyleaflet/" />
+
+
+
+<meta property="article:published_time" content="2021-02-24T00:00:00&#43;00:00"/>
+
+<meta property="article:modified_time" content="2021-02-24T00:00:00&#43;00:00"/>
+
+
+
+
+
+
+
+
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Visualization - ipyleaflet"/>
+<meta name="twitter:description" content="from __future__ import print_function from ipyleaflet import ( Map, Marker, TileLayer, ImageOverlay, Polyline, Polygon, Rectangle, Circle, CircleMarker, GeoJSON, DrawControl ) from traitlets import linkcenter = [34.6252978589571, -77.34580993652344] zoom = 7m = Map(center=center, zoom=zoom) mm.zoom Now create the DrawControl and add it to the Map using add_control. We also register a handler for draw events. This will fire when a drawn path is created, edited or deleted (there are the actions). The geo_json argument is the serialized geometry of the drawn path, along with its embedded style."/>
+<meta name="generator" content="Hugo 0.40.3" />
+
+    
+<script type="application/ld+json">
+  {
+  "@context": "http://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Visualization - ipyleaflet",
+  "url": "https://examples.hopsworks.ai/ml/plotting/ipyleaflet/",
+  "wordCount": "267",
+  "datePublished": "2021-02-24T00:00:00&#43;00:00",
+  "dateModified": "2021-02-24T00:00:00&#43;00:00",
+  "author": {
+  "@type": "Person",
+  "name": ""
+  }
+  }
+</script> 
+
+    <title>Visualization - ipyleaflet</title>
+
+    
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb"
+        crossorigin="anonymous">
+
+    
+    <link href="https://examples.hopsworks.ai/css/custom.css" rel="stylesheet">
+    <link href="https://examples.hopsworks.ai/css/syntax.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Muli:400,500,700" rel="stylesheet">
+
+    <link href="" rel="alternate" type="application/rss+xml" title="Hopsworks Examples" />
+
+    <script type="text/javascript" async
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[','\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre','code'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+</script>
+
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-sm fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="https://examples.hopsworks.ai">Hopsworks Examples</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="nav navbar-nav mr-auto"></ul>
+                <ul class="nav navbar-nav">
+                    <li><a href="https://hopsworks.ai" title="Hopsworks.ai">hopsworks.ai</a></li>
+                    <li><a href="https://docs.hopsworks.ai" title="Docs">docs.hopsworks.ai</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+
+    
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+
+                 
+
+
+<article>
+  <div class="technical_note">
+    <header>
+      <div class="alert alert-warning flashcard_ad" role="alert">
+	Want to learn machine learning? Try my <a href="https://machinelearningflashcards.com" class="alert-link">machine learning flashcards</a>, <a href='https://amzn.to/2HwnWty' class="alert-link">book</a>, or <a href='https://www.youtube.com/channel/UCnd4Fi-ODvuPbxR2fO2j7kA' class="alert-link">study with me.</a>.
+      </div>
+      <h1 class="technical_note_title">Visualization - ipyleaflet</h1>
+      <div class="technical_note_date">
+	<time datetime=" 2021-02-24T00:00:00Z "> 24 Feb 2021</time>
+      </div>
+    </header>
+    <div class="content">
+
+      <div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
+
+<span class="kn">from</span> <span class="nn">ipyleaflet</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">Map</span><span class="p">,</span>
+    <span class="n">Marker</span><span class="p">,</span>
+    <span class="n">TileLayer</span><span class="p">,</span> <span class="n">ImageOverlay</span><span class="p">,</span>
+    <span class="n">Polyline</span><span class="p">,</span> <span class="n">Polygon</span><span class="p">,</span> <span class="n">Rectangle</span><span class="p">,</span> <span class="n">Circle</span><span class="p">,</span> <span class="n">CircleMarker</span><span class="p">,</span>
+    <span class="n">GeoJSON</span><span class="p">,</span>
+    <span class="n">DrawControl</span>
+<span class="p">)</span>
+
+<span class="kn">from</span> <span class="nn">traitlets</span> <span class="kn">import</span> <span class="n">link</span></code></pre></div><div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">center</span> <span class="o">=</span> <span class="p">[</span><span class="mf">34.6252978589571</span><span class="p">,</span> <span class="o">-</span><span class="mf">77.34580993652344</span><span class="p">]</span>
+<span class="n">zoom</span> <span class="o">=</span> <span class="mi">7</span></code></pre></div><div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">m</span> <span class="o">=</span> <span class="n">Map</span><span class="p">(</span><span class="n">center</span><span class="o">=</span><span class="n">center</span><span class="p">,</span> <span class="n">zoom</span><span class="o">=</span><span class="n">zoom</span><span class="p">)</span>
+<span class="n">m</span></code></pre></div><div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">m</span><span class="o">.</span><span class="n">zoom</span></code></pre></div>
+<p>Now create the <code>DrawControl</code> and add it to the <code>Map</code> using <code>add_control</code>. We also register a handler for draw events. This will fire when a drawn path is created, edited or deleted (there are the actions). The  <code>geo_json</code> argument is the serialized geometry of the drawn path, along with its embedded style.</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">dc</span> <span class="o">=</span> <span class="n">DrawControl</span><span class="p">(</span><span class="n">marker</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;shapeOptions&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;color&#39;</span><span class="p">:</span> <span class="s1">&#39;#0000FF&#39;</span><span class="p">}},</span>
+                 <span class="n">rectangle</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;shapeOptions&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;color&#39;</span><span class="p">:</span> <span class="s1">&#39;#0000FF&#39;</span><span class="p">}},</span>
+                 <span class="n">circle</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;shapeOptions&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;color&#39;</span><span class="p">:</span> <span class="s1">&#39;#0000FF&#39;</span><span class="p">}},</span>
+                 <span class="n">circlemarker</span><span class="o">=</span><span class="p">{},</span>
+                 <span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">handle_draw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">action</span><span class="p">,</span> <span class="n">geo_json</span><span class="p">):</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">geo_json</span><span class="p">)</span>
+
+<span class="n">dc</span><span class="o">.</span><span class="n">on_draw</span><span class="p">(</span><span class="n">handle_draw</span><span class="p">)</span>
+<span class="n">m</span><span class="o">.</span><span class="n">add_control</span><span class="p">(</span><span class="n">dc</span><span class="p">)</span></code></pre></div>
+<p>In addition, the <code>DrawControl</code> also has <code>last_action</code> and <code>last_draw</code> attributes that are created dynamicaly anytime a new drawn path arrives.</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">dc</span><span class="o">.</span><span class="n">last_action</span></code></pre></div><div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">dc</span><span class="o">.</span><span class="n">last_draw</span></code></pre></div>
+<p>It&rsquo;s possible to remove all drawings from the map</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">dc</span><span class="o">.</span><span class="n">clear_circles</span><span class="p">()</span></code></pre></div><div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">dc</span><span class="o">.</span><span class="n">clear_polylines</span><span class="p">()</span></code></pre></div><div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">dc</span><span class="o">.</span><span class="n">clear_rectangles</span><span class="p">()</span></code></pre></div><div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">dc</span><span class="o">.</span><span class="n">clear_markers</span><span class="p">()</span></code></pre></div><div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">dc</span><span class="o">.</span><span class="n">clear_polygons</span><span class="p">()</span></code></pre></div><div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">dc</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span></code></pre></div>
+<p>Let&rsquo;s draw a second map and try to import this GeoJSON data into it.</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">m2</span> <span class="o">=</span> <span class="n">Map</span><span class="p">(</span><span class="n">center</span><span class="o">=</span><span class="n">center</span><span class="p">,</span> <span class="n">zoom</span><span class="o">=</span><span class="n">zoom</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="s1">&#39;600px&#39;</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="s1">&#39;400px&#39;</span><span class="p">))</span>
+<span class="n">m2</span></code></pre></div>
+<p>We can use <code>link</code> to synchronize traitlets of the two maps:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">map_center_link</span> <span class="o">=</span> <span class="n">link</span><span class="p">((</span><span class="n">m</span><span class="p">,</span> <span class="s1">&#39;center&#39;</span><span class="p">),</span> <span class="p">(</span><span class="n">m2</span><span class="p">,</span> <span class="s1">&#39;center&#39;</span><span class="p">))</span>
+<span class="n">map_zoom_link</span> <span class="o">=</span> <span class="n">link</span><span class="p">((</span><span class="n">m</span><span class="p">,</span> <span class="s1">&#39;zoom&#39;</span><span class="p">),</span> <span class="p">(</span><span class="n">m2</span><span class="p">,</span> <span class="s1">&#39;zoom&#39;</span><span class="p">))</span></code></pre></div><div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">new_poly</span> <span class="o">=</span> <span class="n">GeoJSON</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">dc</span><span class="o">.</span><span class="n">last_draw</span><span class="p">)</span></code></pre></div><div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">m2</span><span class="o">.</span><span class="n">add_layer</span><span class="p">(</span><span class="n">new_poly</span><span class="p">)</span></code></pre></div>
+<p>Note that the style is preserved! If you wanted to change the style, you could edit the <code>properties.style</code> dictionary of the GeoJSON data. Or, you could even style the original path in the <code>DrawControl</code> by setting the <code>polygon</code> dictionary of that object. See the code for details.</p>
+
+<p>Now let&rsquo;s add a <code>DrawControl</code> to this second map. For fun we will disable lines and enable circles as well and change the style a bit.</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">dc2</span> <span class="o">=</span> <span class="n">DrawControl</span><span class="p">(</span><span class="n">polygon</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;shapeOptions&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;color&#39;</span><span class="p">:</span> <span class="s1">&#39;#0000FF&#39;</span><span class="p">}},</span> <span class="n">polyline</span><span class="o">=</span><span class="p">{},</span>
+                  <span class="n">circle</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;shapeOptions&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;color&#39;</span><span class="p">:</span> <span class="s1">&#39;#0000FF&#39;</span><span class="p">}})</span>
+<span class="n">m2</span><span class="o">.</span><span class="n">add_control</span><span class="p">(</span><span class="n">dc2</span><span class="p">)</span></code></pre></div>
+    </div>
+    <aside>
+      <div class="bug_reporting">
+	<h4>Find an error or bug?</h4>
+	<p>Everything on this site is available on GitHub. Head to <a href='https://github.com/chrisalbon/notes/issues/new'>and submit a suggested change</a>. Include the tutorial's URL in the issue.</p>
+      </div>
+    </aside>
+
+  </div>
+</article>
+
+
+
+
+            </div>
+
+        </div>
+    </div>
+
+    
+
+    <footer class="footer text-center">
+        <div class="container">
+            <span class="text-muted">This project contains 59 pages and is available on <a href="https://github.com/napsterinblue/notes">GitHub</a>. Copyright &copy; NapsterInBlue, <time datetime="2018">2018</time>.</span>
+        </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ"
+        crossorigin="anonymous"></script>
+
+</body>
+
+</html>

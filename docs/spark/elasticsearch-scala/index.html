@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-66582-32"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-66582-32');
+    </script>
+
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+<meta property="og:title" content="Elasticsearch Scala Example" />
+<meta property="og:description" content="ElasticSearch In this example notebook we show how to write/read data to/from Elasticsearch using spark. We use the dataset from American Kennel Club dog breed data
+Setup  Dowload the dataset
+wget -O akc_breed_info.csv https://query.data.world/s/msmjhcmdjslsvjzcaqmtreu52gkuno  Upload akc_breed_info.csv to your resources dataset
+  Writing to Elasticsearch import io.hops.util.Hops val df = spark.read.option(&#34;header&#34;,&#34;true&#34;).csv(&#34;hdfs:///Projects/&#34;&#43; Hops.getProjectName() &#43;&#34;/Resources/akc_breed_info.csv&#34;) (df.write .format(&#34;org.elasticsearch.spark.sql&#34;) .options(Hops.getElasticConfiguration(&#34;newindex&#34;)) .mode(&#34;Overwrite&#34;) .save()) import io.hops.util.Hops df: org.apache.spark.sql.DataFrame = [Breed: string, height_low_inches: string ." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://examples.hopsworks.ai/spark/elasticsearch-scala/" />
+
+
+
+<meta property="article:published_time" content="2021-02-24T00:00:00&#43;00:00"/>
+
+<meta property="article:modified_time" content="2021-02-24T00:00:00&#43;00:00"/>
+
+
+
+
+
+
+
+
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Elasticsearch Scala Example"/>
+<meta name="twitter:description" content="ElasticSearch In this example notebook we show how to write/read data to/from Elasticsearch using spark. We use the dataset from American Kennel Club dog breed data
+Setup  Dowload the dataset
+wget -O akc_breed_info.csv https://query.data.world/s/msmjhcmdjslsvjzcaqmtreu52gkuno  Upload akc_breed_info.csv to your resources dataset
+  Writing to Elasticsearch import io.hops.util.Hops val df = spark.read.option(&#34;header&#34;,&#34;true&#34;).csv(&#34;hdfs:///Projects/&#34;&#43; Hops.getProjectName() &#43;&#34;/Resources/akc_breed_info.csv&#34;) (df.write .format(&#34;org.elasticsearch.spark.sql&#34;) .options(Hops.getElasticConfiguration(&#34;newindex&#34;)) .mode(&#34;Overwrite&#34;) .save()) import io.hops.util.Hops df: org.apache.spark.sql.DataFrame = [Breed: string, height_low_inches: string ."/>
+<meta name="generator" content="Hugo 0.40.3" />
+
+    
+<script type="application/ld+json">
+  {
+  "@context": "http://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Elasticsearch Scala Example",
+  "url": "https://examples.hopsworks.ai/spark/elasticsearch-scala/",
+  "wordCount": "239",
+  "datePublished": "2021-02-24T00:00:00&#43;00:00",
+  "dateModified": "2021-02-24T00:00:00&#43;00:00",
+  "author": {
+  "@type": "Person",
+  "name": ""
+  }
+  }
+</script> 
+
+    <title>Elasticsearch Scala Example</title>
+
+    
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb"
+        crossorigin="anonymous">
+
+    
+    <link href="https://examples.hopsworks.ai/css/custom.css" rel="stylesheet">
+    <link href="https://examples.hopsworks.ai/css/syntax.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Muli:400,500,700" rel="stylesheet">
+
+    <link href="" rel="alternate" type="application/rss+xml" title="Hopsworks Examples" />
+
+    <script type="text/javascript" async
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[','\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre','code'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+</script>
+
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-sm fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="https://examples.hopsworks.ai">Hopsworks Examples</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="nav navbar-nav mr-auto"></ul>
+                <ul class="nav navbar-nav">
+                    <li><a href="https://hopsworks.ai" title="Hopsworks.ai">hopsworks.ai</a></li>
+                    <li><a href="https://docs.hopsworks.ai" title="Docs">docs.hopsworks.ai</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+
+    
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+
+                 
+
+
+<article>
+  <div class="technical_note">
+    <header>
+      <div class="alert alert-warning flashcard_ad" role="alert">
+	Want to learn machine learning? Try my <a href="https://machinelearningflashcards.com" class="alert-link">machine learning flashcards</a>, <a href='https://amzn.to/2HwnWty' class="alert-link">book</a>, or <a href='https://www.youtube.com/channel/UCnd4Fi-ODvuPbxR2fO2j7kA' class="alert-link">study with me.</a>.
+      </div>
+      <h1 class="technical_note_title">Elasticsearch Scala Example</h1>
+      <div class="technical_note_date">
+	<time datetime=" 2021-02-24T00:00:00Z "> 24 Feb 2021</time>
+      </div>
+    </header>
+    <div class="content">
+
+      
+
+<h1 id="elasticsearch">ElasticSearch</h1>
+
+<p>In this example notebook we show how to write/read data to/from Elasticsearch using spark. We use the dataset from <a href="https://data.world/len/dog-canine-breed-size-akc/workspace/file?filename=AKC+Breed+Info.csv">American Kennel Club dog breed data</a></p>
+
+<h2 id="setup">Setup</h2>
+
+<ol>
+<li><p>Dowload the dataset</p>
+
+<pre><code>wget -O akc_breed_info.csv https://query.data.world/s/msmjhcmdjslsvjzcaqmtreu52gkuno
+</code></pre></li>
+
+<li><p>Upload akc_breed_info.csv to your resources dataset</p></li>
+</ol>
+
+<h2 id="writing-to-elasticsearch">Writing to Elasticsearch</h2>
+<div class="highlight"><pre class="chroma"><code class="language-scala" data-lang="scala"><span class="k">import</span> <span class="nn">io.hops.util.Hops</span>
+
+<span class="k">val</span> <span class="n">df</span> <span class="k">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">option</span><span class="o">(</span><span class="s">&#34;header&#34;</span><span class="o">,</span><span class="s">&#34;true&#34;</span><span class="o">).</span><span class="n">csv</span><span class="o">(</span><span class="s">&#34;hdfs:///Projects/&#34;</span><span class="o">+</span> <span class="nc">Hops</span><span class="o">.</span><span class="n">getProjectName</span><span class="o">()</span> <span class="o">+</span><span class="s">&#34;/Resources/akc_breed_info.csv&#34;</span><span class="o">)</span>
+
+<span class="o">(</span><span class="n">df</span><span class="o">.</span><span class="n">write</span>
+  <span class="o">.</span><span class="n">format</span><span class="o">(</span><span class="s">&#34;org.elasticsearch.spark.sql&#34;</span><span class="o">)</span>
+  <span class="o">.</span><span class="n">options</span><span class="o">(</span><span class="nc">Hops</span><span class="o">.</span><span class="n">getElasticConfiguration</span><span class="o">(</span><span class="s">&#34;newindex&#34;</span><span class="o">))</span>
+  <span class="o">.</span><span class="n">mode</span><span class="o">(</span><span class="s">&#34;Overwrite&#34;</span><span class="o">)</span>
+  <span class="o">.</span><span class="n">save</span><span class="o">())</span></code></pre></div>
+<pre><code>import io.hops.util.Hops
+df: org.apache.spark.sql.DataFrame = [Breed: string, height_low_inches: string ... 3 more fields]
+</code></pre>
+
+<h2 id="reading-from-elasticsearch">Reading from Elasticsearch</h2>
+<div class="highlight"><pre class="chroma"><code class="language-scala" data-lang="scala"><span class="k">val</span> <span class="n">reader</span> <span class="k">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">format</span><span class="o">(</span><span class="s">&#34;org.elasticsearch.spark.sql&#34;</span><span class="o">).</span><span class="n">options</span><span class="o">(</span><span class="nc">Hops</span><span class="o">.</span><span class="n">getElasticConfiguration</span><span class="o">(</span><span class="s">&#34;newindex&#34;</span><span class="o">))</span>
+<span class="k">val</span> <span class="n">df</span> <span class="k">=</span> <span class="n">reader</span><span class="o">.</span><span class="n">load</span><span class="o">().</span><span class="n">na</span><span class="o">.</span><span class="n">drop</span><span class="o">.</span><span class="n">orderBy</span><span class="o">(</span><span class="n">$</span><span class="s">&#34;breed&#34;</span><span class="o">)</span>
+<span class="n">df</span><span class="o">.</span><span class="n">show</span><span class="o">()</span></code></pre></div>
+<pre><code>reader: org.apache.spark.sql.DataFrameReader = org.apache.spark.sql.DataFrameReader@416ac438
+df: org.apache.spark.sql.Dataset[org.apache.spark.sql.Row] = [Breed: string, height_high_inches: string ... 3 more fields]
++--------------------+------------------+-----------------+---------------+--------------+
+|               Breed|height_high_inches|height_low_inches|weight_high_lbs|weight_low_lbs|
++--------------------+------------------+-----------------+---------------+--------------+
+|       Affenpinscher|                12|                9|             12|             8|
+|        Afghan Hound|                27|               25|             60|            50|
+|     Airdale Terrier|                24|               22|             45|            45|
+|               Akita|                28|               26|            120|            80|
+|    Alaskan Malamute|                na|               na|             na|            na|
+|     American Eskimo|                19|                9|             30|            25|
+|   American Foxhound|                25|               22|             70|            65|
+|American Stafford...|                19|               17|             50|            40|
+|American Water Sp...|                18|               15|             45|            25|
+|  Anatolian Sheepdog|                29|               27|            150|           100|
+|Australian Cattle...|                20|               17|             45|            35|
+| Australian Shepherd|                23|               18|             60|            40|
+|  Australian Terrier|                10|               10|             14|            10|
+|             Basenji|                17|               17|             22|            20|
+|        Basset Hound|                14|               14|             50|            40|
+|              Beagle|                16|               13|             30|            18|
+|      Bearded Collie|                22|               20|             60|            40|
+|           Beauceron|                27|               24|            120|           100|
+|  Bedlington Terrier|                16|               15|             23|            18|
+|    Belgian Malinois|                26|               22|             65|            60|
++--------------------+------------------+-----------------+---------------+--------------+
+only showing top 20 rows
+</code></pre>
+
+    </div>
+    <aside>
+      <div class="bug_reporting">
+	<h4>Find an error or bug?</h4>
+	<p>Everything on this site is available on GitHub. Head to <a href='https://github.com/chrisalbon/notes/issues/new'>and submit a suggested change</a>. Include the tutorial's URL in the issue.</p>
+      </div>
+    </aside>
+
+  </div>
+</article>
+
+
+
+
+            </div>
+
+        </div>
+    </div>
+
+    
+
+    <footer class="footer text-center">
+        <div class="container">
+            <span class="text-muted">This project contains 59 pages and is available on <a href="https://github.com/napsterinblue/notes">GitHub</a>. Copyright &copy; NapsterInBlue, <time datetime="2018">2018</time>.</span>
+        </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ"
+        crossorigin="anonymous"></script>
+
+</body>
+
+</html>

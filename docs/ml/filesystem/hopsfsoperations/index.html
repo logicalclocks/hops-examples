@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-66582-32"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-66582-32');
+    </script>
+
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+<meta property="og:title" content="HopsFS Example in PySpark/Python" />
+<meta property="og:description" content="Interacting with HopsFS HopsFS is a fork of the Hadoop Distributed File System (HDFS).
+To see what distinguishes HopsFS from HDFS from an architecural point of view refer to:
+ blogpost papers  To interact with HopsFS from python, you can use the hdfs module in the hops-util-py library, it provides an easy-to-use API that resembles interaction with the local filesystem using the python os module.
+Import the Module from hops import hdfs Getting Project Information When interacting with HopsFS from Hopsworks, you are always inside a project." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://examples.hopsworks.ai/ml/filesystem/hopsfsoperations/" />
+
+
+
+<meta property="article:published_time" content="2021-02-24T00:00:00&#43;00:00"/>
+
+<meta property="article:modified_time" content="2021-02-24T00:00:00&#43;00:00"/>
+
+
+
+
+
+
+
+
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="HopsFS Example in PySpark/Python"/>
+<meta name="twitter:description" content="Interacting with HopsFS HopsFS is a fork of the Hadoop Distributed File System (HDFS).
+To see what distinguishes HopsFS from HDFS from an architecural point of view refer to:
+ blogpost papers  To interact with HopsFS from python, you can use the hdfs module in the hops-util-py library, it provides an easy-to-use API that resembles interaction with the local filesystem using the python os module.
+Import the Module from hops import hdfs Getting Project Information When interacting with HopsFS from Hopsworks, you are always inside a project."/>
+<meta name="generator" content="Hugo 0.40.3" />
+
+    
+<script type="application/ld+json">
+  {
+  "@context": "http://schema.org",
+  "@type": "BlogPosting",
+  "headline": "HopsFS Example in PySpark/Python",
+  "url": "https://examples.hopsworks.ai/ml/filesystem/hopsfsoperations/",
+  "wordCount": "354",
+  "datePublished": "2021-02-24T00:00:00&#43;00:00",
+  "dateModified": "2021-02-24T00:00:00&#43;00:00",
+  "author": {
+  "@type": "Person",
+  "name": ""
+  }
+  }
+</script> 
+
+    <title>HopsFS Example in PySpark/Python</title>
+
+    
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb"
+        crossorigin="anonymous">
+
+    
+    <link href="https://examples.hopsworks.ai/css/custom.css" rel="stylesheet">
+    <link href="https://examples.hopsworks.ai/css/syntax.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Muli:400,500,700" rel="stylesheet">
+
+    <link href="" rel="alternate" type="application/rss+xml" title="Hopsworks Examples" />
+
+    <script type="text/javascript" async
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[','\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre','code'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+</script>
+
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-sm fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="https://examples.hopsworks.ai">Hopsworks Examples</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="nav navbar-nav mr-auto"></ul>
+                <ul class="nav navbar-nav">
+                    <li><a href="https://hopsworks.ai" title="Hopsworks.ai">hopsworks.ai</a></li>
+                    <li><a href="https://docs.hopsworks.ai" title="Docs">docs.hopsworks.ai</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+
+    
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+
+                 
+
+
+<article>
+  <div class="technical_note">
+    <header>
+      <div class="alert alert-warning flashcard_ad" role="alert">
+	Want to learn machine learning? Try my <a href="https://machinelearningflashcards.com" class="alert-link">machine learning flashcards</a>, <a href='https://amzn.to/2HwnWty' class="alert-link">book</a>, or <a href='https://www.youtube.com/channel/UCnd4Fi-ODvuPbxR2fO2j7kA' class="alert-link">study with me.</a>.
+      </div>
+      <h1 class="technical_note_title">HopsFS Example in PySpark/Python</h1>
+      <div class="technical_note_date">
+	<time datetime=" 2021-02-24T00:00:00Z "> 24 Feb 2021</time>
+      </div>
+    </header>
+    <div class="content">
+
+      
+
+<h1 id="interacting-with-hopsfs">Interacting with HopsFS</h1>
+
+<p>HopsFS is a fork of the Hadoop Distributed File System (HDFS).</p>
+
+<p>To see what distinguishes HopsFS from HDFS from an architecural point of view refer to:</p>
+
+<ul>
+<li><a href="https://www.logicalclocks.com/introducing-hops-hadoop/">blogpost</a></li>
+<li><a href="https://www.logicalclocks.com/research-papers/">papers</a></li>
+</ul>
+
+<p>To interact with HopsFS from python, you can use the hdfs module in the hops-util-py library, it provides an easy-to-use API that resembles interaction with the local filesystem using the python <code>os</code> module.</p>
+
+<h2 id="import-the-module">Import the Module</h2>
+<div class="highlight"><pre class="chroma"><code class="language-pyspark" data-lang="pyspark">from hops import hdfs</code></pre></div>
+<h2 id="getting-project-information">Getting Project Information</h2>
+
+<p>When interacting with HopsFS from Hopsworks, you are always inside a <strong>project</strong>. When you are inside a project your activated HDFS user will be projectname__username. This is to set project-specific access control and multi-tenancy (you can read more about the low-level details here: <a href="https://www.logicalclocks.com/introducing-hopsworks/">hopsworks blogpost</a></p>
+<div class="highlight"><pre class="chroma"><code class="language-pyspark" data-lang="pyspark">project_user = hdfs.project_user()
+project_name = hdfs.project_name()
+project_path = hdfs.project_path()
+print(&#34;project user: {}\nproject name: {}\nproject path: {}&#34;.format(project_user, project_name, project_path))</code></pre></div>
+<h2 id="read-write-from-to-hdfs">Read/Write From/To HDFS</h2>
+<div class="highlight"><pre class="chroma"><code class="language-pyspark" data-lang="pyspark">logs_README = hdfs.load(&#34;Logs/README.md&#34;)
+print(&#34;logs README: {}&#34;.format(logs_README.decode(&#34;utf-8&#34;)))
+hdfs.dump(&#34;test&#34;, &#34;Logs/README_dump_test.md&#34;)
+logs_README_dumped = hdfs.load(&#34;Logs/README_dump_test.md&#34;)
+print(&#34;logs README dumped: {}&#34;.format(logs_README_dumped.decode(&#34;utf-8&#34;)))</code></pre></div>
+<h2 id="copy-local-fs-hdfs">Copy Local FS &lt;&ndash;&gt; HDFS</h2>
+<div class="highlight"><pre class="chroma"><code class="language-pyspark" data-lang="pyspark"># creates file in current working directory with a string
+with open(&#39;test.txt&#39;, &#39;w&#39;) as f:
+    f.write(&#34;test&#34;)
+hdfs.copy_to_hdfs(&#34;test.txt&#34;, &#34;Resources&#34;, overwrite=True)
+hdfs.copy_to_local(&#34;Resources/test.txt&#34;, overwrite=True)
+hdfs_copied_file = hdfs.load(&#34;Resources/test.txt&#34;)
+with open(&#39;test.txt&#39;, &#39;r&#39;) as f:
+    local_copied_file = f.read()
+print(&#34;copied file from local to hdfs: {}&#34;.format(hdfs_copied_file.decode(&#34;utf-8&#34;)))
+print(&#34;copied file from hdfs to local: {}&#34;.format(local_copied_file))</code></pre></div>
+<h2 id="list-directories">List Directories</h2>
+<div class="highlight"><pre class="chroma"><code class="language-pyspark" data-lang="pyspark">logs_files = hdfs.ls(&#34;Logs/&#34;)
+print(logs_files)
+logs_files_md = hdfs.glob(&#34;Logs/*.md&#34;)
+print(logs_files_md)
+logs_path_names = hdfs.lsl(&#34;Logs/&#34;)
+print(logs_path_names)</code></pre></div>
+<h2 id="copy-within-hdfs">Copy Within HDFS</h2>
+<div class="highlight"><pre class="chroma"><code class="language-pyspark" data-lang="pyspark">hdfs.cp(&#34;Resources/test.txt&#34;, &#34;Logs/&#34;)
+logs_files = hdfs.ls(&#34;Logs/&#34;)
+print(logs_files)</code></pre></div>
+<h2 id="create-and-remove-directories">Create and Remove Directories</h2>
+<div class="highlight"><pre class="chroma"><code class="language-pyspark" data-lang="pyspark">hdfs.mkdir(&#34;Logs/test_dir&#34;)
+logs_files_prior_delete = hdfs.ls(&#34;Logs/&#34;)
+print(&#34;files prior to delete: {}&#34;.format(logs_files_prior_delete))
+hdfs.rmr(&#34;Logs/test_dir&#34;)
+logs_files_after_delete = hdfs.ls(&#34;Logs/&#34;)
+print(&#34;files after to delete: {}&#34;.format(logs_files_after_delete))</code></pre></div>
+<h2 id="move-rename-files">Move/Rename Files</h2>
+<div class="highlight"><pre class="chroma"><code class="language-pyspark" data-lang="pyspark">logs_files_prior_move = hdfs.ls(&#34;Logs/&#34;)
+print(&#34;files prior to move: {}&#34;.format(logs_files_prior_move))
+hdfs.move(&#34;Logs/README_dump_test.md&#34;, &#34;Logs/README_dump_test2.md&#34;)
+logs_files_after_move = hdfs.ls(&#34;Logs/&#34;)
+print(&#34;files after move: {}&#34;.format(logs_files_after_move))
+logs_files_prior_rename = hdfs.ls(&#34;Logs/&#34;)
+print(&#34;files prior to rename: {}&#34;.format(logs_files_prior_rename))
+hdfs.rename(&#34;Logs/README_dump_test2.md&#34;, &#34;Logs/README_dump_test.md&#34;)
+logs_files_after_rename = hdfs.ls(&#34;Logs/&#34;)
+print(&#34;files after move: {}&#34;.format(logs_files_after_rename))</code></pre></div>
+<h2 id="change-owner-and-change-mode">Change Owner and Change Mode</h2>
+<div class="highlight"><pre class="chroma"><code class="language-pyspark" data-lang="pyspark">import stat
+file_stat = hdfs.stat(&#34;Logs/README.md&#34;)
+print(&#34;file permissions prior to chmod: {0:b}&#34;.format(file_stat.st_mode))
+hdfs.chmod(&#34;Logs/README.md&#34;, 700)
+file_stat = hdfs.stat(&#34;Logs/README.md&#34;)
+print(&#34;file permissions after to chmod: {0:b}&#34;.format(file_stat.st_mode))
+hdfs.chmod(&#34;Logs/README.md&#34;, 777)
+file_owner = file_stat.st_uid
+#print(&#34;file owner prior to chown: {}&#34;.format(file_owner))
+#hdfs.chown(&#34;Logs/README.md&#34;, &#34;meb10000&#34;, &#34;meb10000&#34;)</code></pre></div>
+<h2 id="file-metadata">File Metadata</h2>
+<div class="highlight"><pre class="chroma"><code class="language-pyspark" data-lang="pyspark">file_stat = hdfs.stat(&#34;Logs/README.md&#34;)
+print(&#34;file_stat: {}&#34;.format(file_stat))
+file_access = hdfs.access(&#34;Logs/README.md&#34;, 777)
+print(&#34;file access: {}&#34;.format(file_access))</code></pre></div>
+<h2 id="get-absolute-path">Get Absolute Path</h2>
+<div class="highlight"><pre class="chroma"><code class="language-pyspark" data-lang="pyspark">abs_path = hdfs.abs_path(&#34;Logs/&#34;)
+print(abs_path)</code></pre></div>
+<h2 id="check-if-file-folder-exists">Check if file/folder exists</h2>
+<div class="highlight"><pre class="chroma"><code class="language-pyspark" data-lang="pyspark">hdfs.exists(&#34;Logs/&#34;)</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-pyspark" data-lang="pyspark">hdfs.exists(&#34;Not_Existing/neither_am_i&#34;)</code></pre></div>
+    </div>
+    <aside>
+      <div class="bug_reporting">
+	<h4>Find an error or bug?</h4>
+	<p>Everything on this site is available on GitHub. Head to <a href='https://github.com/chrisalbon/notes/issues/new'>and submit a suggested change</a>. Include the tutorial's URL in the issue.</p>
+      </div>
+    </aside>
+
+  </div>
+</article>
+
+
+
+
+            </div>
+
+        </div>
+    </div>
+
+    
+
+    <footer class="footer text-center">
+        <div class="container">
+            <span class="text-muted">This project contains 59 pages and is available on <a href="https://github.com/napsterinblue/notes">GitHub</a>. Copyright &copy; NapsterInBlue, <time datetime="2018">2018</time>.</span>
+        </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ"
+        crossorigin="anonymous"></script>
+
+</body>
+
+</html>

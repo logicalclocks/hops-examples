@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-66582-32"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-66582-32');
+    </script>
+
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+<meta property="og:title" content="PyTorch/Petastorm MNIST Example using the Feature Store" />
+<meta property="og:description" content="Image Classification with MNIST Using a Petastorm Dataset and PyTorch In this notebook we will read a training dataset saved in the Petastorm format in the project&rsquo;s feature store and use that to train a Deep CNN defined in PyTorch to classify images of digits in the MNIST dataset.
+This notebook assumes that you have already created the training datasets in the feature store, which you can do by running this notebook:" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://examples.hopsworks.ai/featurestore/petastorm/petastormmnist_pytorch/" />
+
+
+
+<meta property="article:published_time" content="2021-02-24T00:00:00&#43;00:00"/>
+
+<meta property="article:modified_time" content="2021-02-24T00:00:00&#43;00:00"/>
+
+
+
+
+
+
+
+
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="PyTorch/Petastorm MNIST Example using the Feature Store"/>
+<meta name="twitter:description" content="Image Classification with MNIST Using a Petastorm Dataset and PyTorch In this notebook we will read a training dataset saved in the Petastorm format in the project&rsquo;s feature store and use that to train a Deep CNN defined in PyTorch to classify images of digits in the MNIST dataset.
+This notebook assumes that you have already created the training datasets in the feature store, which you can do by running this notebook:"/>
+<meta name="generator" content="Hugo 0.40.3" />
+
+    
+<script type="application/ld+json">
+  {
+  "@context": "http://schema.org",
+  "@type": "BlogPosting",
+  "headline": "PyTorch/Petastorm MNIST Example using the Feature Store",
+  "url": "https://examples.hopsworks.ai/featurestore/petastorm/petastormmnist_pytorch/",
+  "wordCount": "4578",
+  "datePublished": "2021-02-24T00:00:00&#43;00:00",
+  "dateModified": "2021-02-24T00:00:00&#43;00:00",
+  "author": {
+  "@type": "Person",
+  "name": ""
+  }
+  }
+</script> 
+
+    <title>PyTorch/Petastorm MNIST Example using the Feature Store</title>
+
+    
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb"
+        crossorigin="anonymous">
+
+    
+    <link href="https://examples.hopsworks.ai/css/custom.css" rel="stylesheet">
+    <link href="https://examples.hopsworks.ai/css/syntax.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Muli:400,500,700" rel="stylesheet">
+
+    <link href="" rel="alternate" type="application/rss+xml" title="Hopsworks Examples" />
+
+    <script type="text/javascript" async
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[','\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre','code'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+</script>
+
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-sm fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="https://examples.hopsworks.ai">Hopsworks Examples</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="nav navbar-nav mr-auto"></ul>
+                <ul class="nav navbar-nav">
+                    <li><a href="https://hopsworks.ai" title="Hopsworks.ai">hopsworks.ai</a></li>
+                    <li><a href="https://docs.hopsworks.ai" title="Docs">docs.hopsworks.ai</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+
+    
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+
+                 
+
+
+<article>
+  <div class="technical_note">
+    <header>
+      <div class="alert alert-warning flashcard_ad" role="alert">
+	Want to learn machine learning? Try my <a href="https://machinelearningflashcards.com" class="alert-link">machine learning flashcards</a>, <a href='https://amzn.to/2HwnWty' class="alert-link">book</a>, or <a href='https://www.youtube.com/channel/UCnd4Fi-ODvuPbxR2fO2j7kA' class="alert-link">study with me.</a>.
+      </div>
+      <h1 class="technical_note_title">PyTorch/Petastorm MNIST Example using the Feature Store</h1>
+      <div class="technical_note_date">
+	<time datetime=" 2021-02-24T00:00:00Z "> 24 Feb 2021</time>
+      </div>
+    </header>
+    <div class="content">
+
+      
+
+<h1 id="image-classification-with-mnist-using-a-petastorm-dataset-and-pytorch">Image Classification with MNIST Using a Petastorm Dataset and PyTorch</h1>
+
+<p>In this notebook we will read a training dataset saved in the Petastorm format in the project&rsquo;s feature store and use that to train a Deep CNN defined in PyTorch to classify images of digits in the MNIST dataset.</p>
+
+<p>This notebook assumes that you have already created the training datasets in the feature store, which you can do by running this notebook:</p>
+
+<p><a href="PetastormMNIST_CreateDataset.ipynb">Create Petastorm MNIST Dataset Notebook</a></p>
+
+<p><img src="petastorm7.png" alt="Petastorm 7" title="Petastorm 7" /></p>
+<div class="highlight"><pre class="chroma"><code class="language-pyspark" data-lang="pyspark">from hops import hdfs, featurestore, experiment, tensorboard
+import numpy as np
+import pydoop
+import json
+
+# Must import pyarrow before torch. See: https://github.com/uber/petastorm/blob/master/docs/troubleshoot.rst
+import pyarrow as pa
+import torch
+import torch.nn as nn
+import torch.optim as optim
+from torchvision import transforms
+import torch.nn.functional as F
+from petastorm import make_reader, TransformSpec
+from petastorm.tf_utils import make_petastorm_dataset
+from petastorm.pytorch import DataLoader</code></pre></div>
+<pre><code>Starting Spark application
+</code></pre>
+
+<table>
+<tr><th>ID</th><th>YARN Application ID</th><th>Kind</th><th>State</th><th>Spark UI</th><th>Driver log</th><th>Current session?</th></tr><tr><td>5</td><td>application_1559565096638_0007</td><td>pyspark</td><td>idle</td><td><a target="_blank" href="http://hopsworks0.logicalclocks.com:8088/proxy/application_1559565096638_0007/">Link</a></td><td><a target="_blank" href="http://hopsworks0.logicalclocks.com:8042/node/containerlogs/container_e01_1559565096638_0007_01_000001/demo_featurestore_admin000__meb10000">Link</a></td><td>✔</td></tr></table>
+
+<pre><code>SparkSession available as 'spark'.
+</code></pre>
+
+<h2 id="constants">Constants</h2>
+<div class="highlight"><pre class="chroma"><code class="language-pyspark" data-lang="pyspark">TRAIN_DATASET_NAME = &#34;MNIST_train_petastorm&#34;
+TEST_DATASET_NAME = &#34;MNIST_test_petastorm&#34;
+BATCH_SIZE = 50
+NUM_EPOCHS = 5
+LEARNING_RATE = 0.01
+MOMENTUM = 0.001
+SEED = 1
+LOG_INTERVAL = 10
+READER_EPOCHS = 1
+PROJECT_PATH = hdfs.project_path()</code></pre></div>
+<h2 id="step-1-define-the-model">Step 1: Define The Model</h2>
+<div class="highlight"><pre class="chroma"><code class="language-pyspark" data-lang="pyspark">class Net(nn.Module):
+    def __init__(self):
+        super(Net, self).__init__()
+        self.conv1 = nn.Conv2d(1, 10, kernel_size=5)
+        self.conv2 = nn.Conv2d(10, 20, kernel_size=5)
+        self.conv2_drop = nn.Dropout2d()
+        self.fc1 = nn.Linear(320, 50)
+        self.fc2 = nn.Linear(50, 10)
+
+    def forward(self, x):
+        x = F.relu(F.max_pool2d(self.conv1(x), 2))
+        x = F.relu(F.max_pool2d(self.conv2_drop(self.conv2(x)), 2))
+        x = x.view(-1, 320)
+        x = F.relu(self.fc1(x))
+        x = F.dropout(x, training=self.training)
+        x = self.fc2(x)
+        return F.log_softmax(x, dim=1)</code></pre></div>
+<h2 id="step-2-define-pytorch-dataset-transformer">Step 2: Define PyTorch Dataset Transformer</h2>
+
+<p>Petastorm datasets can be read directly with PyTorch by using <code>make_reader</code> and <code>make_petastorm_dataset</code> from the Petastorm library</p>
+<div class="highlight"><pre class="chroma"><code class="language-pyspark" data-lang="pyspark">def _transform_row(mnist_row):
+    &#34;&#34;&#34;
+    Normalize images
+    &#34;&#34;&#34;
+    transform = transforms.Compose([
+        transforms.Lambda(lambda nd: nd.reshape(28, 28, 1)),
+        transforms.ToTensor(),
+        transforms.Normalize((0.1307,), (0.3081,))
+    ])
+    # In addition, the petastorm pytorch DataLoader does not distinguish the notion of
+    # data or target transform, but that actually gives the user more flexibility
+    # to make the desired partial transform, as shown here.
+    result_row = {
+        &#39;image&#39;: transform(mnist_row[&#39;image&#39;]),
+        &#39;digit&#39;: mnist_row[&#39;digit&#39;]
+    }
+
+    return result_row</code></pre></div>
+<h2 id="step-3-define-epoch-reader-and-training-loop">Step 3: Define Epoch Reader and Training Loop</h2>
+<div class="highlight"><pre class="chroma"><code class="language-pyspark" data-lang="pyspark">def train_epoch(train_dataset_path, model, device, optimizer, epoch):
+    &#34;&#34;&#34;
+    Function for training a single epoch of MNIST using PyTorch
+    &#34;&#34;&#34;
+    with DataLoader(make_reader(train_dataset_path, num_epochs=READER_EPOCHS, hdfs_driver=&#39;libhdfs&#39;,
+                               transform_spec=TransformSpec(_transform_row)), 
+                    batch_size=BATCH_SIZE) as train_loader:
+        correct = 0
+        count = 0
+        train_loss = 0
+        model.train()
+        for batch_idx, row in enumerate(train_loader):
+            data, target = row[&#39;image&#39;].to(device), row[&#39;digit&#39;].to(device)
+            optimizer.zero_grad()
+            output = model(data)
+            loss = F.nll_loss(output, target)
+            train_loss += loss.item()
+            pred = output.max(1, keepdim=True)[1]  # get the index of the max log-probability
+            correct += pred.eq(target.view_as(pred)).sum().item()
+            count += data.shape[0]
+            loss.backward()
+            optimizer.step()
+            if batch_idx % LOG_INTERVAL == 0:
+                print(&#39;Train Epoch: {} [{}]\tLoss: {:.6f}&#39;.format(
+                    epoch, batch_idx * len(data), loss.item()))
+        train_accuracy = correct / count
+        train_loss /= count
+        return train_accuracy, train_loss, epoch</code></pre></div>
+<h2 id="step-4-put-it-all-together-in-a-training-function">Step 4: Put it All Together in a Training Function</h2>
+<div class="highlight"><pre class="chroma"><code class="language-pyspark" data-lang="pyspark">def train_fn():
+    &#34;&#34;&#34;
+    The training loop
+    &#34;&#34;&#34;
+    # Setup Torch
+    use_cuda = torch.cuda.is_available()
+    torch.manual_seed(SEED)
+    device = torch.device(&#39;cuda&#39; if use_cuda else &#39;cpu&#39;)
+    # Create Model
+    model = Net().to(device)
+    # Define optimizer
+    optimizer = optim.SGD(model.parameters(), lr=LEARNING_RATE, momentum=MOMENTUM)
+    # get dataset path from the featurestore
+    train_dataset_path = featurestore.get_training_dataset_path(TRAIN_DATASET_NAME)
+    train_history = {}
+    train_epochs = []
+    train_accuracies = []
+    train_losses = []
+    for epoch in range(1, NUM_EPOCHS + 1):
+        train_accuracy, train_loss, epoch = train_epoch(train_dataset_path, model, device, optimizer, epoch)
+        train_epochs.append(epoch)
+        train_accuracies.append(train_accuracy)
+        train_losses.append(train_loss)
+    torch.save(model.state_dict(), &#34;mnist_torch_ps.pt&#34;) #PyTorch can&#39;t save to HDFS in the current version so save to local fs first
+    hdfs.copy_to_hdfs(&#34;mnist_torch_ps.pt&#34;, hdfs.project_path() + &#34;mnist/&#34;, overwrite=True) # copy from local fs to hdfs
+    train_history[&#34;acc&#34;] = train_accuracies
+    train_history[&#34;epoch&#34;] = train_epochs
+    train_history[&#34;loss&#34;] = train_losses
+    # save training history to HDFS
+    results_path = hdfs.project_path() + &#34;mnist/mnist_train_results_2.txt&#34;
+    hdfs.dump(json.dumps(train_history), results_path)
+    return train_history</code></pre></div>
+<h2 id="step-5-training-experiments">Step 5: Training Experiments</h2>
+<div class="highlight"><pre class="chroma"><code class="language-pyspark" data-lang="pyspark">train_history = train_fn()</code></pre></div>
+<pre><code>Train Epoch: 1 [0]  Loss: 2.314652
+Train Epoch: 1 [500]    Loss: 2.347810
+Train Epoch: 1 [1000]   Loss: 2.322586
+Train Epoch: 1 [1500]   Loss: 2.292396
+Train Epoch: 1 [2000]   Loss: 2.293021
+Train Epoch: 1 [2500]   Loss: 2.279352
+Train Epoch: 1 [3000]   Loss: 2.323452
+Train Epoch: 1 [3500]   Loss: 2.277730
+Train Epoch: 1 [4000]   Loss: 2.245240
+Train Epoch: 1 [4500]   Loss: 2.224981
+Train Epoch: 1 [5000]   Loss: 2.203325
+Train Epoch: 1 [5500]   Loss: 2.202740
+Train Epoch: 1 [6000]   Loss: 2.194582
+Train Epoch: 1 [6500]   Loss: 2.204894
+Train Epoch: 1 [7000]   Loss: 2.185442
+Train Epoch: 1 [7500]   Loss: 2.105492
+Train Epoch: 1 [8000]   Loss: 2.085393
+Train Epoch: 1 [8500]   Loss: 2.058237
+Train Epoch: 1 [9000]   Loss: 1.887053
+Train Epoch: 1 [9500]   Loss: 1.932784
+Train Epoch: 1 [10000]  Loss: 1.965014
+Train Epoch: 1 [10500]  Loss: 1.860895
+Train Epoch: 1 [11000]  Loss: 1.852554
+Train Epoch: 1 [11500]  Loss: 1.784856
+Train Epoch: 1 [12000]  Loss: 1.768502
+Train Epoch: 1 [12500]  Loss: 1.804160
+Train Epoch: 1 [13000]  Loss: 1.605310
+Train Epoch: 1 [13500]  Loss: 1.548712
+Train Epoch: 1 [14000]  Loss: 1.947237
+Train Epoch: 1 [14500]  Loss: 1.626681
+Train Epoch: 1 [15000]  Loss: 1.342831
+Train Epoch: 1 [15500]  Loss: 1.333472
+Train Epoch: 1 [16000]  Loss: 1.877568
+Train Epoch: 1 [16500]  Loss: 1.080007
+Train Epoch: 1 [17000]  Loss: 1.264965
+Train Epoch: 1 [17500]  Loss: 1.446953
+Train Epoch: 1 [18000]  Loss: 1.330481
+Train Epoch: 1 [18500]  Loss: 1.080801
+Train Epoch: 1 [19000]  Loss: 1.403510
+Train Epoch: 1 [19500]  Loss: 1.195393
+Train Epoch: 1 [20000]  Loss: 1.365885
+Train Epoch: 1 [20500]  Loss: 1.141244
+Train Epoch: 1 [21000]  Loss: 1.269509
+Train Epoch: 1 [21500]  Loss: 1.020391
+Train Epoch: 1 [22000]  Loss: 0.693062
+Train Epoch: 1 [22500]  Loss: 1.192552
+Train Epoch: 1 [23000]  Loss: 0.936118
+Train Epoch: 1 [23500]  Loss: 0.888021
+Train Epoch: 1 [24000]  Loss: 0.941373
+Train Epoch: 1 [24500]  Loss: 1.094744
+Train Epoch: 1 [25000]  Loss: 1.032292
+Train Epoch: 1 [25500]  Loss: 0.559550
+Train Epoch: 1 [26000]  Loss: 0.673567
+Train Epoch: 1 [26500]  Loss: 1.137646
+Train Epoch: 1 [27000]  Loss: 0.789707
+Train Epoch: 1 [27500]  Loss: 0.956055
+Train Epoch: 1 [28000]  Loss: 0.666835
+Train Epoch: 1 [28500]  Loss: 0.982934
+Train Epoch: 1 [29000]  Loss: 1.015001
+Train Epoch: 1 [29500]  Loss: 0.736728
+Train Epoch: 1 [30000]  Loss: 1.037584
+Train Epoch: 1 [30500]  Loss: 1.020220
+Train Epoch: 1 [31000]  Loss: 0.876992
+Train Epoch: 1 [31500]  Loss: 0.625908
+Train Epoch: 1 [32000]  Loss: 0.625826
+Train Epoch: 1 [32500]  Loss: 1.120969
+Train Epoch: 1 [33000]  Loss: 0.839810
+Train Epoch: 1 [33500]  Loss: 0.637523
+Train Epoch: 1 [34000]  Loss: 0.992285
+Train Epoch: 1 [34500]  Loss: 0.787687
+Train Epoch: 1 [35000]  Loss: 0.548028
+Train Epoch: 1 [35500]  Loss: 0.752950
+Train Epoch: 1 [36000]  Loss: 0.689869
+Train Epoch: 1 [36500]  Loss: 0.704910
+Train Epoch: 1 [37000]  Loss: 0.796584
+Train Epoch: 1 [37500]  Loss: 0.735694
+Train Epoch: 1 [38000]  Loss: 0.624109
+Train Epoch: 1 [38500]  Loss: 0.984630
+Train Epoch: 1 [39000]  Loss: 0.569103
+Train Epoch: 1 [39500]  Loss: 0.640644
+Train Epoch: 1 [40000]  Loss: 0.607074
+Train Epoch: 1 [40500]  Loss: 0.739015
+Train Epoch: 1 [41000]  Loss: 0.766151
+Train Epoch: 1 [41500]  Loss: 0.862180
+Train Epoch: 1 [42000]  Loss: 0.739657
+Train Epoch: 1 [42500]  Loss: 1.137352
+Train Epoch: 1 [43000]  Loss: 0.796514
+Train Epoch: 1 [43500]  Loss: 0.710710
+Train Epoch: 1 [44000]  Loss: 0.712428
+Train Epoch: 1 [44500]  Loss: 0.391899
+Train Epoch: 1 [45000]  Loss: 1.157633
+Train Epoch: 1 [45500]  Loss: 0.730997
+Train Epoch: 1 [46000]  Loss: 0.670208
+Train Epoch: 1 [46500]  Loss: 0.374244
+Train Epoch: 1 [47000]  Loss: 0.732776
+Train Epoch: 1 [47500]  Loss: 0.569183
+Train Epoch: 1 [48000]  Loss: 0.548214
+Train Epoch: 1 [48500]  Loss: 0.403679
+Train Epoch: 1 [49000]  Loss: 0.787867
+Train Epoch: 1 [49500]  Loss: 1.213032
+Train Epoch: 1 [50000]  Loss: 0.563721
+Train Epoch: 1 [50500]  Loss: 0.636813
+Train Epoch: 1 [51000]  Loss: 0.361427
+Train Epoch: 1 [51500]  Loss: 0.660716
+Train Epoch: 1 [52000]  Loss: 0.645396
+Train Epoch: 1 [52500]  Loss: 0.442736
+Train Epoch: 1 [53000]  Loss: 0.717546
+Train Epoch: 1 [53500]  Loss: 0.478140
+Train Epoch: 1 [54000]  Loss: 0.745808
+Train Epoch: 1 [54500]  Loss: 0.644925
+Train Epoch: 1 [55000]  Loss: 0.611227
+Train Epoch: 1 [55500]  Loss: 0.378807
+Train Epoch: 1 [56000]  Loss: 0.307739
+Train Epoch: 1 [56500]  Loss: 0.439195
+Train Epoch: 1 [57000]  Loss: 0.538999
+Train Epoch: 1 [57500]  Loss: 0.548627
+Train Epoch: 1 [58000]  Loss: 0.398077
+Train Epoch: 1 [58500]  Loss: 0.208606
+Train Epoch: 1 [59000]  Loss: 0.234980
+Train Epoch: 1 [59500]  Loss: 0.204218
+Train Epoch: 2 [0]  Loss: 0.619840
+Train Epoch: 2 [500]    Loss: 0.921175
+Train Epoch: 2 [1000]   Loss: 0.684286
+Train Epoch: 2 [1500]   Loss: 0.542011
+Train Epoch: 2 [2000]   Loss: 0.584727
+Train Epoch: 2 [2500]   Loss: 0.379518
+Train Epoch: 2 [3000]   Loss: 0.635102
+Train Epoch: 2 [3500]   Loss: 0.733626
+Train Epoch: 2 [4000]   Loss: 0.479817
+Train Epoch: 2 [4500]   Loss: 0.456036
+Train Epoch: 2 [5000]   Loss: 0.487749
+Train Epoch: 2 [5500]   Loss: 0.430104
+Train Epoch: 2 [6000]   Loss: 0.443401
+Train Epoch: 2 [6500]   Loss: 0.415634
+Train Epoch: 2 [7000]   Loss: 0.771553
+Train Epoch: 2 [7500]   Loss: 0.656121
+Train Epoch: 2 [8000]   Loss: 0.439045
+Train Epoch: 2 [8500]   Loss: 0.459105
+Train Epoch: 2 [9000]   Loss: 0.281455
+Train Epoch: 2 [9500]   Loss: 0.423440
+Train Epoch: 2 [10000]  Loss: 0.484109
+Train Epoch: 2 [10500]  Loss: 0.401370
+Train Epoch: 2 [11000]  Loss: 0.377011
+Train Epoch: 2 [11500]  Loss: 0.473158
+Train Epoch: 2 [12000]  Loss: 0.452099
+Train Epoch: 2 [12500]  Loss: 0.653331
+Train Epoch: 2 [13000]  Loss: 0.849055
+Train Epoch: 2 [13500]  Loss: 0.393340
+Train Epoch: 2 [14000]  Loss: 0.442612
+Train Epoch: 2 [14500]  Loss: 0.826222
+Train Epoch: 2 [15000]  Loss: 0.287240
+Train Epoch: 2 [15500]  Loss: 0.426907
+Train Epoch: 2 [16000]  Loss: 0.820387
+Train Epoch: 2 [16500]  Loss: 0.240167
+Train Epoch: 2 [17000]  Loss: 0.405147
+Train Epoch: 2 [17500]  Loss: 0.438141
+Train Epoch: 2 [18000]  Loss: 0.593009
+Train Epoch: 2 [18500]  Loss: 0.417196
+Train Epoch: 2 [19000]  Loss: 0.630604
+Train Epoch: 2 [19500]  Loss: 0.521333
+Train Epoch: 2 [20000]  Loss: 0.536920
+Train Epoch: 2 [20500]  Loss: 0.481749
+Train Epoch: 2 [21000]  Loss: 0.507058
+Train Epoch: 2 [21500]  Loss: 0.347641
+Train Epoch: 2 [22000]  Loss: 0.416561
+Train Epoch: 2 [22500]  Loss: 0.681721
+Train Epoch: 2 [23000]  Loss: 0.390809
+Train Epoch: 2 [23500]  Loss: 0.470198
+Train Epoch: 2 [24000]  Loss: 0.319788
+Train Epoch: 2 [24500]  Loss: 0.532139
+Train Epoch: 2 [25000]  Loss: 0.263668
+Train Epoch: 2 [25500]  Loss: 0.347382
+Train Epoch: 2 [26000]  Loss: 0.229244
+Train Epoch: 2 [26500]  Loss: 0.555477
+Train Epoch: 2 [27000]  Loss: 0.410140
+Train Epoch: 2 [27500]  Loss: 0.489020
+Train Epoch: 2 [28000]  Loss: 0.201792
+Train Epoch: 2 [28500]  Loss: 0.378409
+Train Epoch: 2 [29000]  Loss: 0.453885
+Train Epoch: 2 [29500]  Loss: 0.473300
+Train Epoch: 2 [30000]  Loss: 0.365118
+Train Epoch: 2 [30500]  Loss: 0.646152
+Train Epoch: 2 [31000]  Loss: 0.393904
+Train Epoch: 2 [31500]  Loss: 0.398466
+Train Epoch: 2 [32000]  Loss: 0.477276
+Train Epoch: 2 [32500]  Loss: 0.446803
+Train Epoch: 2 [33000]  Loss: 0.560624
+Train Epoch: 2 [33500]  Loss: 0.417403
+Train Epoch: 2 [34000]  Loss: 0.631800
+Train Epoch: 2 [34500]  Loss: 0.557998
+Train Epoch: 2 [35000]  Loss: 0.267541
+Train Epoch: 2 [35500]  Loss: 0.443195
+Train Epoch: 2 [36000]  Loss: 0.415995
+Train Epoch: 2 [36500]  Loss: 0.371574
+Train Epoch: 2 [37000]  Loss: 0.360189
+Train Epoch: 2 [37500]  Loss: 0.459716
+Train Epoch: 2 [38000]  Loss: 0.319102
+Train Epoch: 2 [38500]  Loss: 0.649184
+Train Epoch: 2 [39000]  Loss: 0.424727
+Train Epoch: 2 [39500]  Loss: 0.355261
+Train Epoch: 2 [40000]  Loss: 0.220223
+Train Epoch: 2 [40500]  Loss: 0.275426
+Train Epoch: 2 [41000]  Loss: 0.353535
+Train Epoch: 2 [41500]  Loss: 0.612338
+Train Epoch: 2 [42000]  Loss: 0.554872
+Train Epoch: 2 [42500]  Loss: 0.561576
+Train Epoch: 2 [43000]  Loss: 0.488499
+Train Epoch: 2 [43500]  Loss: 0.346328
+Train Epoch: 2 [44000]  Loss: 0.443777
+Train Epoch: 2 [44500]  Loss: 0.259883
+Train Epoch: 2 [45000]  Loss: 0.837269
+Train Epoch: 2 [45500]  Loss: 0.550828
+Train Epoch: 2 [46000]  Loss: 0.448741
+Train Epoch: 2 [46500]  Loss: 0.356512
+Train Epoch: 2 [47000]  Loss: 0.438028
+Train Epoch: 2 [47500]  Loss: 0.487593
+Train Epoch: 2 [48000]  Loss: 0.528074
+Train Epoch: 2 [48500]  Loss: 0.432210
+Train Epoch: 2 [49000]  Loss: 0.591643
+Train Epoch: 2 [49500]  Loss: 0.895546
+Train Epoch: 2 [50000]  Loss: 0.341296
+Train Epoch: 2 [50500]  Loss: 0.450499
+Train Epoch: 2 [51000]  Loss: 0.331676
+Train Epoch: 2 [51500]  Loss: 0.358942
+Train Epoch: 2 [52000]  Loss: 0.478027
+Train Epoch: 2 [52500]  Loss: 0.291974
+Train Epoch: 2 [53000]  Loss: 0.347549
+Train Epoch: 2 [53500]  Loss: 0.456278
+Train Epoch: 2 [54000]  Loss: 0.427167
+Train Epoch: 2 [54500]  Loss: 0.381366
+Train Epoch: 2 [55000]  Loss: 0.341925
+Train Epoch: 2 [55500]  Loss: 0.308532
+Train Epoch: 2 [56000]  Loss: 0.388050
+Train Epoch: 2 [56500]  Loss: 0.248812
+Train Epoch: 2 [57000]  Loss: 0.539491
+Train Epoch: 2 [57500]  Loss: 0.430806
+Train Epoch: 2 [58000]  Loss: 0.325792
+Train Epoch: 2 [58500]  Loss: 0.312470
+Train Epoch: 2 [59000]  Loss: 0.223431
+Train Epoch: 2 [59500]  Loss: 0.183124
+Train Epoch: 3 [0]  Loss: 0.397888
+Train Epoch: 3 [500]    Loss: 0.555410
+Train Epoch: 3 [1000]   Loss: 0.443689
+Train Epoch: 3 [1500]   Loss: 0.307681
+Train Epoch: 3 [2000]   Loss: 0.215819
+Train Epoch: 3 [2500]   Loss: 0.211418
+Train Epoch: 3 [3000]   Loss: 0.777273
+Train Epoch: 3 [3500]   Loss: 0.410696
+Train Epoch: 3 [4000]   Loss: 0.226901
+Train Epoch: 3 [4500]   Loss: 0.313698
+Train Epoch: 3 [5000]   Loss: 0.605175
+Train Epoch: 3 [5500]   Loss: 0.420811
+Train Epoch: 3 [6000]   Loss: 0.205940
+Train Epoch: 3 [6500]   Loss: 0.297538
+Train Epoch: 3 [7000]   Loss: 0.664845
+Train Epoch: 3 [7500]   Loss: 0.447547
+Train Epoch: 3 [8000]   Loss: 0.220270
+Train Epoch: 3 [8500]   Loss: 0.261112
+Train Epoch: 3 [9000]   Loss: 0.186899
+Train Epoch: 3 [9500]   Loss: 0.525807
+Train Epoch: 3 [10000]  Loss: 0.617036
+Train Epoch: 3 [10500]  Loss: 0.286154
+Train Epoch: 3 [11000]  Loss: 0.492432
+Train Epoch: 3 [11500]  Loss: 0.285027
+Train Epoch: 3 [12000]  Loss: 0.316035
+Train Epoch: 3 [12500]  Loss: 0.421649
+Train Epoch: 3 [13000]  Loss: 0.587274
+Train Epoch: 3 [13500]  Loss: 0.430303
+Train Epoch: 3 [14000]  Loss: 0.438531
+Train Epoch: 3 [14500]  Loss: 0.509462
+Train Epoch: 3 [15000]  Loss: 0.217851
+Train Epoch: 3 [15500]  Loss: 0.403349
+Train Epoch: 3 [16000]  Loss: 0.863393
+Train Epoch: 3 [16500]  Loss: 0.206019
+Train Epoch: 3 [17000]  Loss: 0.234085
+Train Epoch: 3 [17500]  Loss: 0.575927
+Train Epoch: 3 [18000]  Loss: 0.492653
+Train Epoch: 3 [18500]  Loss: 0.219705
+Train Epoch: 3 [19000]  Loss: 0.336940
+Train Epoch: 3 [19500]  Loss: 0.392986
+Train Epoch: 3 [20000]  Loss: 0.474515
+Train Epoch: 3 [20500]  Loss: 0.258947
+Train Epoch: 3 [21000]  Loss: 0.401852
+Train Epoch: 3 [21500]  Loss: 0.286817
+Train Epoch: 3 [22000]  Loss: 0.292514
+Train Epoch: 3 [22500]  Loss: 0.725641
+Train Epoch: 3 [23000]  Loss: 0.338796
+Train Epoch: 3 [23500]  Loss: 0.197620
+Train Epoch: 3 [24000]  Loss: 0.442460
+Train Epoch: 3 [24500]  Loss: 0.421835
+Train Epoch: 3 [25000]  Loss: 0.236234
+Train Epoch: 3 [25500]  Loss: 0.247695
+Train Epoch: 3 [26000]  Loss: 0.258222
+Train Epoch: 3 [26500]  Loss: 0.361936
+Train Epoch: 3 [27000]  Loss: 0.323021
+Train Epoch: 3 [27500]  Loss: 0.471466
+Train Epoch: 3 [28000]  Loss: 0.200719
+Train Epoch: 3 [28500]  Loss: 0.297158
+Train Epoch: 3 [29000]  Loss: 0.280326
+Train Epoch: 3 [29500]  Loss: 0.293862
+Train Epoch: 3 [30000]  Loss: 0.487289
+Train Epoch: 3 [30500]  Loss: 0.551118
+Train Epoch: 3 [31000]  Loss: 0.415547
+Train Epoch: 3 [31500]  Loss: 0.312819
+Train Epoch: 3 [32000]  Loss: 0.506050
+Train Epoch: 3 [32500]  Loss: 0.422329
+Train Epoch: 3 [33000]  Loss: 0.222236
+Train Epoch: 3 [33500]  Loss: 0.331535
+Train Epoch: 3 [34000]  Loss: 0.417262
+Train Epoch: 3 [34500]  Loss: 0.442178
+Train Epoch: 3 [35000]  Loss: 0.221713
+Train Epoch: 3 [35500]  Loss: 0.363654
+Train Epoch: 3 [36000]  Loss: 0.242190
+Train Epoch: 3 [36500]  Loss: 0.296701
+Train Epoch: 3 [37000]  Loss: 0.310814
+Train Epoch: 3 [37500]  Loss: 0.572967
+Train Epoch: 3 [38000]  Loss: 0.249382
+Train Epoch: 3 [38500]  Loss: 0.587125
+Train Epoch: 3 [39000]  Loss: 0.365271
+Train Epoch: 3 [39500]  Loss: 0.248488
+Train Epoch: 3 [40000]  Loss: 0.363927
+Train Epoch: 3 [40500]  Loss: 0.199263
+Train Epoch: 3 [41000]  Loss: 0.386913
+Train Epoch: 3 [41500]  Loss: 0.411311
+Train Epoch: 3 [42000]  Loss: 0.266194
+Train Epoch: 3 [42500]  Loss: 0.563311
+Train Epoch: 3 [43000]  Loss: 0.434032
+Train Epoch: 3 [43500]  Loss: 0.246812
+Train Epoch: 3 [44000]  Loss: 0.250274
+Train Epoch: 3 [44500]  Loss: 0.149181
+Train Epoch: 3 [45000]  Loss: 0.370156
+Train Epoch: 3 [45500]  Loss: 0.643493
+Train Epoch: 3 [46000]  Loss: 0.490385
+Train Epoch: 3 [46500]  Loss: 0.178775
+Train Epoch: 3 [47000]  Loss: 0.392861
+Train Epoch: 3 [47500]  Loss: 0.305933
+Train Epoch: 3 [48000]  Loss: 0.324681
+Train Epoch: 3 [48500]  Loss: 0.264139
+Train Epoch: 3 [49000]  Loss: 0.695150
+Train Epoch: 3 [49500]  Loss: 0.764703
+Train Epoch: 3 [50000]  Loss: 0.305670
+Train Epoch: 3 [50500]  Loss: 0.280864
+Train Epoch: 3 [51000]  Loss: 0.212112
+Train Epoch: 3 [51500]  Loss: 0.292480
+Train Epoch: 3 [52000]  Loss: 0.236343
+Train Epoch: 3 [52500]  Loss: 0.195253
+Train Epoch: 3 [53000]  Loss: 0.413919
+Train Epoch: 3 [53500]  Loss: 0.381807
+Train Epoch: 3 [54000]  Loss: 0.504153
+Train Epoch: 3 [54500]  Loss: 0.175783
+Train Epoch: 3 [55000]  Loss: 0.308307
+Train Epoch: 3 [55500]  Loss: 0.337251
+Train Epoch: 3 [56000]  Loss: 0.313177
+Train Epoch: 3 [56500]  Loss: 0.215633
+Train Epoch: 3 [57000]  Loss: 0.300737
+Train Epoch: 3 [57500]  Loss: 0.594361
+Train Epoch: 3 [58000]  Loss: 0.208251
+Train Epoch: 3 [58500]  Loss: 0.135319
+Train Epoch: 3 [59000]  Loss: 0.083631
+Train Epoch: 3 [59500]  Loss: 0.179061
+Train Epoch: 4 [0]  Loss: 0.291782
+Train Epoch: 4 [500]    Loss: 0.415687
+Train Epoch: 4 [1000]   Loss: 0.373633
+Train Epoch: 4 [1500]   Loss: 0.545070
+Train Epoch: 4 [2000]   Loss: 0.206357
+Train Epoch: 4 [2500]   Loss: 0.328217
+Train Epoch: 4 [3000]   Loss: 0.373664
+Train Epoch: 4 [3500]   Loss: 0.254306
+Train Epoch: 4 [4000]   Loss: 0.184824
+Train Epoch: 4 [4500]   Loss: 0.516478
+Train Epoch: 4 [5000]   Loss: 0.333210
+Train Epoch: 4 [5500]   Loss: 0.325951
+Train Epoch: 4 [6000]   Loss: 0.139906
+Train Epoch: 4 [6500]   Loss: 0.202069
+Train Epoch: 4 [7000]   Loss: 0.388184
+Train Epoch: 4 [7500]   Loss: 0.275762
+Train Epoch: 4 [8000]   Loss: 0.231508
+Train Epoch: 4 [8500]   Loss: 0.275232
+Train Epoch: 4 [9000]   Loss: 0.183261
+Train Epoch: 4 [9500]   Loss: 0.203526
+Train Epoch: 4 [10000]  Loss: 0.358410
+Train Epoch: 4 [10500]  Loss: 0.132772
+Train Epoch: 4 [11000]  Loss: 0.205823
+Train Epoch: 4 [11500]  Loss: 0.382235
+Train Epoch: 4 [12000]  Loss: 0.154178
+Train Epoch: 4 [12500]  Loss: 0.204589
+Train Epoch: 4 [13000]  Loss: 0.500733
+Train Epoch: 4 [13500]  Loss: 0.350327
+Train Epoch: 4 [14000]  Loss: 0.297533
+Train Epoch: 4 [14500]  Loss: 0.592561
+Train Epoch: 4 [15000]  Loss: 0.287886
+Train Epoch: 4 [15500]  Loss: 0.277174
+Train Epoch: 4 [16000]  Loss: 0.565333
+Train Epoch: 4 [16500]  Loss: 0.221692
+Train Epoch: 4 [17000]  Loss: 0.417540
+Train Epoch: 4 [17500]  Loss: 0.306073
+Train Epoch: 4 [18000]  Loss: 0.510064
+Train Epoch: 4 [18500]  Loss: 0.324666
+Train Epoch: 4 [19000]  Loss: 0.168929
+Train Epoch: 4 [19500]  Loss: 0.324342
+Train Epoch: 4 [20000]  Loss: 0.418429
+Train Epoch: 4 [20500]  Loss: 0.155318
+Train Epoch: 4 [21000]  Loss: 0.362205
+Train Epoch: 4 [21500]  Loss: 0.187151
+Train Epoch: 4 [22000]  Loss: 0.253433
+Train Epoch: 4 [22500]  Loss: 0.506044
+Train Epoch: 4 [23000]  Loss: 0.246175
+Train Epoch: 4 [23500]  Loss: 0.312927
+Train Epoch: 4 [24000]  Loss: 0.311217
+Train Epoch: 4 [24500]  Loss: 0.287164
+Train Epoch: 4 [25000]  Loss: 0.347461
+Train Epoch: 4 [25500]  Loss: 0.211034
+Train Epoch: 4 [26000]  Loss: 0.196277
+Train Epoch: 4 [26500]  Loss: 0.374076
+Train Epoch: 4 [27000]  Loss: 0.225920
+Train Epoch: 4 [27500]  Loss: 0.425831
+Train Epoch: 4 [28000]  Loss: 0.101450
+Train Epoch: 4 [28500]  Loss: 0.190879
+Train Epoch: 4 [29000]  Loss: 0.303654
+Train Epoch: 4 [29500]  Loss: 0.356354
+Train Epoch: 4 [30000]  Loss: 0.469682
+Train Epoch: 4 [30500]  Loss: 0.534364
+Train Epoch: 4 [31000]  Loss: 0.340332
+Train Epoch: 4 [31500]  Loss: 0.221132
+Train Epoch: 4 [32000]  Loss: 0.608599
+Train Epoch: 4 [32500]  Loss: 0.270502
+Train Epoch: 4 [33000]  Loss: 0.207109
+Train Epoch: 4 [33500]  Loss: 0.379733
+Train Epoch: 4 [34000]  Loss: 0.542799
+Train Epoch: 4 [34500]  Loss: 0.407311
+Train Epoch: 4 [35000]  Loss: 0.126173
+Train Epoch: 4 [35500]  Loss: 0.266643
+Train Epoch: 4 [36000]  Loss: 0.312281
+Train Epoch: 4 [36500]  Loss: 0.229092
+Train Epoch: 4 [37000]  Loss: 0.242022
+Train Epoch: 4 [37500]  Loss: 0.511313
+Train Epoch: 4 [38000]  Loss: 0.458181
+Train Epoch: 4 [38500]  Loss: 0.323650
+Train Epoch: 4 [39000]  Loss: 0.227028
+Train Epoch: 4 [39500]  Loss: 0.127028
+Train Epoch: 4 [40000]  Loss: 0.328208
+Train Epoch: 4 [40500]  Loss: 0.147009
+Train Epoch: 4 [41000]  Loss: 0.242505
+Train Epoch: 4 [41500]  Loss: 0.413382
+Train Epoch: 4 [42000]  Loss: 0.246739
+Train Epoch: 4 [42500]  Loss: 0.605354
+Train Epoch: 4 [43000]  Loss: 0.431116
+Train Epoch: 4 [43500]  Loss: 0.368285
+Train Epoch: 4 [44000]  Loss: 0.317723
+Train Epoch: 4 [44500]  Loss: 0.246383
+Train Epoch: 4 [45000]  Loss: 0.426887
+Train Epoch: 4 [45500]  Loss: 0.427944
+Train Epoch: 4 [46000]  Loss: 0.411599
+Train Epoch: 4 [46500]  Loss: 0.163703
+Train Epoch: 4 [47000]  Loss: 0.485943
+Train Epoch: 4 [47500]  Loss: 0.235072
+Train Epoch: 4 [48000]  Loss: 0.207498
+Train Epoch: 4 [48500]  Loss: 0.280768
+Train Epoch: 4 [49000]  Loss: 0.490604
+Train Epoch: 4 [49500]  Loss: 0.519480
+Train Epoch: 4 [50000]  Loss: 0.311114
+Train Epoch: 4 [50500]  Loss: 0.331554
+Train Epoch: 4 [51000]  Loss: 0.130298
+Train Epoch: 4 [51500]  Loss: 0.207090
+Train Epoch: 4 [52000]  Loss: 0.220545
+Train Epoch: 4 [52500]  Loss: 0.121829
+Train Epoch: 4 [53000]  Loss: 0.272601
+Train Epoch: 4 [53500]  Loss: 0.160430
+Train Epoch: 4 [54000]  Loss: 0.313159
+Train Epoch: 4 [54500]  Loss: 0.225195
+Train Epoch: 4 [55000]  Loss: 0.216868
+Train Epoch: 4 [55500]  Loss: 0.275215
+Train Epoch: 4 [56000]  Loss: 0.230752
+Train Epoch: 4 [56500]  Loss: 0.159089
+Train Epoch: 4 [57000]  Loss: 0.404584
+Train Epoch: 4 [57500]  Loss: 0.318453
+Train Epoch: 4 [58000]  Loss: 0.224510
+Train Epoch: 4 [58500]  Loss: 0.106110
+Train Epoch: 4 [59000]  Loss: 0.036654
+Train Epoch: 4 [59500]  Loss: 0.100747
+Train Epoch: 5 [0]  Loss: 0.284882
+Train Epoch: 5 [500]    Loss: 0.390197
+Train Epoch: 5 [1000]   Loss: 0.331643
+Train Epoch: 5 [1500]   Loss: 0.351815
+Train Epoch: 5 [2000]   Loss: 0.244909
+Train Epoch: 5 [2500]   Loss: 0.162648
+Train Epoch: 5 [3000]   Loss: 0.433158
+Train Epoch: 5 [3500]   Loss: 0.524262
+Train Epoch: 5 [4000]   Loss: 0.173844
+Train Epoch: 5 [4500]   Loss: 0.191874
+Train Epoch: 5 [5000]   Loss: 0.333540
+Train Epoch: 5 [5500]   Loss: 0.373463
+Train Epoch: 5 [6000]   Loss: 0.252792
+Train Epoch: 5 [6500]   Loss: 0.144528
+Train Epoch: 5 [7000]   Loss: 0.582535
+Train Epoch: 5 [7500]   Loss: 0.435696
+Train Epoch: 5 [8000]   Loss: 0.204081
+Train Epoch: 5 [8500]   Loss: 0.265917
+Train Epoch: 5 [9000]   Loss: 0.112789
+Train Epoch: 5 [9500]   Loss: 0.301323
+Train Epoch: 5 [10000]  Loss: 0.371870
+Train Epoch: 5 [10500]  Loss: 0.161700
+Train Epoch: 5 [11000]  Loss: 0.376175
+Train Epoch: 5 [11500]  Loss: 0.223167
+Train Epoch: 5 [12000]  Loss: 0.188436
+Train Epoch: 5 [12500]  Loss: 0.447232
+Train Epoch: 5 [13000]  Loss: 0.519080
+Train Epoch: 5 [13500]  Loss: 0.290447
+Train Epoch: 5 [14000]  Loss: 0.204044
+Train Epoch: 5 [14500]  Loss: 0.357989
+Train Epoch: 5 [15000]  Loss: 0.116156
+Train Epoch: 5 [15500]  Loss: 0.335184
+Train Epoch: 5 [16000]  Loss: 0.509289
+Train Epoch: 5 [16500]  Loss: 0.115550
+Train Epoch: 5 [17000]  Loss: 0.390196
+Train Epoch: 5 [17500]  Loss: 0.417954
+Train Epoch: 5 [18000]  Loss: 0.431091
+Train Epoch: 5 [18500]  Loss: 0.259086
+Train Epoch: 5 [19000]  Loss: 0.195512
+Train Epoch: 5 [19500]  Loss: 0.338307
+Train Epoch: 5 [20000]  Loss: 0.413318
+Train Epoch: 5 [20500]  Loss: 0.163657
+Train Epoch: 5 [21000]  Loss: 0.299917
+Train Epoch: 5 [21500]  Loss: 0.114913
+Train Epoch: 5 [22000]  Loss: 0.213001
+Train Epoch: 5 [22500]  Loss: 0.385346
+Train Epoch: 5 [23000]  Loss: 0.329177
+Train Epoch: 5 [23500]  Loss: 0.115336
+Train Epoch: 5 [24000]  Loss: 0.235521
+Train Epoch: 5 [24500]  Loss: 0.274558
+Train Epoch: 5 [25000]  Loss: 0.175308
+Train Epoch: 5 [25500]  Loss: 0.246120
+Train Epoch: 5 [26000]  Loss: 0.328373
+Train Epoch: 5 [26500]  Loss: 0.371750
+Train Epoch: 5 [27000]  Loss: 0.152148
+Train Epoch: 5 [27500]  Loss: 0.418375
+Train Epoch: 5 [28000]  Loss: 0.224202
+Train Epoch: 5 [28500]  Loss: 0.318796
+Train Epoch: 5 [29000]  Loss: 0.311048
+Train Epoch: 5 [29500]  Loss: 0.172224
+Train Epoch: 5 [30000]  Loss: 0.423829
+Train Epoch: 5 [30500]  Loss: 0.317994
+Train Epoch: 5 [31000]  Loss: 0.153521
+Train Epoch: 5 [31500]  Loss: 0.124865
+Train Epoch: 5 [32000]  Loss: 0.393087
+Train Epoch: 5 [32500]  Loss: 0.224512
+Train Epoch: 5 [33000]  Loss: 0.209728
+Train Epoch: 5 [33500]  Loss: 0.255618
+Train Epoch: 5 [34000]  Loss: 0.393016
+Train Epoch: 5 [34500]  Loss: 0.412754
+Train Epoch: 5 [35000]  Loss: 0.282987
+Train Epoch: 5 [35500]  Loss: 0.250728
+Train Epoch: 5 [36000]  Loss: 0.275412
+Train Epoch: 5 [36500]  Loss: 0.197065
+Train Epoch: 5 [37000]  Loss: 0.229326
+Train Epoch: 5 [37500]  Loss: 0.368085
+Train Epoch: 5 [38000]  Loss: 0.205134
+Train Epoch: 5 [38500]  Loss: 0.415392
+Train Epoch: 5 [39000]  Loss: 0.180657
+Train Epoch: 5 [39500]  Loss: 0.289081
+Train Epoch: 5 [40000]  Loss: 0.257063
+Train Epoch: 5 [40500]  Loss: 0.251602
+Train Epoch: 5 [41000]  Loss: 0.261884
+Train Epoch: 5 [41500]  Loss: 0.236813
+Train Epoch: 5 [42000]  Loss: 0.235541
+Train Epoch: 5 [42500]  Loss: 0.457901
+Train Epoch: 5 [43000]  Loss: 0.466899
+Train Epoch: 5 [43500]  Loss: 0.336740
+Train Epoch: 5 [44000]  Loss: 0.208274
+Train Epoch: 5 [44500]  Loss: 0.285346
+Train Epoch: 5 [45000]  Loss: 0.455281
+Train Epoch: 5 [45500]  Loss: 0.257271
+Train Epoch: 5 [46000]  Loss: 0.429283
+Train Epoch: 5 [46500]  Loss: 0.123630
+Train Epoch: 5 [47000]  Loss: 0.352957
+Train Epoch: 5 [47500]  Loss: 0.292780
+Train Epoch: 5 [48000]  Loss: 0.125774
+Train Epoch: 5 [48500]  Loss: 0.182802
+Train Epoch: 5 [49000]  Loss: 0.458743
+Train Epoch: 5 [49500]  Loss: 0.889245
+Train Epoch: 5 [50000]  Loss: 0.150561
+Train Epoch: 5 [50500]  Loss: 0.261878
+Train Epoch: 5 [51000]  Loss: 0.090729
+Train Epoch: 5 [51500]  Loss: 0.241817
+Train Epoch: 5 [52000]  Loss: 0.232490
+Train Epoch: 5 [52500]  Loss: 0.164470
+Train Epoch: 5 [53000]  Loss: 0.271147
+Train Epoch: 5 [53500]  Loss: 0.233940
+Train Epoch: 5 [54000]  Loss: 0.266719
+Train Epoch: 5 [54500]  Loss: 0.243603
+Train Epoch: 5 [55000]  Loss: 0.209635
+Train Epoch: 5 [55500]  Loss: 0.339845
+Train Epoch: 5 [56000]  Loss: 0.206854
+Train Epoch: 5 [56500]  Loss: 0.090572
+Train Epoch: 5 [57000]  Loss: 0.266986
+Train Epoch: 5 [57500]  Loss: 0.284211
+Train Epoch: 5 [58000]  Loss: 0.169153
+Train Epoch: 5 [58500]  Loss: 0.062349
+Train Epoch: 5 [59000]  Loss: 0.129352
+Train Epoch: 5 [59500]  Loss: 0.048305
+Started copying local path mnist_torch_ps.pt to hdfs path hdfs://10.0.2.15:8020/Projects/demo_featurestore_admin000/mnist//mnist_torch_ps.pt
+
+Finished copying
+</code></pre>
+
+<h2 id="step-6-plot-training-results">Step 6: Plot Training Results</h2>
+
+<p>Inside the <code>train_fn</code> function we saved the training history to HDFS, which means we can later read it in %%local mode for plotting.</p>
+<div class="highlight"><pre class="chroma"><code class="language-pyspark" data-lang="pyspark">%%local
+import json
+from hops import hdfs
+import matplotlib.pyplot as plt
+from pylab import rcParams
+results_path = hdfs.project_path() + &#34;mnist/mnist_train_results_2.txt&#34;
+results = json.loads(hdfs.load(results_path))</code></pre></div>
+<h3 id="plot-loss-epoch-during-training">Plot Loss/Epoch During Training</h3>
+<div class="highlight"><pre class="chroma"><code class="language-pyspark" data-lang="pyspark">%%local
+%matplotlib inline
+y = results[&#34;loss&#34;] #loss
+x = list(range(1, len(y)+1))#epoch
+plt.title(&#34;Loss per Epoch - MNIST Training&#34;)
+plt.xlabel(&#34;Epoch&#34;)
+plt.ylabel(&#34;Loss&#34;)
+plt.plot(x,y)</code></pre></div>
+<pre><code>[&lt;matplotlib.lines.Line2D at 0x7f976b6cea90&gt;]
+</code></pre>
+
+<p><img src="PetastormMNIST_PyTorch_18_1.png" alt="png" /></p>
+
+<h3 id="plot-accuracy-epoch-during-training">Plot Accuracy/Epoch During Training</h3>
+<div class="highlight"><pre class="chroma"><code class="language-pyspark" data-lang="pyspark">%%local
+%matplotlib inline
+y = results[&#34;acc&#34;] #acc
+x = list(range(1, len(y)+1))#epoch
+plt.title(&#34;Accuracy per Epoch - MNIST Training&#34;)
+plt.xlabel(&#34;Epoch&#34;)
+plt.ylabel(&#34;Accuracy&#34;)
+plt.plot(x,y)</code></pre></div>
+<pre><code>[&lt;matplotlib.lines.Line2D at 0x7f976af9f320&gt;]
+</code></pre>
+
+<p><img src="PetastormMNIST_PyTorch_20_1.png" alt="png" /></p>
+
+<h2 id="step-7-evaluation-using-trained-model-and-test-dataset">Step 7: Evaluation Using Trained Model and Test Dataset</h2>
+
+<p>Inside the train_fn function we saved the trained model to HDFS in the ps format. We can load the weights of this model and use for serving predictions or for evaluation, in this example we will evaluate the model against the test set.</p>
+
+<h3 id="load-model-weights">Load Model Weights</h3>
+<div class="highlight"><pre class="chroma"><code class="language-pyspark" data-lang="pyspark">model_path_hdfs = hdfs.project_path() + &#34;mnist/&#34; + &#34;mnist_torch_ps.pt&#34;</code></pre></div>
+<p>Currently PyTorch HDFS support is limited. To get around this we can download the ps model in the local file system and load it from there using <code>torch.load</code>.</p>
+<div class="highlight"><pre class="chroma"><code class="language-pyspark" data-lang="pyspark">local_path = hdfs.copy_to_local(model_path_hdfs)</code></pre></div>
+<pre><code>File hdfs://10.0.2.15:8020/Projects/demo_featurestore_admin000/mnist/mnist_torch_ps.pt is already localized, skipping download...
+</code></pre>
+<div class="highlight"><pre class="chroma"><code class="language-pyspark" data-lang="pyspark">model = Net()
+model.load_state_dict(torch.load(local_path))</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-pyspark" data-lang="pyspark">def test_epoch(test_dataset_path, model, device, epoch):
+    &#34;&#34;&#34;
+    Function for testing a single epoch of MNIST test dataset using PyTorch
+    &#34;&#34;&#34;
+    with DataLoader(make_reader(test_dataset_path, num_epochs=READER_EPOCHS, hdfs_driver=&#39;libhdfs&#39;,
+                               transform_spec=TransformSpec(_transform_row)), 
+                    batch_size=BATCH_SIZE) as test_loader:
+        model.eval()
+        test_loss = 0
+        correct = 0
+        count = 0
+        with torch.no_grad():
+            for row in test_loader:
+                data, target = row[&#39;image&#39;].to(device), row[&#39;digit&#39;].to(device)
+                output = model(data)
+                test_loss += F.nll_loss(output, target, reduction=&#39;sum&#39;).item()  # sum up batch loss
+                pred = output.max(1, keepdim=True)[1]  # get the index of the max log-probability
+                correct += pred.eq(target.view_as(pred)).sum().item()
+                count += data.shape[0]
+
+        test_loss /= count
+        print(&#39;\nTest set: Average loss: {:.4f}, Accuracy: {}/{} ({:.0f}%)\n&#39;.format(
+        test_loss, correct, count, 100. * correct / count))</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-pyspark" data-lang="pyspark">def test_fn(model):
+    # Setup Torch
+    use_cuda = torch.cuda.is_available()
+    torch.manual_seed(SEED)
+    device = torch.device(&#39;cuda&#39; if use_cuda else &#39;cpu&#39;)
+    # get dataset path from the featurestore
+    test_dataset_path = featurestore.get_training_dataset_path(TEST_DATASET_NAME)
+    for epoch in range(1, NUM_EPOCHS + 1):
+        test_epoch(test_dataset_path, model, device, epoch)</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-pyspark" data-lang="pyspark">test_fn(model)</code></pre></div>
+<pre><code>Test set: Average loss: 0.0953, Accuracy: 9689/10000 (97%)
+
+
+Test set: Average loss: 0.0953, Accuracy: 9689/10000 (97%)
+
+
+Test set: Average loss: 0.0953, Accuracy: 9689/10000 (97%)
+
+
+Test set: Average loss: 0.0953, Accuracy: 9689/10000 (97%)
+
+
+Test set: Average loss: 0.0953, Accuracy: 9689/10000 (97%)
+</code></pre>
+<div class="highlight"><pre class="chroma"><code class="language-pyspark" data-lang="pyspark"></code></pre></div>
+    </div>
+    <aside>
+      <div class="bug_reporting">
+	<h4>Find an error or bug?</h4>
+	<p>Everything on this site is available on GitHub. Head to <a href='https://github.com/chrisalbon/notes/issues/new'>and submit a suggested change</a>. Include the tutorial's URL in the issue.</p>
+      </div>
+    </aside>
+
+  </div>
+</article>
+
+
+
+
+            </div>
+
+        </div>
+    </div>
+
+    
+
+    <footer class="footer text-center">
+        <div class="container">
+            <span class="text-muted">This project contains 59 pages and is available on <a href="https://github.com/napsterinblue/notes">GitHub</a>. Copyright &copy; NapsterInBlue, <time datetime="2018">2018</time>.</span>
+        </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ"
+        crossorigin="anonymous"></script>
+
+</body>
+
+</html>

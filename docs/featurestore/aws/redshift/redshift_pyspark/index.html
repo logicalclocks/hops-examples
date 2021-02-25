@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-66582-32"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-66582-32');
+    </script>
+
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+<meta property="og:title" content="Feature Ingestion from Redshift" />
+<meta property="og:description" content="Redshift Integration This notebooks guides through the ingestion of Redshift data in the Hopsworks feature store. To follow this notebook users should have an existing Redshift cluster, if not, they can follow the AWS documentation.
+The data for this tutorial is available in CSV format [here]() Users should create the following table in Redshift
+CREATE TABLE telco( customer_id varchar(200), gender varchar(200), senior_citizen integer, partner varchar(200), dependents varchar(200), tenure integer, phone_service varchar(200), multiple_lines varchar(200), internet_service varchar(200), online_security varchar(200), online_backup varchar(200), device_protection varchar(200), tech_support varchar(200), streaming_tv varchar(200), streaming_movies varchar(200), contract varchar(200), paperless_billing varchar(200), payment_method varchar(200), monthly_charges double precision, total_charges varchar(200), churn varchar(200) ) and populate the table using the copy command:" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://examples.hopsworks.ai/featurestore/aws/redshift/redshift_pyspark/" />
+
+
+
+<meta property="article:published_time" content="2021-02-24T00:00:00&#43;00:00"/>
+
+<meta property="article:modified_time" content="2021-02-24T00:00:00&#43;00:00"/>
+
+
+
+
+
+
+
+
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Feature Ingestion from Redshift"/>
+<meta name="twitter:description" content="Redshift Integration This notebooks guides through the ingestion of Redshift data in the Hopsworks feature store. To follow this notebook users should have an existing Redshift cluster, if not, they can follow the AWS documentation.
+The data for this tutorial is available in CSV format [here]() Users should create the following table in Redshift
+CREATE TABLE telco( customer_id varchar(200), gender varchar(200), senior_citizen integer, partner varchar(200), dependents varchar(200), tenure integer, phone_service varchar(200), multiple_lines varchar(200), internet_service varchar(200), online_security varchar(200), online_backup varchar(200), device_protection varchar(200), tech_support varchar(200), streaming_tv varchar(200), streaming_movies varchar(200), contract varchar(200), paperless_billing varchar(200), payment_method varchar(200), monthly_charges double precision, total_charges varchar(200), churn varchar(200) ) and populate the table using the copy command:"/>
+<meta name="generator" content="Hugo 0.40.3" />
+
+    
+<script type="application/ld+json">
+  {
+  "@context": "http://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Feature Ingestion from Redshift",
+  "url": "https://examples.hopsworks.ai/featurestore/aws/redshift/redshift_pyspark/",
+  "wordCount": "1247",
+  "datePublished": "2021-02-24T00:00:00&#43;00:00",
+  "dateModified": "2021-02-24T00:00:00&#43;00:00",
+  "author": {
+  "@type": "Person",
+  "name": ""
+  }
+  }
+</script> 
+
+    <title>Feature Ingestion from Redshift</title>
+
+    
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb"
+        crossorigin="anonymous">
+
+    
+    <link href="https://examples.hopsworks.ai/css/custom.css" rel="stylesheet">
+    <link href="https://examples.hopsworks.ai/css/syntax.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Muli:400,500,700" rel="stylesheet">
+
+    <link href="" rel="alternate" type="application/rss+xml" title="Hopsworks Examples" />
+
+    <script type="text/javascript" async
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[','\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre','code'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+</script>
+
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-sm fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="https://examples.hopsworks.ai">Hopsworks Examples</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="nav navbar-nav mr-auto"></ul>
+                <ul class="nav navbar-nav">
+                    <li><a href="https://hopsworks.ai" title="Hopsworks.ai">hopsworks.ai</a></li>
+                    <li><a href="https://docs.hopsworks.ai" title="Docs">docs.hopsworks.ai</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+
+    
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+
+                 
+
+
+<article>
+  <div class="technical_note">
+    <header>
+      <div class="alert alert-warning flashcard_ad" role="alert">
+	Want to learn machine learning? Try my <a href="https://machinelearningflashcards.com" class="alert-link">machine learning flashcards</a>, <a href='https://amzn.to/2HwnWty' class="alert-link">book</a>, or <a href='https://www.youtube.com/channel/UCnd4Fi-ODvuPbxR2fO2j7kA' class="alert-link">study with me.</a>.
+      </div>
+      <h1 class="technical_note_title">Feature Ingestion from Redshift</h1>
+      <div class="technical_note_date">
+	<time datetime=" 2021-02-24T00:00:00Z "> 24 Feb 2021</time>
+      </div>
+    </header>
+    <div class="content">
+
+      <h2 style="color: #1EB382;font-weight: bold;">Redshift Integration</h2>
+
+<p>This notebooks guides through the ingestion of Redshift data in the Hopsworks feature store. To follow this notebook users should have an existing Redshift cluster, if not, they can follow the AWS <a href="https://docs.aws.amazon.com/ses/latest/DeveloperGuide/event-publishing-redshift-cluster.html">documentation</a>.</p>
+
+<p>The data for this tutorial is available in CSV format [here]()
+Users should create the following table in Redshift</p>
+<div class="highlight"><pre class="chroma"><code class="language-sql" data-lang="sql"><span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">telco</span><span class="p">(</span>
+    <span class="n">customer_id</span> <span class="nb">varchar</span><span class="p">(</span><span class="mi">200</span><span class="p">),</span>
+    <span class="n">gender</span> <span class="nb">varchar</span><span class="p">(</span><span class="mi">200</span><span class="p">),</span>
+    <span class="n">senior_citizen</span> <span class="nb">integer</span><span class="p">,</span>
+    <span class="n">partner</span> <span class="nb">varchar</span><span class="p">(</span><span class="mi">200</span><span class="p">),</span>
+    <span class="n">dependents</span> <span class="nb">varchar</span><span class="p">(</span><span class="mi">200</span><span class="p">),</span>
+    <span class="n">tenure</span> <span class="nb">integer</span><span class="p">,</span>
+    <span class="n">phone_service</span> <span class="nb">varchar</span><span class="p">(</span><span class="mi">200</span><span class="p">),</span>
+    <span class="n">multiple_lines</span> <span class="nb">varchar</span><span class="p">(</span><span class="mi">200</span><span class="p">),</span>
+    <span class="n">internet_service</span> <span class="nb">varchar</span><span class="p">(</span><span class="mi">200</span><span class="p">),</span>
+    <span class="n">online_security</span> <span class="nb">varchar</span><span class="p">(</span><span class="mi">200</span><span class="p">),</span>
+    <span class="n">online_backup</span> <span class="nb">varchar</span><span class="p">(</span><span class="mi">200</span><span class="p">),</span>
+    <span class="n">device_protection</span> <span class="nb">varchar</span><span class="p">(</span><span class="mi">200</span><span class="p">),</span>
+    <span class="n">tech_support</span> <span class="nb">varchar</span><span class="p">(</span><span class="mi">200</span><span class="p">),</span>
+    <span class="n">streaming_tv</span> <span class="nb">varchar</span><span class="p">(</span><span class="mi">200</span><span class="p">),</span>
+    <span class="n">streaming_movies</span> <span class="nb">varchar</span><span class="p">(</span><span class="mi">200</span><span class="p">),</span>
+    <span class="n">contract</span> <span class="nb">varchar</span><span class="p">(</span><span class="mi">200</span><span class="p">),</span>
+    <span class="n">paperless_billing</span> <span class="nb">varchar</span><span class="p">(</span><span class="mi">200</span><span class="p">),</span>
+    <span class="n">payment_method</span> <span class="nb">varchar</span><span class="p">(</span><span class="mi">200</span><span class="p">),</span>
+    <span class="n">monthly_charges</span> <span class="n">double</span> <span class="k">precision</span><span class="p">,</span>
+    <span class="n">total_charges</span> <span class="nb">varchar</span><span class="p">(</span><span class="mi">200</span><span class="p">),</span>
+    <span class="n">churn</span> <span class="nb">varchar</span><span class="p">(</span><span class="mi">200</span><span class="p">)</span>
+<span class="p">)</span></code></pre></div>
+<p>and populate the table using the copy command:</p>
+<div class="highlight"><pre class="chroma"><code class="language-sql" data-lang="sql"><span class="k">COPY</span> <span class="n">telco</span>
+<span class="k">FROM</span> <span class="s1">&#39;s3://bucket/telco_customer_churn.csv&#39;</span>
+<span class="n">IAM_ROLE</span> <span class="s1">&#39;arn:aws:iam::xxxxxxxxx:role/role_name&#39;</span>
+<span class="n">FORMAT</span> <span class="k">as</span> <span class="n">CSV</span>
+<span class="n">FILLRECORD</span></code></pre></div>
+<p>Once the data has been imported into Redshift, we can start ingesting it into the Hopsworks Feature Store.</p>
+
+<h3 style="color: #1EB382;font-weight: bold;">Storage Connector</h3>
+
+<p>The first step to be able to ingest Redshift data into the feature store is to configure a storage connector.The Redshift connector requires you to specify the following properties. Most of them are available in the properties area of your cluster in the Redshift UI.</p>
+
+<p><img src="images/connector_ui.png" alt="Redshift Connector UI" style="margin: auto; height: 600px; width:550px;"/></p>
+
+<ul>
+<li><p>Cluster identifier: The name of the cluster</p></li>
+
+<li><p>Database driver: You can use the default JDBC Redshift Driver <code>com.amazon.redshift.jdbc42.Driver</code> (More on this later)</p></li>
+
+<li><p>Database endpoint: The endpoint for the database. Should be in the format of <code>[UUID].eu-west-1.redshift.amazonaws.com</code></p></li>
+
+<li><p>Database name: The name of the database to query</p></li>
+
+<li><p>Database port: The port of the cluster. Defaults to 5349</p></li>
+</ul>
+
+<p>There are two options available for authenticating with the Redshift cluster. The first option is to configure a username and a password. The password is stored in the secret store and made available to all the members of the project.
+The second option is to configure an IAM role. With IAM roles,  Jobs or notebooks launched on Hopsworks  do not need to explicitly authenticate with Redshift, as the HSFS library will transparently use the IAM role to acquire a temporary credential to authenticate the specified user.
+In Hopsworks, there are two different ways to configure an IAM role: a per-cluster IAM role or a federated IAM role (role chaining). For the per-cluster IAM role, you select an instance profile for your Hopsworks cluster when launching it in hopsworks.ai, and all jobs or notebooks will be run with the selected IAM role.  For the federated IAM role, you create a head IAM role for the cluster that enables Hopsworks to assume a potentially different IAM role in each project. You can even restrict it so that only certain roles within a project (like a data owner) can assume a given role.</p>
+
+<p>With regards to the database driver, the library to interact with Redshift <em>is not</em> included in Hopsworks - you need to upload the driver yourself. First, you need to download the library from  here. You then upload the driver files to the “Resources” dataset in your project. Then, you add the file to your notebook or job before launching it, as shown in the screenshots below.</p>
+
+<p>The library can be downloaded here: <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/configure-jdbc-connection.html#download-jdbc-driver">https://docs.aws.amazon.com/redshift/latest/mgmt/configure-jdbc-connection.html#download-jdbc-driver</a></p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="kn">import</span> <span class="nn">hsfs</span>
+<span class="c1"># Connect to the Hopsworks feature store</span>
+<span class="n">connection</span> <span class="o">=</span> <span class="n">hsfs</span><span class="o">.</span><span class="n">connection</span><span class="p">()</span>
+<span class="c1"># Retrieve the metadata handle</span>
+<span class="n">fs</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">get_feature_store</span><span class="p">()</span></code></pre></div>
+<pre><code>Connected. Call `.close()` to terminate connection gracefully.
+</code></pre>
+
+<h3 style="color: #1EB382;font-weight: bold;">External (On-Demand) Feature Group</h3>
+
+<p>Hopsworks supports the creation of (a) cached feature groups and (b) external (on-demand) feature groups. For cached feature groups, the features are stored in Hopsworks feature store. For external feature groups, only metadata for features is stored in the feature store - not the actual feature data which is read from the external database/object-store. When the external feature group is accessed from a Spark or Python job, the feature data is read on-demand using a connector from the external store. On AWS, Hopsworks supports the creation of external feature groups from a large number of data stores, including Redshift, RDS, Snowflake, S3, and any JDBC-enabled source.</p>
+
+<p>In this example, we will define an external feature group for a table in Redshift. External feature groups in Hopsworks support “provenance” in the Hopsworks Web UI, you can track which features are stored on which external systems and how they are computed. Additionally HSFS (the Python/Scala library used to interact with the feature store) provides the same APIs for external feature groups as for cached feature groups.</p>
+
+<p>An external (on-demand) feature group can be defined as follow:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="c1"># Retrieve the storage connector defined before</span>
+<span class="n">redshift_conn</span> <span class="o">=</span> <span class="n">fs</span><span class="o">.</span><span class="n">get_storage_connector</span><span class="p">(</span><span class="s2">&#34;telco_redshift_cluster&#34;</span><span class="p">)</span></code></pre></div><div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">telco_on_dmd</span> <span class="o">=</span> <span class="n">fs</span><span class="o">.</span><span class="n">create_on_demand_feature_group</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&#34;telco_redshift&#34;</span><span class="p">,</span>
+                                                <span class="n">version</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+                                                <span class="n">query</span><span class="o">=</span><span class="s2">&#34;select * from telco&#34;</span><span class="p">,</span>
+                                                <span class="n">description</span><span class="o">=</span><span class="s2">&#34;On-demand feature group for telecom customer data&#34;</span><span class="p">,</span>
+                                                <span class="n">storage_connector</span><span class="o">=</span><span class="n">redshift_conn</span><span class="p">,</span>
+                                                <span class="n">statistics_config</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span></code></pre></div><div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">telco_on_dmd</span><span class="o">.</span><span class="n">save</span><span class="p">()</span></code></pre></div>
+<h3 style="color: #1EB382;font-weight: bold;">Engineer features and save to the Feature Store</h3>
+
+<p>On-demand feature groups can be used directly as a source for creating training datasets. This is often the case if a company is migrating to Hopsworks and there are already feature engineering pipelines in production writing data to Redshift.</p>
+
+<p>This flexibility provided by Hopsworks allows users to hit the ground running from day 1, without having to rewrite their pipelines to take advantage of the benefits the Hopsworks feature store provides.</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">telco_on_dmd</span><span class="o">.</span><span class="n">select</span><span class="p">([</span><span class="s1">&#39;customer_id&#39;</span><span class="p">,</span> <span class="s1">&#39;internet_service&#39;</span><span class="p">,</span> <span class="s1">&#39;phone_service&#39;</span><span class="p">,</span> <span class="s1">&#39;total_charges&#39;</span><span class="p">,</span> <span class="s1">&#39;churn&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span></code></pre></div>
+<pre><code>+-----------+----------------+-------------+-------------+-----+
+|customer_id|internet_service|phone_service|total_charges|churn|
++-----------+----------------+-------------+-------------+-----+
+| 7590-VHVEG|             DSL|           No|        29.85|   No|
+| 5575-GNVDE|             DSL|          Yes|       1889.5|   No|
+| 3668-QPYBK|             DSL|          Yes|       108.15|  Yes|
+| 7795-CFOCW|             DSL|           No|      1840.75|   No|
+| 9237-HQITU|     Fiber optic|          Yes|       151.65|  Yes|
++-----------+----------------+-------------+-------------+-----+
+only showing top 5 rows
+</code></pre>
+
+<p>On-demand feature groups can also be joined with cached feature groups in Hopsworks to create training datasets. <a href="https://docs.hopsworks.ai/generated/query_vs_dataframe/">This helper guide</a> explains in detail how the HSFS joining APIs work and how they can be used to create training datasets.</p>
+
+<p>If, however, Redshift contains raw data that needs to be feature engineered, you can retrieve a Spark DataFrame backed by the Redshift table using the HSFS API.</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">spark_df</span> <span class="o">=</span> <span class="n">telco_on_dmd</span><span class="o">.</span><span class="n">read</span><span class="p">()</span></code></pre></div><div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="kn">from</span> <span class="nn">pyspark.sql.types</span> <span class="kn">import</span> <span class="n">DoubleType</span>
+<span class="kn">from</span> <span class="nn">pyspark.sql</span> <span class="kn">import</span> <span class="n">functions</span> <span class="k">as</span> <span class="n">F</span>
+<span class="kn">from</span> <span class="nn">pyspark.ml</span> <span class="kn">import</span> <span class="n">Pipeline</span>
+<span class="kn">from</span> <span class="nn">pyspark.ml.feature</span> <span class="kn">import</span> <span class="n">StringIndexer</span></code></pre></div><div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">categoricalColumns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;gender&#39;</span><span class="p">,</span><span class="s1">&#39;senior_citizen&#39;</span><span class="p">,</span><span class="s1">&#39;partner&#39;</span><span class="p">,</span><span class="s1">&#39;dependents&#39;</span><span class="p">,</span><span class="s1">&#39;phone_service&#39;</span><span class="p">,</span><span class="s1">&#39;multiple_lines&#39;</span><span class="p">,</span>
+                      <span class="s1">&#39;internet_service&#39;</span><span class="p">,</span> <span class="s1">&#39;online_security&#39;</span><span class="p">,</span> <span class="s1">&#39;online_backup&#39;</span><span class="p">,</span> <span class="s1">&#39;device_protection&#39;</span><span class="p">,</span> <span class="s1">&#39;tech_support&#39;</span><span class="p">,</span>
+                      <span class="s1">&#39;streaming_tv&#39;</span><span class="p">,</span> <span class="s1">&#39;streaming_movies&#39;</span><span class="p">,</span> <span class="s1">&#39;contract&#39;</span><span class="p">,</span> <span class="s1">&#39;paperless_billing&#39;</span><span class="p">,</span> <span class="s1">&#39;payment_method&#39;</span><span class="p">,</span> <span class="s1">&#39;churn&#39;</span><span class="p">]</span>
+
+<span class="n">spark_df</span> <span class="o">=</span> <span class="n">spark_df</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&#34;total_charges&#34;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&#34;total_charges&#34;</span><span class="p">)</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="n">DoubleType</span><span class="p">()))</span>\
+                   <span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="n">stages</span> <span class="o">=</span> <span class="p">[]</span> <span class="c1"># stages in our Pipeline</span>
+<span class="n">output_cols</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;customer_id&#39;</span><span class="p">,</span> <span class="s1">&#39;customer_id&#39;</span><span class="p">)]</span>
+<span class="k">for</span> <span class="n">categoricalCol</span> <span class="ow">in</span> <span class="n">categoricalColumns</span><span class="p">:</span>
+    <span class="c1"># Category Indexing with StringIndexer</span>
+    <span class="n">output_col</span> <span class="o">=</span> <span class="n">categoricalCol</span> <span class="o">+</span> <span class="s2">&#34;_Index&#34;</span>
+    <span class="n">stringIndexer</span> <span class="o">=</span> <span class="n">StringIndexer</span><span class="p">(</span><span class="n">inputCol</span><span class="o">=</span><span class="n">categoricalCol</span><span class="p">,</span> <span class="n">outputCol</span><span class="o">=</span><span class="n">output_col</span><span class="p">)</span>
+    <span class="n">stages</span> <span class="o">+=</span> <span class="p">[</span><span class="n">stringIndexer</span><span class="p">]</span>
+    <span class="n">output_cols</span> <span class="o">+=</span> <span class="p">[(</span><span class="n">categoricalCol</span><span class="p">,</span> <span class="n">output_col</span><span class="p">)]</span>
+
+<span class="n">pipeline</span> <span class="o">=</span> <span class="n">Pipeline</span><span class="p">(</span><span class="n">stages</span><span class="o">=</span><span class="n">stages</span><span class="p">)</span>
+<span class="n">dataset</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">spark_df</span><span class="p">)</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">spark_df</span><span class="p">)</span>
+<span class="n">telco_fg_df</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">selectExpr</span><span class="p">([</span><span class="s2">&#34;{} as {}&#34;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">col</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">col</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">output_cols</span><span class="p">])</span></code></pre></div><div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">telco_fg_df</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span></code></pre></div>
+<pre><code>+-----------+------+--------------+-------+----------+-------------+--------------+----------------+---------------+-------------+-----------------+------------+------------+----------------+--------+-----------------+--------------+-----+
+|customer_id|gender|senior_citizen|partner|dependents|phone_service|multiple_lines|internet_service|online_security|online_backup|device_protection|tech_support|streaming_tv|streaming_movies|contract|paperless_billing|payment_method|churn|
++-----------+------+--------------+-------+----------+-------------+--------------+----------------+---------------+-------------+-----------------+------------+------------+----------------+--------+-----------------+--------------+-----+
+| 7590-VHVEG|   1.0|           0.0|    1.0|       0.0|          1.0|           2.0|             1.0|            0.0|          1.0|              0.0|         0.0|         0.0|             0.0|     0.0|              0.0|           0.0|  0.0|
+| 5575-GNVDE|   0.0|           0.0|    0.0|       0.0|          0.0|           0.0|             1.0|            1.0|          0.0|              1.0|         0.0|         0.0|             0.0|     2.0|              1.0|           1.0|  0.0|
+| 3668-QPYBK|   0.0|           0.0|    0.0|       0.0|          0.0|           0.0|             1.0|            1.0|          1.0|              0.0|         0.0|         0.0|             0.0|     0.0|              0.0|           1.0|  1.0|
+| 7795-CFOCW|   0.0|           0.0|    0.0|       0.0|          1.0|           2.0|             1.0|            1.0|          0.0|              1.0|         1.0|         0.0|             0.0|     2.0|              1.0|           2.0|  0.0|
+| 9237-HQITU|   1.0|           0.0|    0.0|       0.0|          0.0|           0.0|             0.0|            0.0|          0.0|              0.0|         0.0|         0.0|             0.0|     0.0|              0.0|           0.0|  1.0|
++-----------+------+--------------+-------+----------+-------------+--------------+----------------+---------------+-------------+-----------------+------------+------------+----------------+--------+-----------------+--------------+-----+
+only showing top 5 rows
+</code></pre>
+
+<p>Storing feature groups as cached feature groups within Hopsworks provides several benefits over on-demand feature groups. First it allows users to leverage Hudi for incremental ingestion (with ACID properties, ensuring the integrity of the feature group) and time travel capabilities. As new data is ingested, new commits are tracked by Hopsworks allowing users to see what has changed over time. On each commit, statistics are computed and tracked in Hopsworks, allowing users to understand how the data has changed over time.</p>
+
+<p>Cached feature groups can also be stored in the online feature store (<code>online_enabled=True</code>), thus enabling low latency access to the features using the online feature store API.</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">telco_fg</span> <span class="o">=</span> <span class="n">fs</span><span class="o">.</span><span class="n">create_feature_group</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&#34;telco_customer_features&#34;</span><span class="p">,</span>
+                                <span class="n">version</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                                <span class="n">description</span><span class="o">=</span><span class="s2">&#34;Telecom customer features&#34;</span><span class="p">,</span>
+                                <span class="n">online_enabled</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+                                <span class="n">time_travel_format</span><span class="o">=</span><span class="s2">&#34;HUDI&#34;</span><span class="p">,</span>
+                                <span class="n">primary_key</span><span class="o">=</span><span class="p">[</span><span class="s2">&#34;customer_id&#34;</span><span class="p">],</span>
+                                <span class="n">statistics_config</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span></code></pre></div><div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">telco_fg</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">telco_fg_df</span><span class="p">)</span></code></pre></div>
+    </div>
+    <aside>
+      <div class="bug_reporting">
+	<h4>Find an error or bug?</h4>
+	<p>Everything on this site is available on GitHub. Head to <a href='https://github.com/chrisalbon/notes/issues/new'>and submit a suggested change</a>. Include the tutorial's URL in the issue.</p>
+      </div>
+    </aside>
+
+  </div>
+</article>
+
+
+
+
+            </div>
+
+        </div>
+    </div>
+
+    
+
+    <footer class="footer text-center">
+        <div class="container">
+            <span class="text-muted">This project contains 59 pages and is available on <a href="https://github.com/napsterinblue/notes">GitHub</a>. Copyright &copy; NapsterInBlue, <time datetime="2018">2018</time>.</span>
+        </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ"
+        crossorigin="anonymous"></script>
+
+</body>
+
+</html>

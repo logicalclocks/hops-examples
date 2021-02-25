@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-66582-32"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-66582-32');
+    </script>
+
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+<meta property="og:title" content="Delta Lake on the Feature Store" />
+<meta property="og:description" content="Delta Lake on Hops This notebook contains some examples of how you can use Delta Lake on Hops.
+Delta Lake is an open-source storage layer that brings ACID transactions to Apache Spark and big data workloads.
+Key Features:
+ ACID Transactions:Data lakes typically have multiple data pipelines reading and writing data concurrently, and data engineers have to go through a tedious process to ensure data integrity, due to the lack of transactions." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://examples.hopsworks.ai/featurestore/delta/deltaonhops/" />
+
+
+
+<meta property="article:published_time" content="2021-02-24T00:00:00&#43;00:00"/>
+
+<meta property="article:modified_time" content="2021-02-24T00:00:00&#43;00:00"/>
+
+
+
+
+
+
+
+
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Delta Lake on the Feature Store"/>
+<meta name="twitter:description" content="Delta Lake on Hops This notebook contains some examples of how you can use Delta Lake on Hops.
+Delta Lake is an open-source storage layer that brings ACID transactions to Apache Spark and big data workloads.
+Key Features:
+ ACID Transactions:Data lakes typically have multiple data pipelines reading and writing data concurrently, and data engineers have to go through a tedious process to ensure data integrity, due to the lack of transactions."/>
+<meta name="generator" content="Hugo 0.40.3" />
+
+    
+<script type="application/ld+json">
+  {
+  "@context": "http://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Delta Lake on the Feature Store",
+  "url": "https://examples.hopsworks.ai/featurestore/delta/deltaonhops/",
+  "wordCount": "1073",
+  "datePublished": "2021-02-24T00:00:00&#43;00:00",
+  "dateModified": "2021-02-24T00:00:00&#43;00:00",
+  "author": {
+  "@type": "Person",
+  "name": ""
+  }
+  }
+</script> 
+
+    <title>Delta Lake on the Feature Store</title>
+
+    
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb"
+        crossorigin="anonymous">
+
+    
+    <link href="https://examples.hopsworks.ai/css/custom.css" rel="stylesheet">
+    <link href="https://examples.hopsworks.ai/css/syntax.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Muli:400,500,700" rel="stylesheet">
+
+    <link href="" rel="alternate" type="application/rss+xml" title="Hopsworks Examples" />
+
+    <script type="text/javascript" async
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[','\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre','code'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+</script>
+
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-sm fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="https://examples.hopsworks.ai">Hopsworks Examples</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="nav navbar-nav mr-auto"></ul>
+                <ul class="nav navbar-nav">
+                    <li><a href="https://hopsworks.ai" title="Hopsworks.ai">hopsworks.ai</a></li>
+                    <li><a href="https://docs.hopsworks.ai" title="Docs">docs.hopsworks.ai</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+
+    
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+
+                 
+
+
+<article>
+  <div class="technical_note">
+    <header>
+      <div class="alert alert-warning flashcard_ad" role="alert">
+	Want to learn machine learning? Try my <a href="https://machinelearningflashcards.com" class="alert-link">machine learning flashcards</a>, <a href='https://amzn.to/2HwnWty' class="alert-link">book</a>, or <a href='https://www.youtube.com/channel/UCnd4Fi-ODvuPbxR2fO2j7kA' class="alert-link">study with me.</a>.
+      </div>
+      <h1 class="technical_note_title">Delta Lake on the Feature Store</h1>
+      <div class="technical_note_date">
+	<time datetime=" 2021-02-24T00:00:00Z "> 24 Feb 2021</time>
+      </div>
+    </header>
+    <div class="content">
+
+      
+
+<h1 id="delta-lake-on-hops">Delta Lake on Hops</h1>
+
+<p>This notebook contains some examples of how you can use Delta Lake on Hops.</p>
+
+<p>Delta Lake is an open-source storage layer that brings ACID transactions to Apache Spark and big data workloads.</p>
+
+<p>Key Features:</p>
+
+<ul>
+<li><p><strong>ACID Transactions</strong>:Data lakes typically have multiple data pipelines reading and writing data concurrently, and data engineers have to go through a tedious process to ensure data integrity, due to the lack of transactions. Delta Lake brings ACID transactions to your data lakes. It provides serializability, the strongest level of isolation level.</p></li>
+
+<li><p><strong>Scalable Metadata Handling</strong>:In big data, even the metadata itself can be “big data”. Delta Lake treats metadata just like data, leveraging Spark’s distributed processing power to handle all its metadata. As a result, Delta Lake can handle petabyte-scale tables with billions of partitions and files at ease.</p></li>
+
+<li><p><strong>Time Travel (data versioning)</strong>: Delta Lake provides snapshots of data enabling developers to access and revert to earlier versions of data for audits, rollbacks or to reproduce experiments.</p></li>
+
+<li><p><strong>Open Format</strong>: All data in Delta Lake is stored in Apache Parquet format enabling Delta Lake to leverage the efficient compression and encoding schemes that are native to Parquet.</p></li>
+
+<li><p><strong>Unified Batch and Streaming Source and Sink</strong>: A table in Delta Lake is both a batch table, as well as a streaming source and sink. Streaming data ingest, batch historic backfill, and interactive queries all just work out of the box.</p></li>
+
+<li><p><strong>Schema Enforcement</strong>: Delta Lake provides the ability to specify your schema and enforce it. This helps ensure that the data types are correct and required columns are present, preventing bad data from causing data corruption.</p></li>
+
+<li><p><strong>Schema Evolution</strong>: Big data is continuously changing. Delta Lake enables you to make changes to a table schema that can be applied automatically, without the need for cumbersome DDL.</p></li>
+
+<li><p><strong>100% Compatible with Apache Spark API</strong>: Developers can use Delta Lake with their existing data pipelines with minimal change as it is fully compatible with Spark, the commonly used big data processing engine.</p></li>
+
+<li><p><strong>Audit History</strong>: Delta Lake transaction log records details about every change made to data providing a full audit trail of the changes.</p></li>
+
+<li><p><strong>Full DML Support</strong>: Delta Lake supports standard DML including UPDATE, DELETE and MERGE INTO providing developers more controls to manage their big datasets.</p></li>
+</ul>
+<div class="highlight"><pre class="chroma"><code class="language-scala" data-lang="scala"><span class="k">import</span> <span class="nn">io.hops.util.Hops</span>
+<span class="k">import</span> <span class="nn">org.apache.spark.api.java.JavaSparkContext</span><span class="o">;</span>
+<span class="k">import</span> <span class="nn">org.apache.spark.sql.DataFrameWriter</span><span class="o">;</span>
+<span class="k">import</span> <span class="nn">org.apache.spark.sql.Dataset</span><span class="o">;</span>
+<span class="k">import</span> <span class="nn">org.apache.spark.sql.Row</span><span class="o">;</span>
+<span class="k">import</span> <span class="nn">org.apache.spark.sql.SaveMode</span><span class="o">;</span>
+<span class="k">import</span> <span class="nn">org.apache.spark.sql.SparkSession</span><span class="o">;</span>
+<span class="k">import</span> <span class="nn">java.sql.Date</span><span class="o">;</span>
+<span class="k">import</span> <span class="nn">java.sql.Timestamp</span><span class="o">;</span>
+<span class="k">import</span> <span class="nn">org.apache.spark.sql._</span>
+<span class="k">import</span> <span class="nn">spark.implicits._</span>
+<span class="k">import</span> <span class="nn">org.apache.spark.sql.types._</span></code></pre></div>
+<pre><code>import io.hops.util.Hops
+import org.apache.spark.api.java.JavaSparkContext
+import org.apache.spark.sql.DataFrameWriter
+import org.apache.spark.sql.Dataset
+import org.apache.spark.sql.Row
+import org.apache.spark.sql.SaveMode
+import org.apache.spark.sql.SparkSession
+import java.sql.Date
+import java.sql.Timestamp
+import org.apache.spark.sql._
+import spark.implicits._
+import org.apache.spark.sql.types._
+</code></pre>
+<div class="highlight"><pre class="chroma"><code class="language-scala" data-lang="scala"><span class="k">val</span> <span class="n">bulkInsertData</span> <span class="k">=</span> <span class="nc">Seq</span><span class="o">(</span>
+    <span class="nc">Row</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="nc">Date</span><span class="o">.</span><span class="n">valueOf</span><span class="o">(</span><span class="s">&#34;2019-02-30&#34;</span><span class="o">),</span> <span class="mf">0.4151f</span><span class="o">,</span> <span class="s">&#34;Sweden&#34;</span><span class="o">),</span>
+    <span class="nc">Row</span><span class="o">(</span><span class="mi">2</span><span class="o">,</span> <span class="nc">Date</span><span class="o">.</span><span class="n">valueOf</span><span class="o">(</span><span class="s">&#34;2019-05-01&#34;</span><span class="o">),</span> <span class="mf">1.2151f</span><span class="o">,</span> <span class="s">&#34;Ireland&#34;</span><span class="o">),</span>
+    <span class="nc">Row</span><span class="o">(</span><span class="mi">3</span><span class="o">,</span> <span class="nc">Date</span><span class="o">.</span><span class="n">valueOf</span><span class="o">(</span><span class="s">&#34;2019-08-06&#34;</span><span class="o">),</span> <span class="mf">0.2151f</span><span class="o">,</span> <span class="s">&#34;Belgium&#34;</span><span class="o">),</span>
+    <span class="nc">Row</span><span class="o">(</span><span class="mi">4</span><span class="o">,</span> <span class="nc">Date</span><span class="o">.</span><span class="n">valueOf</span><span class="o">(</span><span class="s">&#34;2019-08-06&#34;</span><span class="o">),</span> <span class="mf">0.8151f</span><span class="o">,</span> <span class="s">&#34;Russia&#34;</span><span class="o">)</span>
+<span class="o">)</span>
+<span class="k">val</span> <span class="n">schema</span> <span class="k">=</span> 
+ <span class="n">scala</span><span class="o">.</span><span class="n">collection</span><span class="o">.</span><span class="n">immutable</span><span class="o">.</span><span class="nc">List</span><span class="o">(</span>
+  <span class="nc">StructField</span><span class="o">(</span><span class="s">&#34;id&#34;</span><span class="o">,</span> <span class="nc">IntegerType</span><span class="o">,</span> <span class="kc">true</span><span class="o">),</span>
+  <span class="nc">StructField</span><span class="o">(</span><span class="s">&#34;date&#34;</span><span class="o">,</span> <span class="nc">DateType</span><span class="o">,</span> <span class="kc">true</span><span class="o">),</span>
+  <span class="nc">StructField</span><span class="o">(</span><span class="s">&#34;value&#34;</span><span class="o">,</span> <span class="nc">FloatType</span><span class="o">,</span> <span class="kc">true</span><span class="o">),</span>
+  <span class="nc">StructField</span><span class="o">(</span><span class="s">&#34;country&#34;</span><span class="o">,</span> <span class="nc">StringType</span><span class="o">,</span> <span class="kc">true</span><span class="o">)</span> 
+<span class="o">)</span>
+<span class="k">val</span> <span class="n">bulkInsertDf</span> <span class="k">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">createDataFrame</span><span class="o">(</span>
+  <span class="n">spark</span><span class="o">.</span><span class="n">sparkContext</span><span class="o">.</span><span class="n">parallelize</span><span class="o">(</span><span class="n">bulkInsertData</span><span class="o">),</span>
+  <span class="nc">StructType</span><span class="o">(</span><span class="n">schema</span><span class="o">)</span>
+<span class="o">)</span>
+<span class="n">bulkInsertDf</span><span class="o">.</span><span class="n">show</span><span class="o">(</span><span class="mi">5</span><span class="o">)</span></code></pre></div>
+<pre><code>bulkInsertData: Seq[org.apache.spark.sql.Row] = List([1,2019-03-02,0.4151,Sweden], [2,2019-05-01,1.2151,Ireland], [3,2019-08-06,0.2151,Belgium], [4,2019-08-06,0.8151,Russia])
+schema: List[org.apache.spark.sql.types.StructField] = List(StructField(id,IntegerType,true), StructField(date,DateType,true), StructField(value,FloatType,true), StructField(country,StringType,true))
+bulkInsertDf: org.apache.spark.sql.DataFrame = [id: int, date: date ... 2 more fields]
++---+----------+------+-------+
+| id|      date| value|country|
++---+----------+------+-------+
+|  1|2019-03-02|0.4151| Sweden|
+|  2|2019-05-01|1.2151|Ireland|
+|  3|2019-08-06|0.2151|Belgium|
+|  4|2019-08-06|0.8151| Russia|
++---+----------+------+-------+
+</code></pre>
+
+<p>To create a Delta dataset, simply set the data format to &ldquo;delta&rdquo;:</p>
+<div class="highlight"><pre class="chroma"><code class="language-scala" data-lang="scala"><span class="n">bulkInsertDf</span><span class="o">.</span><span class="n">write</span><span class="o">.</span><span class="n">format</span><span class="o">(</span><span class="s">&#34;delta&#34;</span><span class="o">).</span><span class="n">save</span><span class="o">(</span><span class="s">s&#34;hdfs:///Projects/</span><span class="si">${</span><span class="nc">Hops</span><span class="o">.</span><span class="n">getProjectName</span><span class="si">}</span><span class="s">/Resources/hello_delta&#34;</span><span class="o">)</span></code></pre></div>
+<p>A Delta dataset keep tracks of a commit log to support ACID transactions.</p>
+
+<p><img src="delta_dataset.png" alt="Delta Dataset" title="Delta Dataset" /></p>
+<div class="highlight"><pre class="chroma"><code class="language-scala" data-lang="scala"><span class="k">val</span> <span class="n">df</span> <span class="k">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">format</span><span class="o">(</span><span class="s">&#34;delta&#34;</span><span class="o">).</span><span class="n">load</span><span class="o">(</span><span class="s">s&#34;hdfs:///Projects/</span><span class="si">${</span><span class="nc">Hops</span><span class="o">.</span><span class="n">getProjectName</span><span class="si">}</span><span class="s">/Resources/hello_delta&#34;</span><span class="o">)</span>
+<span class="n">df</span><span class="o">.</span><span class="n">show</span><span class="o">()</span></code></pre></div>
+<p>Delta also provides time-travel functionality that lets you inspect the value of a dataset at a particular point in time:</p>
+<div class="highlight"><pre class="chroma"><code class="language-scala" data-lang="scala"><span class="k">val</span> <span class="n">df</span> <span class="k">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">format</span><span class="o">(</span><span class="s">&#34;delta&#34;</span><span class="o">).</span><span class="n">option</span><span class="o">(</span><span class="s">&#34;versionAsOf&#34;</span><span class="o">,</span> <span class="mi">0</span><span class="o">).</span><span class="n">load</span><span class="o">(</span><span class="s">s&#34;hdfs:///Projects/</span><span class="si">${</span><span class="nc">Hops</span><span class="o">.</span><span class="n">getProjectName</span><span class="si">}</span><span class="s">/Resources/hello_delta&#34;</span><span class="o">)</span>
+<span class="n">df</span><span class="o">.</span><span class="n">show</span><span class="o">()</span></code></pre></div>
+<pre><code>df: org.apache.spark.sql.DataFrame = [id: int, date: date ... 2 more fields]
++---+----------+------+-------+
+| id|      date| value|country|
++---+----------+------+-------+
+|  3|2019-08-06|0.2151|Belgium|
+|  4|2019-08-06|0.8151| Russia|
+|  1|2019-03-02|0.4151| Sweden|
+|  2|2019-05-01|1.2151|Ireland|
++---+----------+------+-------+
+</code></pre>
+
+<p>Delta supports usperts and overwrite:</p>
+<div class="highlight"><pre class="chroma"><code class="language-scala" data-lang="scala"><span class="k">val</span> <span class="n">overwriteData</span> <span class="k">=</span> <span class="nc">Seq</span><span class="o">(</span>
+    <span class="nc">Row</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="nc">Date</span><span class="o">.</span><span class="n">valueOf</span><span class="o">(</span><span class="s">&#34;2019-06-30&#34;</span><span class="o">),</span> <span class="mf">0.4151f</span><span class="o">,</span> <span class="s">&#34;Sweden&#34;</span><span class="o">),</span>
+    <span class="nc">Row</span><span class="o">(</span><span class="mi">2</span><span class="o">,</span> <span class="nc">Date</span><span class="o">.</span><span class="n">valueOf</span><span class="o">(</span><span class="s">&#34;2019-05-01&#34;</span><span class="o">),</span> <span class="mf">1.2151f</span><span class="o">,</span> <span class="s">&#34;Ireland&#34;</span><span class="o">),</span>
+    <span class="nc">Row</span><span class="o">(</span><span class="mi">3</span><span class="o">,</span> <span class="nc">Date</span><span class="o">.</span><span class="n">valueOf</span><span class="o">(</span><span class="s">&#34;2017-08-06&#34;</span><span class="o">),</span> <span class="mf">0.2151f</span><span class="o">,</span> <span class="s">&#34;Belgium&#34;</span><span class="o">),</span>
+    <span class="nc">Row</span><span class="o">(</span><span class="mi">4</span><span class="o">,</span> <span class="nc">Date</span><span class="o">.</span><span class="n">valueOf</span><span class="o">(</span><span class="s">&#34;2019-08-06&#34;</span><span class="o">),</span> <span class="mf">0.8151f</span><span class="o">,</span> <span class="s">&#34;Russia&#34;</span><span class="o">)</span>
+<span class="o">)</span>
+<span class="k">val</span> <span class="n">overwriteDataDf</span> <span class="k">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">createDataFrame</span><span class="o">(</span>
+  <span class="n">spark</span><span class="o">.</span><span class="n">sparkContext</span><span class="o">.</span><span class="n">parallelize</span><span class="o">(</span><span class="n">overwriteData</span><span class="o">),</span>
+  <span class="nc">StructType</span><span class="o">(</span><span class="n">schema</span><span class="o">)</span>
+<span class="o">)</span>
+<span class="n">overwriteDataDf</span><span class="o">.</span><span class="n">show</span><span class="o">(</span><span class="mi">5</span><span class="o">)</span></code></pre></div>
+<pre><code>overwriteData: Seq[org.apache.spark.sql.Row] = List([1,2019-06-30,0.4151,Sweden], [2,2019-05-01,1.2151,Ireland], [3,2017-08-06,0.2151,Belgium], [4,2019-08-06,0.8151,Russia])
+overwriteDataDf: org.apache.spark.sql.DataFrame = [id: int, date: date ... 2 more fields]
++---+----------+------+-------+
+| id|      date| value|country|
++---+----------+------+-------+
+|  1|2019-06-30|0.4151| Sweden|
+|  2|2019-05-01|1.2151|Ireland|
+|  3|2017-08-06|0.2151|Belgium|
+|  4|2019-08-06|0.8151| Russia|
++---+----------+------+-------+
+</code></pre>
+<div class="highlight"><pre class="chroma"><code class="language-scala" data-lang="scala"><span class="n">overwriteDataDf</span><span class="o">.</span><span class="n">write</span><span class="o">.</span><span class="n">format</span><span class="o">(</span><span class="s">&#34;delta&#34;</span><span class="o">).</span><span class="n">mode</span><span class="o">(</span><span class="s">&#34;overwrite&#34;</span><span class="o">).</span><span class="n">save</span><span class="o">(</span><span class="s">s&#34;hdfs:///Projects/</span><span class="si">${</span><span class="nc">Hops</span><span class="o">.</span><span class="n">getProjectName</span><span class="si">}</span><span class="s">/Resources/hello_delta&#34;</span><span class="o">)</span></code></pre></div><div class="highlight"><pre class="chroma"><code class="language-scala" data-lang="scala"><span class="k">val</span> <span class="n">df</span> <span class="k">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">format</span><span class="o">(</span><span class="s">&#34;delta&#34;</span><span class="o">).</span><span class="n">load</span><span class="o">(</span><span class="s">s&#34;hdfs:///Projects/</span><span class="si">${</span><span class="nc">Hops</span><span class="o">.</span><span class="n">getProjectName</span><span class="si">}</span><span class="s">/Resources/hello_delta&#34;</span><span class="o">)</span>
+<span class="n">df</span><span class="o">.</span><span class="n">show</span><span class="o">()</span></code></pre></div>
+<pre><code>df: org.apache.spark.sql.DataFrame = [id: int, date: date ... 2 more fields]
++---+----------+------+-------+
+| id|      date| value|country|
++---+----------+------+-------+
+|  1|2019-06-30|0.4151| Sweden|
+|  2|2019-05-01|1.2151|Ireland|
+|  3|2017-08-06|0.2151|Belgium|
+|  4|2019-08-06|0.8151| Russia|
++---+----------+------+-------+
+</code></pre>
+<div class="highlight"><pre class="chroma"><code class="language-scala" data-lang="scala"><span class="k">val</span> <span class="n">df</span> <span class="k">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">format</span><span class="o">(</span><span class="s">&#34;delta&#34;</span><span class="o">).</span><span class="n">option</span><span class="o">(</span><span class="s">&#34;versionAsOf&#34;</span><span class="o">,</span> <span class="mi">0</span><span class="o">).</span><span class="n">load</span><span class="o">(</span><span class="s">s&#34;hdfs:///Projects/</span><span class="si">${</span><span class="nc">Hops</span><span class="o">.</span><span class="n">getProjectName</span><span class="si">}</span><span class="s">/Resources/hello_delta&#34;</span><span class="o">)</span>
+<span class="n">df</span><span class="o">.</span><span class="n">show</span><span class="o">()</span></code></pre></div>
+<pre><code>df: org.apache.spark.sql.DataFrame = [id: int, date: date ... 2 more fields]
++---+----------+------+-------+
+| id|      date| value|country|
++---+----------+------+-------+
+|  3|2019-08-06|0.2151|Belgium|
+|  4|2019-08-06|0.8151| Russia|
+|  1|2019-03-02|0.4151| Sweden|
+|  2|2019-05-01|1.2151|Ireland|
++---+----------+------+-------+
+</code></pre>
+<div class="highlight"><pre class="chroma"><code class="language-scala" data-lang="scala"><span class="k">val</span> <span class="n">df</span> <span class="k">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">format</span><span class="o">(</span><span class="s">&#34;delta&#34;</span><span class="o">).</span><span class="n">option</span><span class="o">(</span><span class="s">&#34;versionAsOf&#34;</span><span class="o">,</span> <span class="mi">1</span><span class="o">).</span><span class="n">load</span><span class="o">(</span><span class="s">s&#34;hdfs:///Projects/</span><span class="si">${</span><span class="nc">Hops</span><span class="o">.</span><span class="n">getProjectName</span><span class="si">}</span><span class="s">/Resources/hello_delta&#34;</span><span class="o">)</span>
+<span class="n">df</span><span class="o">.</span><span class="n">show</span><span class="o">()</span></code></pre></div>
+<pre><code>df: org.apache.spark.sql.DataFrame = [id: int, date: date ... 2 more fields]
++---+----------+------+-------+
+| id|      date| value|country|
++---+----------+------+-------+
+|  1|2019-06-30|0.4151| Sweden|
+|  2|2019-05-01|1.2151|Ireland|
+|  3|2017-08-06|0.2151|Belgium|
+|  4|2019-08-06|0.8151| Russia|
++---+----------+------+-------+
+</code></pre>
+
+<p>To upsert data in a delta dataset, use the <strong>merge</strong> primitive:</p>
+<div class="highlight"><pre class="chroma"><code class="language-scala" data-lang="scala"><span class="k">val</span> <span class="n">upsertData</span> <span class="k">=</span> <span class="nc">Seq</span><span class="o">(</span>
+    <span class="nc">Row</span><span class="o">(</span><span class="mi">5</span><span class="o">,</span> <span class="nc">Date</span><span class="o">.</span><span class="n">valueOf</span><span class="o">(</span><span class="s">&#34;2019-02-30&#34;</span><span class="o">),</span> <span class="mf">0.7921f</span><span class="o">,</span> <span class="s">&#34;Northern Ireland&#34;</span><span class="o">),</span> <span class="c1">//Insert
+</span><span class="c1"></span>    <span class="nc">Row</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="nc">Date</span><span class="o">.</span><span class="n">valueOf</span><span class="o">(</span><span class="s">&#34;2019-05-01&#34;</span><span class="o">),</span> <span class="mf">1.151f</span><span class="o">,</span> <span class="s">&#34;Norway&#34;</span><span class="o">),</span> <span class="c1">//Update
+</span><span class="c1"></span>    <span class="nc">Row</span><span class="o">(</span><span class="mi">3</span><span class="o">,</span> <span class="nc">Date</span><span class="o">.</span><span class="n">valueOf</span><span class="o">(</span><span class="s">&#34;2019-08-06&#34;</span><span class="o">),</span> <span class="mf">0.999f</span><span class="o">,</span> <span class="s">&#34;Belgium&#34;</span><span class="o">),</span> <span class="c1">//Update
+</span><span class="c1"></span>    <span class="nc">Row</span><span class="o">(</span><span class="mi">6</span><span class="o">,</span> <span class="nc">Date</span><span class="o">.</span><span class="n">valueOf</span><span class="o">(</span><span class="s">&#34;2019-08-06&#34;</span><span class="o">),</span> <span class="mf">0.0151f</span><span class="o">,</span> <span class="s">&#34;France&#34;</span><span class="o">)</span> <span class="c1">//Insert
+</span><span class="c1"></span><span class="o">)</span>
+<span class="k">val</span> <span class="n">upsertDf</span> <span class="k">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">createDataFrame</span><span class="o">(</span>
+  <span class="n">spark</span><span class="o">.</span><span class="n">sparkContext</span><span class="o">.</span><span class="n">parallelize</span><span class="o">(</span><span class="n">upsertData</span><span class="o">),</span>
+  <span class="nc">StructType</span><span class="o">(</span><span class="n">schema</span><span class="o">)</span>
+<span class="o">)</span>
+<span class="n">upsertDf</span><span class="o">.</span><span class="n">show</span><span class="o">(</span><span class="mi">5</span><span class="o">)</span></code></pre></div>
+<pre><code>upsertData: Seq[org.apache.spark.sql.Row] = List([5,2019-03-02,0.7921,Northern Ireland], [1,2019-05-01,1.151,Norway], [3,2019-08-06,0.999,Belgium], [6,2019-08-06,0.0151,France])
+upsertDf: org.apache.spark.sql.DataFrame = [id: int, date: date ... 2 more fields]
++---+----------+------+----------------+
+| id|      date| value|         country|
++---+----------+------+----------------+
+|  5|2019-03-02|0.7921|Northern Ireland|
+|  1|2019-05-01| 1.151|          Norway|
+|  3|2019-08-06| 0.999|         Belgium|
+|  6|2019-08-06|0.0151|          France|
++---+----------+------+----------------+
+</code></pre>
+<div class="highlight"><pre class="chroma"><code class="language-scala" data-lang="scala"><span class="k">import</span> <span class="nn">io.delta.tables._</span>
+<span class="k">import</span> <span class="nn">org.apache.spark.sql.functions._</span></code></pre></div>
+<pre><code>import io.delta.tables._
+import org.apache.spark.sql.functions._
+</code></pre>
+<div class="highlight"><pre class="chroma"><code class="language-scala" data-lang="scala"><span class="k">val</span> <span class="n">deltaTable</span> <span class="k">=</span> <span class="nc">DeltaTable</span><span class="o">.</span><span class="n">forPath</span><span class="o">(</span><span class="s">s&#34;hdfs:///Projects/</span><span class="si">${</span><span class="nc">Hops</span><span class="o">.</span><span class="n">getProjectName</span><span class="si">}</span><span class="s">/Resources/hello_delta&#34;</span><span class="o">)</span></code></pre></div>
+<pre><code>deltaTable: io.delta.tables.DeltaTable = io.delta.tables.DeltaTable@10f145bb
+</code></pre>
+<div class="highlight"><pre class="chroma"><code class="language-scala" data-lang="scala"><span class="k">val</span> <span class="n">newData</span> <span class="k">=</span> <span class="n">upsertDf</span><span class="o">.</span><span class="n">as</span><span class="o">(</span><span class="s">&#34;newData&#34;</span><span class="o">)</span></code></pre></div>
+<pre><code>newData: org.apache.spark.sql.Dataset[org.apache.spark.sql.Row] = [id: int, date: date ... 2 more fields]
+</code></pre>
+<div class="highlight"><pre class="chroma"><code class="language-scala" data-lang="scala"><span class="o">(</span><span class="n">deltaTable</span><span class="o">.</span><span class="n">as</span><span class="o">(</span><span class="s">&#34;oldData&#34;</span><span class="o">)</span>
+  <span class="o">.</span><span class="n">merge</span><span class="o">(</span>
+    <span class="n">newData</span><span class="o">,</span>
+    <span class="s">&#34;oldData.id = newData.id&#34;</span><span class="o">)</span>
+  <span class="o">.</span><span class="n">whenMatched</span>
+  <span class="o">.</span><span class="n">update</span><span class="o">(</span><span class="nc">Map</span><span class="o">(</span><span class="s">&#34;id&#34;</span> <span class="o">-&gt;</span> <span class="n">col</span><span class="o">(</span><span class="s">&#34;newData.id&#34;</span><span class="o">),</span> <span class="s">&#34;date&#34;</span> <span class="o">-&gt;</span> <span class="n">col</span><span class="o">(</span><span class="s">&#34;newData.date&#34;</span><span class="o">),</span> 
+              <span class="s">&#34;value&#34;</span> <span class="o">-&gt;</span> <span class="n">col</span><span class="o">(</span><span class="s">&#34;newData.value&#34;</span><span class="o">),</span> <span class="s">&#34;country&#34;</span> <span class="o">-&gt;</span> <span class="n">col</span><span class="o">(</span><span class="s">&#34;newData.country&#34;</span><span class="o">)))</span>
+  <span class="o">.</span><span class="n">whenNotMatched</span>
+  <span class="o">.</span><span class="n">insert</span><span class="o">(</span><span class="nc">Map</span><span class="o">(</span><span class="s">&#34;id&#34;</span> <span class="o">-&gt;</span> <span class="n">col</span><span class="o">(</span><span class="s">&#34;newData.id&#34;</span><span class="o">),</span> <span class="s">&#34;date&#34;</span> <span class="o">-&gt;</span> <span class="n">col</span><span class="o">(</span><span class="s">&#34;newData.date&#34;</span><span class="o">),</span> 
+              <span class="s">&#34;value&#34;</span> <span class="o">-&gt;</span> <span class="n">col</span><span class="o">(</span><span class="s">&#34;newData.value&#34;</span><span class="o">),</span> <span class="s">&#34;country&#34;</span> <span class="o">-&gt;</span> <span class="n">col</span><span class="o">(</span><span class="s">&#34;newData.country&#34;</span><span class="o">)))</span>
+  <span class="o">.</span><span class="n">execute</span><span class="o">())</span></code></pre></div><div class="highlight"><pre class="chroma"><code class="language-scala" data-lang="scala"><span class="k">val</span> <span class="n">df</span> <span class="k">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">format</span><span class="o">(</span><span class="s">&#34;delta&#34;</span><span class="o">).</span><span class="n">load</span><span class="o">(</span><span class="s">s&#34;hdfs:///Projects/</span><span class="si">${</span><span class="nc">Hops</span><span class="o">.</span><span class="n">getProjectName</span><span class="si">}</span><span class="s">/Resources/hello_delta&#34;</span><span class="o">)</span>
+<span class="n">df</span><span class="o">.</span><span class="n">show</span><span class="o">()</span></code></pre></div>
+<pre><code>df: org.apache.spark.sql.DataFrame = [id: int, date: date ... 2 more fields]
++---+----------+------+----------------+
+| id|      date| value|         country|
++---+----------+------+----------------+
+|  5|2019-03-02|0.7921|Northern Ireland|
+|  2|2019-05-01|1.2151|         Ireland|
+|  3|2019-08-06| 0.999|         Belgium|
+|  6|2019-08-06|0.0151|          France|
+|  4|2019-08-06|0.8151|          Russia|
+|  1|2019-05-01| 1.151|          Norway|
++---+----------+------+----------------+
+</code></pre>
+<div class="highlight"><pre class="chroma"><code class="language-scala" data-lang="scala"><span class="k">val</span> <span class="n">df</span> <span class="k">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">format</span><span class="o">(</span><span class="s">&#34;delta&#34;</span><span class="o">).</span><span class="n">option</span><span class="o">(</span><span class="s">&#34;versionAsOf&#34;</span><span class="o">,</span> <span class="mi">0</span><span class="o">).</span><span class="n">load</span><span class="o">(</span><span class="s">s&#34;hdfs:///Projects/</span><span class="si">${</span><span class="nc">Hops</span><span class="o">.</span><span class="n">getProjectName</span><span class="si">}</span><span class="s">/Resources/hello_delta&#34;</span><span class="o">)</span>
+<span class="n">df</span><span class="o">.</span><span class="n">show</span><span class="o">()</span></code></pre></div>
+<pre><code>df: org.apache.spark.sql.DataFrame = [id: int, date: date ... 2 more fields]
++---+----------+------+-------+
+| id|      date| value|country|
++---+----------+------+-------+
+|  3|2019-08-06|0.2151|Belgium|
+|  4|2019-08-06|0.8151| Russia|
+|  1|2019-03-02|0.4151| Sweden|
+|  2|2019-05-01|1.2151|Ireland|
++---+----------+------+-------+
+</code></pre>
+<div class="highlight"><pre class="chroma"><code class="language-scala" data-lang="scala"><span class="k">val</span> <span class="n">df</span> <span class="k">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">format</span><span class="o">(</span><span class="s">&#34;delta&#34;</span><span class="o">).</span><span class="n">option</span><span class="o">(</span><span class="s">&#34;versionAsOf&#34;</span><span class="o">,</span> <span class="mi">1</span><span class="o">).</span><span class="n">load</span><span class="o">(</span><span class="s">s&#34;hdfs:///Projects/</span><span class="si">${</span><span class="nc">Hops</span><span class="o">.</span><span class="n">getProjectName</span><span class="si">}</span><span class="s">/Resources/hello_delta&#34;</span><span class="o">)</span>
+<span class="n">df</span><span class="o">.</span><span class="n">show</span><span class="o">()</span></code></pre></div>
+<pre><code>df: org.apache.spark.sql.DataFrame = [id: int, date: date ... 2 more fields]
++---+----------+------+-------+
+| id|      date| value|country|
++---+----------+------+-------+
+|  1|2019-06-30|0.4151| Sweden|
+|  2|2019-05-01|1.2151|Ireland|
+|  3|2017-08-06|0.2151|Belgium|
+|  4|2019-08-06|0.8151| Russia|
++---+----------+------+-------+
+</code></pre>
+<div class="highlight"><pre class="chroma"><code class="language-scala" data-lang="scala"><span class="k">val</span> <span class="n">df</span> <span class="k">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">format</span><span class="o">(</span><span class="s">&#34;delta&#34;</span><span class="o">).</span><span class="n">option</span><span class="o">(</span><span class="s">&#34;versionAsOf&#34;</span><span class="o">,</span> <span class="mi">2</span><span class="o">).</span><span class="n">load</span><span class="o">(</span><span class="s">s&#34;hdfs:///Projects/</span><span class="si">${</span><span class="nc">Hops</span><span class="o">.</span><span class="n">getProjectName</span><span class="si">}</span><span class="s">/Resources/hello_delta&#34;</span><span class="o">)</span>
+<span class="n">df</span><span class="o">.</span><span class="n">show</span><span class="o">()</span></code></pre></div>
+<pre><code>df: org.apache.spark.sql.DataFrame = [id: int, date: date ... 2 more fields]
++---+----------+------+----------------+
+| id|      date| value|         country|
++---+----------+------+----------------+
+|  5|2019-03-02|0.7921|Northern Ireland|
+|  2|2019-05-01|1.2151|         Ireland|
+|  3|2019-08-06| 0.999|         Belgium|
+|  6|2019-08-06|0.0151|          France|
+|  4|2019-08-06|0.8151|          Russia|
+|  1|2019-05-01| 1.151|          Norway|
++---+----------+------+----------------+
+</code></pre>
+<div class="highlight"><pre class="chroma"><code class="language-scala" data-lang="scala"></code></pre></div>
+    </div>
+    <aside>
+      <div class="bug_reporting">
+	<h4>Find an error or bug?</h4>
+	<p>Everything on this site is available on GitHub. Head to <a href='https://github.com/chrisalbon/notes/issues/new'>and submit a suggested change</a>. Include the tutorial's URL in the issue.</p>
+      </div>
+    </aside>
+
+  </div>
+</article>
+
+
+
+
+            </div>
+
+        </div>
+    </div>
+
+    
+
+    <footer class="footer text-center">
+        <div class="container">
+            <span class="text-muted">This project contains 59 pages and is available on <a href="https://github.com/napsterinblue/notes">GitHub</a>. Copyright &copy; NapsterInBlue, <time datetime="2018">2018</time>.</span>
+        </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ"
+        crossorigin="anonymous"></script>
+
+</body>
+
+</html>

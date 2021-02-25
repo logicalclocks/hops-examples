@@ -1,0 +1,78 @@
+{{ define "title" }}{{ .Title | markdownify }}{{ end }}
+
+{{ define "schema-dot-org" }}
+<script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "BlogPosting",
+  {{- /* Google recommends the headline be no more than 110 characters */}}
+  "headline": "{{ substr .Title 0 110 }}",
+  {{- with .Params.images -}}{{ range first 1 . }}
+  "image": {
+    "@type": "ImageObject",
+    "url": "{{ . | absURL }}"
+    {{- /* Don't try to get imageConfig if image param is not local */ -}}
+    {{- if not (or (hasPrefix . "http://") (hasPrefix . "https://")) -}}
+    {{- with (imageConfig (printf "/static/%s" .)) -}}
+    ,
+    "height": "{{ .Height }}",
+    "width": "{{ .Width }}"
+    {{- end -}}
+    {{ end }}
+  },
+  {{- end -}}{{ end }}
+  "url": "{{ printf "%s" .Permalink }}",
+  "wordCount": "{{ .WordCount }}",
+  {{- $ISO8601 := "2006-01-02T15:04:05-07:00" }}
+  {{- if not .PublishDate.IsZero }}
+  "datePublished": "{{ .PublishDate.Format $ISO8601 }}",
+  {{- else }}
+  "datePublished": "{{ .Date.Format $ISO8601 }}",
+  {{- end }}
+  {{- if not .Lastmod.IsZero }}
+  "dateModified": "{{ .Lastmod.Format $ISO8601 }}",
+  {{- end }}
+  {{- with .Site.Social.GooglePlus }}
+  "publisher": "{{ printf "%s" . }}",
+  {{- end }}
+  "author": {
+    "@type": "Person",
+    "name": "{{ .Params.author | default .Site.Params.author }}"
+  }
+  {{- if or (.Params.categories) (.Params.tags) -}}
+  ,
+  "keywords": "{{ delimit (union .Params.categories .Params.tags) ", " }}"
+  {{- end }}
+
+  {{- with .Params.description -}}
+  ,
+  "description": "{{ . }}"
+  {{- end }}
+}
+</script>
+
+{{ end }}
+
+{{ define "main" }}
+{{ $dateFormat := default " 2 January 2006" (index .Site.Params "date_format") }}
+
+<article>
+  <div class="article">
+    <header>
+      <h1 class="article-title">{{ .Title }}</h1>
+      <div class="article_date">
+        <time datetime="{{ .Date.Format " 2006-01-02T15:04:05Z07:00 " }}">{{ .Date.Format $dateFormat }}</time>
+      </div>
+    </header>
+    <div class="content">
+    {{ .Content }}
+  </div>
+    <aside>
+        <div class="biography">
+            <p>Chris is a quantitative political science and data scientist with a decade of experience applying machine learning and statistical techniques to humanitarian, political, and social causes. He is the Chief Data Scientist at the Kenyan startup, <a href="https://www.brck.com/">BRCK</a>.</p>
+        </div>
+        </aside>
+      </div>
+  </article>
+
+{{ end }}

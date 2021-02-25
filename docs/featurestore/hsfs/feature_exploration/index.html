@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-66582-32"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-66582-32');
+    </script>
+
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+<meta property="og:title" content="Hsfs - Feature Exploration" />
+<meta property="og:description" content="HSFS feature exploration In this notebook we are going to walk through how to use the HSFS library to explore feature groups and features in the Hopsworks Feature Store.
+A key component of the Hopsworks feature store is to enable sharing and re-using of features across models and use cases. As such, the HSFS libraries allows user to join features from different feature groups and use them to create training datasets." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://examples.hopsworks.ai/featurestore/hsfs/feature_exploration/" />
+
+
+
+<meta property="article:published_time" content="2021-02-24T00:00:00&#43;00:00"/>
+
+<meta property="article:modified_time" content="2021-02-24T00:00:00&#43;00:00"/>
+
+
+
+
+
+
+
+
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Hsfs - Feature Exploration"/>
+<meta name="twitter:description" content="HSFS feature exploration In this notebook we are going to walk through how to use the HSFS library to explore feature groups and features in the Hopsworks Feature Store.
+A key component of the Hopsworks feature store is to enable sharing and re-using of features across models and use cases. As such, the HSFS libraries allows user to join features from different feature groups and use them to create training datasets."/>
+<meta name="generator" content="Hugo 0.40.3" />
+
+    
+<script type="application/ld+json">
+  {
+  "@context": "http://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Hsfs - Feature Exploration",
+  "url": "https://examples.hopsworks.ai/featurestore/hsfs/feature_exploration/",
+  "wordCount": "1854",
+  "datePublished": "2021-02-24T00:00:00&#43;00:00",
+  "dateModified": "2021-02-24T00:00:00&#43;00:00",
+  "author": {
+  "@type": "Person",
+  "name": ""
+  }
+  }
+</script> 
+
+    <title>Hsfs - Feature Exploration</title>
+
+    
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb"
+        crossorigin="anonymous">
+
+    
+    <link href="https://examples.hopsworks.ai/css/custom.css" rel="stylesheet">
+    <link href="https://examples.hopsworks.ai/css/syntax.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Muli:400,500,700" rel="stylesheet">
+
+    <link href="" rel="alternate" type="application/rss+xml" title="Hopsworks Examples" />
+
+    <script type="text/javascript" async
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[','\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre','code'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+</script>
+
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-sm fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="https://examples.hopsworks.ai">Hopsworks Examples</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="nav navbar-nav mr-auto"></ul>
+                <ul class="nav navbar-nav">
+                    <li><a href="https://hopsworks.ai" title="Hopsworks.ai">hopsworks.ai</a></li>
+                    <li><a href="https://docs.hopsworks.ai" title="Docs">docs.hopsworks.ai</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+
+    
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+
+                 
+
+
+<article>
+  <div class="technical_note">
+    <header>
+      <div class="alert alert-warning flashcard_ad" role="alert">
+	Want to learn machine learning? Try my <a href="https://machinelearningflashcards.com" class="alert-link">machine learning flashcards</a>, <a href='https://amzn.to/2HwnWty' class="alert-link">book</a>, or <a href='https://www.youtube.com/channel/UCnd4Fi-ODvuPbxR2fO2j7kA' class="alert-link">study with me.</a>.
+      </div>
+      <h1 class="technical_note_title">Hsfs - Feature Exploration</h1>
+      <div class="technical_note_date">
+	<time datetime=" 2021-02-24T00:00:00Z "> 24 Feb 2021</time>
+      </div>
+    </header>
+    <div class="content">
+
+      
+
+<h2 id="hsfs-feature-exploration">HSFS feature exploration</h2>
+
+<p>In this notebook we are going to walk through how to use the HSFS library to explore feature groups and features in the Hopsworks Feature Store.</p>
+
+<p>A key component of the Hopsworks feature store is to enable sharing and re-using of features across models and use cases. As such, the HSFS libraries allows user to join features from different feature groups and use them to create training datasets.
+Features can be taken also from different feature stores (projects) as long as the user running the notebook has the read access to those.</p>
+
+<p><img src="join.svg" alt="Join" title="Join" /></p>
+
+<p>As for the <a href="./feature_engineering.ipynb">feature_engineering</a> notebook, the first step is to establish a connection with the feature store and retrieve the project feature store handle.</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="kn">import</span> <span class="nn">hsfs</span>
+<span class="c1"># Create a connection</span>
+<span class="n">connection</span> <span class="o">=</span> <span class="n">hsfs</span><span class="o">.</span><span class="n">connection</span><span class="p">()</span>
+<span class="c1"># Get the feature store handle for the project&#39;s feature store</span>
+<span class="n">fs</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">get_feature_store</span><span class="p">()</span></code></pre></div>
+<pre><code>Starting Spark application
+</code></pre>
+
+<table>
+<tr><th>ID</th><th>YARN Application ID</th><th>Kind</th><th>State</th><th>Spark UI</th><th>Driver log</th></tr><tr><td>28</td><td>application_1607613578055_0015</td><td>pyspark</td><td>idle</td><td><a target="_blank" href="http://hopsworks0.logicalclocks.com:8088/proxy/application_1607613578055_0015/">Link</a></td><td><a target="_blank" href="http://hopsworks0.logicalclocks.com:8042/node/containerlogs/container_e03_1607613578055_0015_01_000001/demo_fs_meb10000__meb10000">Link</a></td></tr></table>
+
+<pre><code>SparkSession available as 'spark'.
+Connected. Call `.close()` to terminate connection gracefully.
+</code></pre>
+
+<h3 id="explore-feature-groups">Explore feature groups</h3>
+
+<p>You can interact with the feature groups as if they were Spark dataframe. A feature group object has a <code>show()</code> method, to show <code>n</code> number of lines, and a <code>read()</code> method to read the content of the feature group in a Spark dataframe.</p>
+
+<p>The first step to do any operation on a feature group is to get its handle from the feature store. The <code>get_feature_group</code> method accepts the name of the feature group and an optional parameter with the version you want to select. If you do not provide a version, the APIs will default to version 1</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">sales_fg</span> <span class="o">=</span> <span class="n">fs</span><span class="o">.</span><span class="n">get_feature_group</span><span class="p">(</span><span class="s2">&#34;sales_fg&#34;</span><span class="p">)</span></code></pre></div>
+<pre><code>VersionWarning: No version provided for getting feature group `sales_fg`, defaulting to `1`.
+</code></pre>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">sales_fg</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span></code></pre></div>
+<pre><code>+-----+------------------------------+----+----------+-------------------------+--------------------------+------------+----------------------------+----------------------+------------------------+---------------------+----------+--------------------------+
+|store|sales_last_six_month_store_dep|dept|is_holiday|sales_last_year_store_dep|sales_last_six_month_store|weekly_sales|sales_last_quarter_store_dep|sales_last_month_store|sales_last_quarter_store|sales_last_year_store|      date|sales_last_month_store_dep|
++-----+------------------------------+----+----------+-------------------------+--------------------------+------------+----------------------------+----------------------+------------------------+---------------------+----------+--------------------------+
+|   20|                           0.0|  55|     false|                      0.0|                       0.0|    32362.95|                         0.0|                   0.0|                     0.0|                  0.0|2010-02-05|                       0.0|
+|   20|                           0.0|  94|     false|                      0.0|                       0.0|    63787.83|                         0.0|                   0.0|                     0.0|                  0.0|2010-02-05|                       0.0|
+|   20|                           0.0|   2|     false|                      0.0|                       0.0|    85812.69|                         0.0|                   0.0|                     0.0|                  0.0|2010-02-05|                       0.0|
+|   20|                           0.0|  92|     false|                      0.0|                       0.0|   195223.84|                         0.0|                   0.0|                     0.0|                  0.0|2010-02-05|                       0.0|
+|   20|                           0.0|  12|     false|                      0.0|                       0.0|     6527.56|                         0.0|                   0.0|                     0.0|                  0.0|2010-02-05|                       0.0|
++-----+------------------------------+----+----------+-------------------------+--------------------------+------------+----------------------------+----------------------+------------------------+---------------------+----------+--------------------------+
+only showing top 5 rows
+</code></pre>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">sales_df</span> <span class="o">=</span> <span class="n">sales_fg</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+<span class="n">sales_df</span><span class="o">.</span><span class="nb">filter</span><span class="p">(</span><span class="s2">&#34;store == 20&#34;</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">sales_df</span><span class="p">))</span></code></pre></div>
+<pre><code>+-----+------------------------------+----+----------+-------------------------+--------------------------+------------+----------------------------+----------------------+------------------------+---------------------+----------+--------------------------+
+|store|sales_last_six_month_store_dep|dept|is_holiday|sales_last_year_store_dep|sales_last_six_month_store|weekly_sales|sales_last_quarter_store_dep|sales_last_month_store|sales_last_quarter_store|sales_last_year_store|      date|sales_last_month_store_dep|
++-----+------------------------------+----+----------+-------------------------+--------------------------+------------+----------------------------+----------------------+------------------------+---------------------+----------+--------------------------+
+|   20|                           0.0|  55|     false|                      0.0|                       0.0|    32362.95|                         0.0|                   0.0|                     0.0|                  0.0|2010-02-05|                       0.0|
+|   20|                           0.0|  94|     false|                      0.0|                       0.0|    63787.83|                         0.0|                   0.0|                     0.0|                  0.0|2010-02-05|                       0.0|
+|   20|                           0.0|   2|     false|                      0.0|                       0.0|    85812.69|                         0.0|                   0.0|                     0.0|                  0.0|2010-02-05|                       0.0|
+|   20|                           0.0|  92|     false|                      0.0|                       0.0|   195223.84|                         0.0|                   0.0|                     0.0|                  0.0|2010-02-05|                       0.0|
+|   20|                           0.0|  12|     false|                      0.0|                       0.0|     6527.56|                         0.0|                   0.0|                     0.0|                  0.0|2010-02-05|                       0.0|
++-----+------------------------------+----+----------+-------------------------+--------------------------+------------+----------------------------+----------------------+------------------------+---------------------+----------+--------------------------+
+only showing top 5 rows
+
+&lt;class 'pyspark.sql.dataframe.DataFrame'&gt;
+</code></pre>
+
+<p>You can also inspect the metadata of the feature group. You can, for instance, show the features the feature group is made of and if they are primary or partition keys:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="k">print</span><span class="p">(</span><span class="s2">&#34;Name: {}&#34;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">sales_fg</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">&#34;Description: {}&#34;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">sales_fg</span><span class="o">.</span><span class="n">description</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">&#34;Features:&#34;</span><span class="p">)</span>
+<span class="n">features</span> <span class="o">=</span> <span class="n">sales_fg</span><span class="o">.</span><span class="n">features</span>
+<span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="n">features</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&#34;{:&lt;60} </span><span class="se">\t</span><span class="s2"> Primary: {} </span><span class="se">\t</span><span class="s2"> Partition: {}&#34;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">feature</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">feature</span><span class="o">.</span><span class="n">primary</span><span class="p">,</span> <span class="n">feature</span><span class="o">.</span><span class="n">partition</span><span class="p">))</span></code></pre></div>
+<pre><code>Name: sales_fg
+Description: Sales related features
+Features:
+store                                                            Primary: True   Partition: False
+sales_last_six_month_store_dep                                   Primary: False      Partition: False
+dept                                                             Primary: True   Partition: False
+is_holiday                                                       Primary: False      Partition: False
+sales_last_year_store_dep                                        Primary: False      Partition: False
+sales_last_six_month_store                                       Primary: False      Partition: False
+weekly_sales                                                     Primary: False      Partition: False
+sales_last_quarter_store_dep                                     Primary: False      Partition: False
+sales_last_month_store                                           Primary: False      Partition: False
+sales_last_quarter_store                                         Primary: False      Partition: False
+sales_last_year_store                                            Primary: False      Partition: False
+date                                                             Primary: True   Partition: False
+sales_last_month_store_dep                                       Primary: False      Partition: False
+</code></pre>
+
+<p>If you are interested only in a subset of features, you can use the <code>select()</code> method on the feature group object to select a list of features. The <code>select()</code> behaves like a feature group, as such, you can call the <code>.show()</code> or <code>.read()</code> methods on it.</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">sales_fg</span><span class="o">.</span><span class="n">select</span><span class="p">([</span><span class="s1">&#39;store&#39;</span><span class="p">,</span> <span class="s1">&#39;dept&#39;</span><span class="p">,</span> <span class="s1">&#39;weekly_sales&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span></code></pre></div>
+<pre><code>+-----+----+------------+
+|store|dept|weekly_sales|
++-----+----+------------+
+|   20|  55|    32362.95|
+|   20|  94|    63787.83|
+|   20|   2|    85812.69|
+|   20|  92|   195223.84|
+|   20|  12|     6527.56|
++-----+----+------------+
+only showing top 5 rows
+</code></pre>
+
+<p>If your feature group is available both online and offline, you can use the <code>online</code> option of the <code>show()</code> and <code>read()</code> methods to specify if you want to read your feature group from online storage.</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">sales_fg_3</span> <span class="o">=</span> <span class="n">fs</span><span class="o">.</span><span class="n">get_feature_group</span><span class="p">(</span><span class="s1">&#39;sales_fg&#39;</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+
+<span class="n">sales_fg_3</span><span class="o">.</span><span class="n">select</span><span class="p">([</span><span class="s1">&#39;store&#39;</span><span class="p">,</span> <span class="s1">&#39;dept&#39;</span><span class="p">,</span> <span class="s1">&#39;weekly_sales&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="n">online</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span></code></pre></div>
+<pre><code>+-----+----+------------+
+|store|dept|weekly_sales|
++-----+----+------------+
+|   41|  97|    19861.01|
+|   25|  52|     1542.31|
+|   40|  42|     5279.49|
+|   28|  21|      4933.9|
+|   33|  25|        60.5|
++-----+----+------------+
+only showing top 5 rows
+</code></pre>
+
+<h3 id="filter-feature-groups">Filter Feature Groups</h3>
+
+<p>If you do not want to read your feature group into a dataframe, you can also filter directly on a <code>FeatureGroup</code> object. Applying a filter to a feature group returns a <code>Query</code> object which can subsequently be used to be further joined with other feature groups or queries, or it can be materialized as a training dataset.</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">sales_fg</span><span class="o">.</span><span class="n">select</span><span class="p">([</span><span class="s1">&#39;store&#39;</span><span class="p">,</span> <span class="s1">&#39;dept&#39;</span><span class="p">,</span> <span class="s1">&#39;weekly_sales&#39;</span><span class="p">])</span><span class="o">.</span><span class="nb">filter</span><span class="p">(</span><span class="n">sales_fg</span><span class="o">.</span><span class="n">weekly_sales</span> <span class="o">&gt;=</span> <span class="mi">50000</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span></code></pre></div>
+<pre><code>+-----+----+------------+
+|store|dept|weekly_sales|
++-----+----+------------+
+|   20|  94|    63787.83|
+|   20|   2|    85812.69|
+|   20|  92|   195223.84|
+|   20|  95|    162621.8|
+|   20|   8|    89319.61|
++-----+----+------------+
+only showing top 5 rows
+</code></pre>
+
+<p>Conjunctions of filters can be constructed using the Python Bitwise Operators <code>|</code> and <code>&amp;</code> which replace the regular binary operators when working with feature groups and filters.</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">sales_fg</span><span class="o">.</span><span class="n">select</span><span class="p">([</span><span class="s1">&#39;store&#39;</span><span class="p">,</span> <span class="s1">&#39;dept&#39;</span><span class="p">,</span> <span class="s1">&#39;weekly_sales&#39;</span><span class="p">])</span><span class="o">.</span><span class="nb">filter</span><span class="p">((</span><span class="n">sales_fg</span><span class="o">.</span><span class="n">weekly_sales</span> <span class="o">&gt;=</span> <span class="mi">50000</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">sales_fg</span><span class="o">.</span><span class="n">dept</span> <span class="o">==</span> <span class="mi">2</span><span class="p">))</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span></code></pre></div>
+<pre><code>+-----+----+------------+
+|store|dept|weekly_sales|
++-----+----+------------+
+|   20|   2|    85812.69|
+|   20|   2|    67951.33|
+|   20|   2|    78321.16|
+|   20|   2|    72410.12|
+|   20|   2|    81139.43|
++-----+----+------------+
+only showing top 5 rows
+</code></pre>
+
+<h3 id="join-features-and-feature-groups">Join Features and Feature Groups</h3>
+
+<p>HSFS provides an API similar to Pandas to join feature groups together and to select features from different feature groups.
+The easies query you can write is by selecting all the features from a feature group and join them with all the features of another feature group.</p>
+
+<p>You can use the <code>select_all()</code> method of a feature group to select all its features. HSFS relies on the Hopsworks feature store to identify which features of the two feature groups to use as joining condition.
+If you don&rsquo;t specify anything, Hopsworks will use the largest matching subset of primary keys with the same name.</p>
+
+<p>In the example below, <code>sales_fg</code> has <code>store</code>, <code>dept</code> and <code>date</code> as composite primary key while <code>exogenous_fg</code> has only <code>store</code> and <code>date</code>. So Hopsworks will set as joining condition <code>store</code> and <code>date</code>.</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">sales_fg</span> <span class="o">=</span> <span class="n">fs</span><span class="o">.</span><span class="n">get_feature_group</span><span class="p">(</span><span class="s1">&#39;sales_fg&#39;</span><span class="p">)</span>
+<span class="n">exogenous_fg</span> <span class="o">=</span> <span class="n">fs</span><span class="o">.</span><span class="n">get_feature_group</span><span class="p">(</span><span class="s1">&#39;exogenous_fg&#39;</span><span class="p">)</span>
+
+<span class="n">query</span> <span class="o">=</span> <span class="n">sales_fg</span><span class="o">.</span><span class="n">select_all</span><span class="p">()</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">exogenous_fg</span><span class="o">.</span><span class="n">select_all</span><span class="p">())</span></code></pre></div>
+<pre><code>VersionWarning: No version provided for getting feature group `sales_fg`, defaulting to `1`.
+VersionWarning: No version provided for getting feature group `exogenous_fg`, defaulting to `1`.
+</code></pre>
+
+<p>You can use the query object to create training datasets (see training dataset notebook). You can inspect the query generated by calling the <code>to_string()</code> method on it.</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="k">print</span><span class="p">(</span><span class="n">query</span><span class="o">.</span><span class="n">to_string</span><span class="p">())</span></code></pre></div>
+<pre><code>SELECT `fg1`.`dept`, `fg1`.`is_holiday`, `fg1`.`sales_last_year_store_dep`, `fg1`.`sales_last_six_month_store`, `fg1`.`store`, `fg1`.`sales_last_six_month_store_dep`, `fg1`.`weekly_sales`, `fg1`.`sales_last_quarter_store_dep`, `fg1`.`sales_last_month_store`, `fg1`.`sales_last_quarter_store`, `fg1`.`sales_last_year_store`, `fg1`.`date`, `fg1`.`sales_last_month_store_dep`, `fg0`.`cpi`, `fg0`.`is_holiday`, `fg0`.`markdown4`, `fg0`.`markdown5`, `fg0`.`unemployment`, `fg0`.`fuel_price`, `fg0`.`markdown1`, `fg0`.`markdown2`, `fg0`.`markdown3`, CASE WHEN `fg0`.`appended_feature` IS NULL THEN 10.0 ELSE `fg0`.`appended_feature` END `appended_feature`, `fg0`.`temperature`
+FROM `demo_fs_meb10000_featurestore`.`sales_fg_1` `fg1`
+INNER JOIN `demo_fs_meb10000_featurestore`.`exogenous_fg_1` `fg0` ON `fg1`.`store` = `fg0`.`store` AND `fg1`.`date` = `fg0`.`date`
+</code></pre>
+
+<p>As for the feature groups, you can call the <code>show()</code> method to inspect the data before generating a training dataset from it. Or you can call the <code>read()</code> method to get a Spark DataFrame with the result of the query and apply additional transformations to it.</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">query</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span></code></pre></div>
+<pre><code>+----+----------+-------------------------+--------------------------+-----+------------------------------+------------+----------------------------+----------------------+------------------------+---------------------+----------+--------------------------+-----------+----------+---------+---------+------------+----------+---------+---------+---------+----------------+-----------+
+|dept|is_holiday|sales_last_year_store_dep|sales_last_six_month_store|store|sales_last_six_month_store_dep|weekly_sales|sales_last_quarter_store_dep|sales_last_month_store|sales_last_quarter_store|sales_last_year_store|      date|sales_last_month_store_dep|        cpi|is_holiday|markdown4|markdown5|unemployment|fuel_price|markdown1|markdown2|markdown3|appended_feature|temperature|
++----+----------+-------------------------+--------------------------+-----+------------------------------+------------+----------------------------+----------------------+------------------------+---------------------+----------+--------------------------+-----------+----------+---------+---------+------------+----------+---------+---------+---------+----------------+-----------+
+|  55|     false|                      0.0|                       0.0|   20|                           0.0|    32362.95|                         0.0|                   0.0|                     0.0|                  0.0|2010-02-05|                       0.0|204.2471935|     false|       NA|       NA|       8.187|     2.784|       NA|       NA|       NA|            10.0|      25.92|
+|  94|     false|                      0.0|                       0.0|   20|                           0.0|    63787.83|                         0.0|                   0.0|                     0.0|                  0.0|2010-02-05|                       0.0|204.2471935|     false|       NA|       NA|       8.187|     2.784|       NA|       NA|       NA|            10.0|      25.92|
+|   2|     false|                      0.0|                       0.0|   20|                           0.0|    85812.69|                         0.0|                   0.0|                     0.0|                  0.0|2010-02-05|                       0.0|204.2471935|     false|       NA|       NA|       8.187|     2.784|       NA|       NA|       NA|            10.0|      25.92|
+|  92|     false|                      0.0|                       0.0|   20|                           0.0|   195223.84|                         0.0|                   0.0|                     0.0|                  0.0|2010-02-05|                       0.0|204.2471935|     false|       NA|       NA|       8.187|     2.784|       NA|       NA|       NA|            10.0|      25.92|
+|  12|     false|                      0.0|                       0.0|   20|                           0.0|     6527.56|                         0.0|                   0.0|                     0.0|                  0.0|2010-02-05|                       0.0|204.2471935|     false|       NA|       NA|       8.187|     2.784|       NA|       NA|       NA|            10.0|      25.92|
++----+----------+-------------------------+--------------------------+-----+------------------------------+------------+----------------------------+----------------------+------------------------+---------------------+----------+--------------------------+-----------+----------+---------+---------+------------+----------+---------+---------+---------+----------------+-----------+
+only showing top 5 rows
+</code></pre>
+
+<p>As for the <code>show()</code> and <code>read()</code> method of the feature group, even in the case of a query you can specify against which storage to run the query.</p>
+
+<h3 id="select-only-a-subset-of-features">Select only a subset of features</h3>
+
+<p>You can replace the <code>select_all()</code> method with the <code>select([])</code> method to be able to select only a subset of features from a feature group you want to join:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">query</span> <span class="o">=</span> <span class="n">sales_fg</span><span class="o">.</span><span class="n">select</span><span class="p">([</span><span class="s1">&#39;store&#39;</span><span class="p">,</span> <span class="s1">&#39;dept&#39;</span><span class="p">,</span> <span class="s1">&#39;weekly_sales&#39;</span><span class="p">])</span>\
+                <span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">exogenous_fg</span><span class="o">.</span><span class="n">select</span><span class="p">([</span><span class="s1">&#39;fuel_price&#39;</span><span class="p">]))</span>
+<span class="n">query</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span></code></pre></div>
+<pre><code>+-----+----+------------+----------+
+|store|dept|weekly_sales|fuel_price|
++-----+----+------------+----------+
+|   20|  55|    32362.95|     2.784|
+|   20|  94|    63787.83|     2.784|
+|   20|   2|    85812.69|     2.784|
+|   20|  92|   195223.84|     2.784|
+|   20|  12|     6527.56|     2.784|
++-----+----+------------+----------+
+only showing top 5 rows
+</code></pre>
+
+<h3 id="overwrite-the-joining-key">Overwrite the joining key</h3>
+
+<p>If your feature groups don&rsquo;t have a primary key, or if they have different names or if you want to overwrite the joining key, you can pass it as a parameter of the join.</p>
+
+<p>As in Pandas, if the feature has the same name on both feature groups, then you can use the <code>on=[]</code> paramter. If they have different names, then you can use the <code>left_on=[]</code> and <code>right_on=[]</code> paramters:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">query</span> <span class="o">=</span> <span class="n">sales_fg</span><span class="o">.</span><span class="n">select</span><span class="p">([</span><span class="s1">&#39;store&#39;</span><span class="p">,</span> <span class="s1">&#39;dept&#39;</span><span class="p">,</span> <span class="s1">&#39;weekly_sales&#39;</span><span class="p">])</span>\
+                <span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">exogenous_fg</span><span class="o">.</span><span class="n">select</span><span class="p">([</span><span class="s1">&#39;fuel_price&#39;</span><span class="p">]),</span> <span class="n">on</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">])</span>
+<span class="n">query</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span></code></pre></div>
+<pre><code>+-----+----+------------+----------+
+|store|dept|weekly_sales|fuel_price|
++-----+----+------------+----------+
+|   20|  55|    32362.95|     2.784|
+|   20|  55|    32362.95|     2.666|
+|   20|  55|    32362.95|     2.572|
+|   20|  55|    32362.95|     2.962|
+|   20|  55|    32362.95|      2.58|
++-----+----+------------+----------+
+only showing top 5 rows
+</code></pre>
+
+<h3 id="overwriting-the-join-type">Overwriting the join type</h3>
+
+<p>By default, the join type between two feature groups is <code>INNER JOIN</code>. You can overwrite this behavior by passing the <code>join_type</code> parameter to the join method. Valid types are: <code>INNER, LEFT, RIGHT, FULL, CROSS, LEFT_SEMI_JOIN, COMMA</code></p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">query</span> <span class="o">=</span> <span class="n">sales_fg</span><span class="o">.</span><span class="n">select</span><span class="p">([</span><span class="s1">&#39;store&#39;</span><span class="p">,</span> <span class="s1">&#39;dept&#39;</span><span class="p">,</span> <span class="s1">&#39;weekly_sales&#39;</span><span class="p">])</span>\
+                <span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">exogenous_fg</span><span class="o">.</span><span class="n">select</span><span class="p">([</span><span class="s1">&#39;fuel_price&#39;</span><span class="p">]),</span> <span class="n">join_type</span><span class="o">=</span><span class="s2">&#34;left&#34;</span><span class="p">)</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">query</span><span class="o">.</span><span class="n">to_string</span><span class="p">())</span></code></pre></div>
+<pre><code>SELECT `fg1`.`store`, `fg1`.`dept`, `fg1`.`weekly_sales`, `fg0`.`fuel_price`
+FROM `demo_fs_meb10000_featurestore`.`sales_fg_1` `fg1`
+LEFT JOIN `demo_fs_meb10000_featurestore`.`exogenous_fg_1` `fg0` ON `fg1`.`store` = `fg0`.`store` AND `fg1`.`date` = `fg0`.`date`
+</code></pre>
+
+<h3 id="join-mulitple-feature-groups">Join mulitple feature groups</h3>
+
+<p>You can concatenate as many feature gropus as you wish. In the example below the order of execution will be:</p>
+
+<pre><code>(`sales_fg` &lt;&gt; `store_fg`) &lt;&gt; `exogenous_fg`
+</code></pre>
+
+<p>The join paramers you pass in each <code>join()</code> method call apply to that specific join. This means that you can concatenate left and right joins.
+Please be aware that currently HSFS <strong>does not support</strong> nested join such as:</p>
+
+<pre><code>`sales_fg` &lt;&gt; (`store_fg` &lt;&gt; `exogenous_fg`)
+</code></pre>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">store_fg</span> <span class="o">=</span> <span class="n">fs</span><span class="o">.</span><span class="n">get_feature_group</span><span class="p">(</span><span class="s2">&#34;store_fg&#34;</span><span class="p">)</span>
+
+<span class="n">query</span> <span class="o">=</span> <span class="n">sales_fg</span><span class="o">.</span><span class="n">select_all</span><span class="p">()</span>\
+                <span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">store_fg</span><span class="o">.</span><span class="n">select_all</span><span class="p">())</span>\
+                <span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">exogenous_fg</span><span class="o">.</span><span class="n">select</span><span class="p">([</span><span class="s1">&#39;fuel_price&#39;</span><span class="p">,</span> <span class="s1">&#39;unemployment&#39;</span><span class="p">,</span> <span class="s1">&#39;cpi&#39;</span><span class="p">]))</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">query</span><span class="o">.</span><span class="n">to_string</span><span class="p">())</span></code></pre></div>
+<pre><code>SELECT `fg2`.`dept`, `fg2`.`is_holiday`, `fg2`.`sales_last_year_store_dep`, `fg2`.`sales_last_six_month_store`, `fg2`.`store`, `fg2`.`sales_last_six_month_store_dep`, `fg2`.`weekly_sales`, `fg2`.`sales_last_quarter_store_dep`, `fg2`.`sales_last_month_store`, `fg2`.`sales_last_quarter_store`, `fg2`.`sales_last_year_store`, `fg2`.`date`, `fg2`.`sales_last_month_store_dep`, `fg0`.`type`, `fg0`.`size`, `fg0`.`num_depts`, `fg1`.`fuel_price`, `fg1`.`unemployment`, `fg1`.`cpi`
+FROM `demo_fs_meb10000_featurestore`.`sales_fg_1` `fg2`
+INNER JOIN `demo_fs_meb10000_featurestore`.`store_fg_1` `fg0` ON `fg2`.`store` = `fg0`.`store`
+INNER JOIN `demo_fs_meb10000_featurestore`.`exogenous_fg_1` `fg1` ON `fg2`.`date` = `fg1`.`date` AND `fg2`.`store` = `fg1`.`store`
+VersionWarning: No version provided for getting feature group `store_fg`, defaulting to `1`.
+</code></pre>
+
+<h3 id="use-joins-together-with-filters">Use Joins together with Filters</h3>
+
+<p>It is possible to use filters in any of the subqueries of a joined query.</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">query</span> <span class="o">=</span> <span class="n">sales_fg</span><span class="o">.</span><span class="n">select_all</span><span class="p">()</span>\
+                <span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">store_fg</span><span class="o">.</span><span class="n">select_all</span><span class="p">())</span>\
+                <span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">exogenous_fg</span><span class="o">.</span><span class="n">select</span><span class="p">([</span><span class="s1">&#39;fuel_price&#39;</span><span class="p">,</span> <span class="s1">&#39;unemployment&#39;</span><span class="p">,</span> <span class="s1">&#39;cpi&#39;</span><span class="p">])</span><span class="o">.</span><span class="nb">filter</span><span class="p">(</span><span class="n">exogenous_fg</span><span class="o">.</span><span class="n">fuel_price</span> <span class="o">&lt;=</span> <span class="mf">2.7</span><span class="p">))</span> \
+                <span class="o">.</span><span class="nb">filter</span><span class="p">(</span><span class="n">sales_fg</span><span class="o">.</span><span class="n">weekly_sales</span> <span class="o">&gt;=</span> <span class="mi">50000</span><span class="p">)</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">query</span><span class="o">.</span><span class="n">to_string</span><span class="p">())</span></code></pre></div>
+<pre><code>SELECT `fg2`.`dept`, `fg2`.`is_holiday`, `fg2`.`sales_last_year_store_dep`, `fg2`.`sales_last_six_month_store`, `fg2`.`store`, `fg2`.`sales_last_six_month_store_dep`, `fg2`.`weekly_sales`, `fg2`.`sales_last_quarter_store_dep`, `fg2`.`sales_last_month_store`, `fg2`.`sales_last_quarter_store`, `fg2`.`sales_last_year_store`, `fg2`.`date`, `fg2`.`sales_last_month_store_dep`, `fg0`.`type`, `fg0`.`size`, `fg0`.`num_depts`, `fg1`.`fuel_price`, `fg1`.`unemployment`, `fg1`.`cpi`
+FROM `demo_fs_meb10000_featurestore`.`sales_fg_1` `fg2`
+INNER JOIN `demo_fs_meb10000_featurestore`.`store_fg_1` `fg0` ON `fg2`.`store` = `fg0`.`store`
+INNER JOIN `demo_fs_meb10000_featurestore`.`exogenous_fg_1` `fg1` ON `fg2`.`date` = `fg1`.`date` AND `fg2`.`store` = `fg1`.`store`
+WHERE `fg2`.`weekly_sales` &gt;= 50000 AND `fg1`.`fuel_price` &lt;= 2.7
+</code></pre>
+
+<h3 id="free-hand-query">Free hand query</h3>
+
+<p>With HSFS you are free of writing skipping entirely the Hopsworks query constructor and write your own query. This functionality can be useful if you need to express more complex queries for your use case. <code>fs.sql</code> returns a Spark Dataframe.</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">fs</span><span class="o">.</span><span class="n">sql</span><span class="p">(</span><span class="s2">&#34;SELECT * FROM `store_fg_1`&#34;</span><span class="p">)</span></code></pre></div>
+<pre><code>DataFrame[store: int, type: string, size: int, num_depts: bigint]
+</code></pre>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"></code></pre></div>
+    </div>
+    <aside>
+      <div class="bug_reporting">
+	<h4>Find an error or bug?</h4>
+	<p>Everything on this site is available on GitHub. Head to <a href='https://github.com/chrisalbon/notes/issues/new'>and submit a suggested change</a>. Include the tutorial's URL in the issue.</p>
+      </div>
+    </aside>
+
+  </div>
+</article>
+
+
+
+
+            </div>
+
+        </div>
+    </div>
+
+    
+
+    <footer class="footer text-center">
+        <div class="container">
+            <span class="text-muted">This project contains 59 pages and is available on <a href="https://github.com/napsterinblue/notes">GitHub</a>. Copyright &copy; NapsterInBlue, <time datetime="2018">2018</time>.</span>
+        </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ"
+        crossorigin="anonymous"></script>
+
+</body>
+
+</html>

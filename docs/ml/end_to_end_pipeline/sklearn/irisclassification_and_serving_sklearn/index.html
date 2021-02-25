@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-66582-32"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-66582-32');
+    </script>
+
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+<meta property="og:title" content="Scikit-Learn End-to-End Example - Iris" />
+<meta property="og:description" content="Iris Flower Classification and Serving Using SkLearn, HopsML, and the Hopsworks Feature Store In this notebook we will,
+ Load the Iris Flower dataset from HopsFS Do feature engineering on the dataset Save the features to the feature store Read the feature data from the feature store Train a KNN Model using SkLearn Save the trained model to HopsFS Launch a serving instance to serve the trained model Send some prediction requests to the served model Monitor the predictions through Kafka  Imports from sklearn." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://examples.hopsworks.ai/ml/end_to_end_pipeline/sklearn/irisclassification_and_serving_sklearn/" />
+
+
+
+<meta property="article:published_time" content="2021-02-24T00:00:00&#43;00:00"/>
+
+<meta property="article:modified_time" content="2021-02-24T00:00:00&#43;00:00"/>
+
+
+
+
+
+
+
+
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Scikit-Learn End-to-End Example - Iris"/>
+<meta name="twitter:description" content="Iris Flower Classification and Serving Using SkLearn, HopsML, and the Hopsworks Feature Store In this notebook we will,
+ Load the Iris Flower dataset from HopsFS Do feature engineering on the dataset Save the features to the feature store Read the feature data from the feature store Train a KNN Model using SkLearn Save the trained model to HopsFS Launch a serving instance to serve the trained model Send some prediction requests to the served model Monitor the predictions through Kafka  Imports from sklearn."/>
+<meta name="generator" content="Hugo 0.40.3" />
+
+    
+<script type="application/ld+json">
+  {
+  "@context": "http://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Scikit-Learn End-to-End Example - Iris",
+  "url": "https://examples.hopsworks.ai/ml/end_to_end_pipeline/sklearn/irisclassification_and_serving_sklearn/",
+  "wordCount": "1619",
+  "datePublished": "2021-02-24T00:00:00&#43;00:00",
+  "dateModified": "2021-02-24T00:00:00&#43;00:00",
+  "author": {
+  "@type": "Person",
+  "name": ""
+  }
+  }
+</script> 
+
+    <title>Scikit-Learn End-to-End Example - Iris</title>
+
+    
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb"
+        crossorigin="anonymous">
+
+    
+    <link href="https://examples.hopsworks.ai/css/custom.css" rel="stylesheet">
+    <link href="https://examples.hopsworks.ai/css/syntax.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Muli:400,500,700" rel="stylesheet">
+
+    <link href="" rel="alternate" type="application/rss+xml" title="Hopsworks Examples" />
+
+    <script type="text/javascript" async
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[','\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre','code'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+</script>
+
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-sm fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="https://examples.hopsworks.ai">Hopsworks Examples</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="nav navbar-nav mr-auto"></ul>
+                <ul class="nav navbar-nav">
+                    <li><a href="https://hopsworks.ai" title="Hopsworks.ai">hopsworks.ai</a></li>
+                    <li><a href="https://docs.hopsworks.ai" title="Docs">docs.hopsworks.ai</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+
+    
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+
+                 
+
+
+<article>
+  <div class="technical_note">
+    <header>
+      <div class="alert alert-warning flashcard_ad" role="alert">
+	Want to learn machine learning? Try my <a href="https://machinelearningflashcards.com" class="alert-link">machine learning flashcards</a>, <a href='https://amzn.to/2HwnWty' class="alert-link">book</a>, or <a href='https://www.youtube.com/channel/UCnd4Fi-ODvuPbxR2fO2j7kA' class="alert-link">study with me.</a>.
+      </div>
+      <h1 class="technical_note_title">Scikit-Learn End-to-End Example - Iris</h1>
+      <div class="technical_note_date">
+	<time datetime=" 2021-02-24T00:00:00Z "> 24 Feb 2021</time>
+      </div>
+    </header>
+    <div class="content">
+
+      
+
+<h1 id="iris-flower-classification-and-serving-using-sklearn-hopsml-and-the-hopsworks-feature-store">Iris Flower Classification and Serving Using SkLearn, HopsML, and the Hopsworks Feature Store</h1>
+
+<p>In this notebook we will,</p>
+
+<ol>
+<li>Load the Iris Flower dataset from HopsFS</li>
+<li>Do feature engineering on the dataset</li>
+<li>Save the features to the feature store</li>
+<li>Read the feature data from the feature store</li>
+<li>Train a KNN Model using SkLearn</li>
+<li>Save the trained model to HopsFS</li>
+<li>Launch a serving instance to serve the trained model</li>
+<li>Send some prediction requests to the served model</li>
+<li>Monitor the predictions through Kafka</li>
+</ol>
+
+<h3 id="imports">Imports</h3>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="kn">from</span> <span class="nn">sklearn.neighbors</span> <span class="kn">import</span> <span class="n">KNeighborsClassifier</span>
+<span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">accuracy_score</span>
+<span class="kn">import</span> <span class="nn">joblib</span>
+<span class="kn">from</span> <span class="nn">pyspark.ml.feature</span> <span class="kn">import</span> <span class="n">StringIndexer</span>
+<span class="kn">from</span> <span class="nn">pyspark.sql.types</span> <span class="kn">import</span> <span class="n">IntegerType</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">from</span> <span class="nn">hops</span> <span class="kn">import</span> <span class="n">kafka</span><span class="p">,</span> <span class="n">hdfs</span><span class="p">,</span> <span class="n">serving</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">tls</span>
+<span class="kn">from</span> <span class="nn">confluent_kafka</span> <span class="kn">import</span> <span class="n">Producer</span><span class="p">,</span> <span class="n">Consumer</span><span class="p">,</span> <span class="n">KafkaError</span>
+<span class="kn">import</span> <span class="nn">random</span></code></pre></div>
+<pre><code>Starting Spark application
+</code></pre>
+
+<table>
+<tr><th>ID</th><th>YARN Application ID</th><th>Kind</th><th>State</th><th>Spark UI</th><th>Driver log</th></tr><tr><td>15</td><td>None</td><td>pyspark</td><td>idle</td><td></td><td></td></tr></table>
+
+<pre><code>SparkSession available as 'spark'.
+</code></pre>
+
+<h3 id="load-dataset">Load Dataset</h3>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">project_path</span> <span class="o">=</span> <span class="n">hdfs</span><span class="o">.</span><span class="n">project_path</span><span class="p">()</span>
+<span class="n">iris_df</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&#34;csv&#34;</span><span class="p">)</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&#34;header&#34;</span><span class="p">,</span> <span class="s2">&#34;true&#34;</span><span class="p">)</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&#34;inferSchema&#34;</span><span class="p">,</span> <span class="bp">True</span><span class="p">)</span><span class="o">.</span><span class="n">load</span><span class="p">(</span>
+    <span class="n">project_path</span> <span class="o">+</span> <span class="s2">&#34;TourData/iris/iris.csv&#34;</span><span class="p">)</span></code></pre></div><div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">iris_df</span><span class="o">.</span><span class="n">printSchema</span><span class="p">()</span></code></pre></div>
+<pre><code>root
+ |-- sepal_length: double (nullable = true)
+ |-- sepal_width: double (nullable = true)
+ |-- petal_length: double (nullable = true)
+ |-- petal_width: double (nullable = true)
+ |-- variety: string (nullable = true)
+</code></pre>
+
+<h3 id="feature-engineering">Feature  Engineering</h3>
+
+<p>The dataset is already quite well prepared, the only thing we need to for feature engineering is to convert the <code>variety</code> column to numeric and save a lookup table so that we later on can convert the numeric representation back to the categorical representation.</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">encoder</span> <span class="o">=</span> <span class="n">StringIndexer</span><span class="p">(</span><span class="n">inputCol</span><span class="o">=</span><span class="s2">&#34;variety&#34;</span><span class="p">,</span> <span class="n">outputCol</span><span class="o">=</span><span class="s2">&#34;label&#34;</span><span class="p">)</span>
+<span class="n">fit_model</span> <span class="o">=</span> <span class="n">encoder</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">iris_df</span><span class="p">)</span>
+<span class="n">iris_df1</span> <span class="o">=</span> <span class="n">fit_model</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">iris_df</span><span class="p">)</span>
+<span class="n">lookup_df</span> <span class="o">=</span> <span class="n">iris_df1</span><span class="o">.</span><span class="n">select</span><span class="p">([</span><span class="s2">&#34;variety&#34;</span><span class="p">,</span> <span class="s2">&#34;label&#34;</span><span class="p">])</span><span class="o">.</span><span class="n">distinct</span><span class="p">()</span>
+<span class="n">iris_df2</span> <span class="o">=</span> <span class="n">iris_df1</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s2">&#34;variety&#34;</span><span class="p">)</span>
+<span class="n">iris_df3</span> <span class="o">=</span> <span class="n">iris_df2</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&#34;label&#34;</span><span class="p">,</span> <span class="n">iris_df2</span><span class="p">[</span><span class="s2">&#34;label&#34;</span><span class="p">]</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="n">IntegerType</span><span class="p">()))</span>
+<span class="n">iris_df3</span><span class="o">.</span><span class="n">printSchema</span><span class="p">()</span></code></pre></div>
+<pre><code>root
+ |-- sepal_length: double (nullable = true)
+ |-- sepal_width: double (nullable = true)
+ |-- petal_length: double (nullable = true)
+ |-- petal_width: double (nullable = true)
+ |-- label: integer (nullable = true)
+</code></pre>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">iris_df3</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span></code></pre></div>
+<pre><code>+------------+-----------+------------+-----------+-----+
+|sepal_length|sepal_width|petal_length|petal_width|label|
++------------+-----------+------------+-----------+-----+
+|         5.1|        3.5|         1.4|        0.2|    2|
+|         4.9|        3.0|         1.4|        0.2|    2|
+|         4.7|        3.2|         1.3|        0.2|    2|
+|         4.6|        3.1|         1.5|        0.2|    2|
+|         5.0|        3.6|         1.4|        0.2|    2|
++------------+-----------+------------+-----------+-----+
+only showing top 5 rows
+</code></pre>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">lookup_df</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span></code></pre></div>
+<pre><code>+----------+-----+
+|   variety|label|
++----------+-----+
+| Virginica|  0.0|
+|Versicolor|  1.0|
+|    Setosa|  2.0|
++----------+-----+
+</code></pre>
+
+<h3 id="save-features-to-the-feature-store">Save Features to the Feature Store</h3>
+
+<p>We can save two feature groups (hive tables), one called <code>iris_features</code> that contains the iris features and the corresponding numeric label, and another feature group called <code>iris_labels_lookup</code> for converting the numeric iris label back to categorical.</p>
+
+<p><strong>Note</strong>: To be able to run the feature store code, you first have to enable the Feature Store Service in your project. To do this, go to the &ldquo;Settings&rdquo; tab in your project, select the feature store service and click &ldquo;Save&rdquo;.</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="kn">import</span> <span class="nn">hsfs</span>
+<span class="c1"># Create a connection</span>
+<span class="n">connection</span> <span class="o">=</span> <span class="n">hsfs</span><span class="o">.</span><span class="n">connection</span><span class="p">()</span>
+<span class="c1"># Get the feature store handle for the project&#39;s feature store</span>
+<span class="n">fs</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">get_feature_store</span><span class="p">()</span></code></pre></div>
+<pre><code>Connected. Call `.close()` to terminate connection gracefully.
+</code></pre>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">iris_features</span> <span class="o">=</span> <span class="n">fs</span><span class="o">.</span><span class="n">create_feature_group</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&#34;iris_features&#34;</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">time_travel_format</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
+<span class="n">iris_features</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">iris_df3</span><span class="p">)</span></code></pre></div>
+<pre><code>&lt;hsfs.feature_group.FeatureGroup object at 0x7f002ca62e90&gt;
+</code></pre>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">iris_labels_lookup</span> <span class="o">=</span> <span class="n">fs</span><span class="o">.</span><span class="n">create_feature_group</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&#34;iris_labels_lookup&#34;</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">time_travel_format</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
+<span class="n">iris_labels_lookup</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">lookup_df</span><span class="p">)</span></code></pre></div>
+<pre><code>&lt;hsfs.feature_group.FeatureGroup object at 0x7f0014cd4cd0&gt;
+</code></pre>
+
+<h3 id="read-the-iris-training-dataset-from-the-feature-store">Read the Iris Training Dataset from the Feature Store</h3>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">iris_features</span> <span class="o">=</span> <span class="n">fs</span><span class="o">.</span><span class="n">get_feature_group</span><span class="p">(</span><span class="s2">&#34;iris_features&#34;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">iris_features</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">toPandas</span><span class="p">()</span>
+<span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span></code></pre></div>
+<pre><code>   sepal_length  petal_length  label  sepal_width  petal_width
+0           5.1           1.4      2          3.5          0.2
+1           4.9           1.4      2          3.0          0.2
+2           4.7           1.3      2          3.2          0.2
+3           4.6           1.5      2          3.1          0.2
+4           5.0           1.4      2          3.6          0.2
+5           5.4           1.7      2          3.9          0.4
+6           4.6           1.4      2          3.4          0.3
+7           5.0           1.5      2          3.4          0.2
+8           4.4           1.4      2          2.9          0.2
+9           4.9           1.5      2          3.1          0.1
+</code></pre>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">df</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span></code></pre></div>
+<pre><code>       sepal_length  petal_length       label  sepal_width  petal_width
+count    150.000000    150.000000  150.000000   150.000000   150.000000
+mean       5.843333      3.758000    1.000000     3.057333     1.199333
+std        0.828066      1.765298    0.819232     0.435866     0.762238
+min        4.300000      1.000000    0.000000     2.000000     0.100000
+25%        5.100000      1.600000    0.000000     2.800000     0.300000
+50%        5.800000      4.350000    1.000000     3.000000     1.300000
+75%        6.400000      5.100000    2.000000     3.300000     1.800000
+max        7.900000      6.900000    2.000000     4.400000     2.500000
+</code></pre>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">x_df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[[</span><span class="s1">&#39;sepal_length&#39;</span><span class="p">,</span> <span class="s1">&#39;sepal_width&#39;</span><span class="p">,</span> <span class="s1">&#39;petal_length&#39;</span><span class="p">,</span> <span class="s1">&#39;petal_width&#39;</span><span class="p">]]</span>
+<span class="n">y_df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[[</span><span class="s2">&#34;label&#34;</span><span class="p">]]</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">x_df</span><span class="o">.</span><span class="n">values</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">y_df</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span></code></pre></div>
+<h3 id="train-a-knn-model-using-the-feature-data">Train a KNN Model using the Feature Data</h3>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">neighbors</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">30</span><span class="p">)</span>
+<span class="n">iris_knn</span> <span class="o">=</span> <span class="n">KNeighborsClassifier</span><span class="p">(</span><span class="n">n_neighbors</span><span class="o">=</span><span class="n">neighbors</span><span class="p">)</span>
+<span class="n">iris_knn</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="n">y_pred</span> <span class="o">=</span> <span class="n">iris_knn</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+<span class="n">acc</span> <span class="o">=</span> <span class="n">accuracy_score</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">acc</span><span class="p">)</span></code></pre></div>
+<pre><code>0.98
+</code></pre>
+
+<h3 id="save-the-trained-model-to-hopsfs">Save the Trained Model to HopsFS</h3>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">joblib</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">iris_knn</span><span class="p">,</span> <span class="s2">&#34;iris_knn.pkl&#34;</span><span class="p">)</span>
+<span class="n">hdfs</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="s2">&#34;Resources/sklearn_model&#34;</span><span class="p">)</span>
+<span class="n">hdfs</span><span class="o">.</span><span class="n">copy_to_hdfs</span><span class="p">(</span><span class="s2">&#34;iris_knn.pkl&#34;</span><span class="p">,</span> <span class="s2">&#34;Resources/sklearn_model&#34;</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span></code></pre></div>
+<pre><code>Started copying local path iris_knn.pkl to hdfs path hdfs://rpc.namenode.service.consul:8020/Projects/demo_ml_meb10000/Resources/sklearn_model/iris_knn.pkl
+
+Finished copying
+</code></pre>
+
+<h3 id="constants">Constants</h3>
+
+<h3 id="serve-the-trained-model">Serve the Trained Model</h3>
+
+<p>To serve a SkLearn Model, write a python script that downloads the HDFS model in the constructor and saves it as a class variable and then implements the <code>Predict</code> class and the methods <code>predict</code>, <code>classify</code> and <code>regress</code>, like this:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="kn">from</span> <span class="nn">sklearn.externals</span> <span class="kn">import</span> <span class="n">joblib</span>
+<span class="kn">from</span> <span class="nn">hops</span> <span class="kn">import</span> <span class="n">hdfs</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="k">class</span> <span class="nc">Predict</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="s2">&#34;&#34;&#34; Initializes the serving state, reads a trained model from HDFS&#34;&#34;&#34;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model_path</span> <span class="o">=</span> <span class="s2">&#34;Models/iris_knn.pkl&#34;</span>
+        <span class="k">print</span><span class="p">(</span><span class="s2">&#34;Copying SKLearn model from HDFS to local directory&#34;</span><span class="p">)</span>
+        <span class="n">hdfs</span><span class="o">.</span><span class="n">copy_to_local</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model_path</span><span class="p">)</span>
+        <span class="k">print</span><span class="p">(</span><span class="s2">&#34;Reading local SkLearn model for serving&#34;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">joblib</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&#34;./iris_knn.pkl&#34;</span><span class="p">)</span>
+        <span class="k">print</span><span class="p">(</span><span class="s2">&#34;Initialization Complete&#34;</span><span class="p">)</span>
+
+
+    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">):</span>
+        <span class="s2">&#34;&#34;&#34; Serves a prediction request usign a trained model&#34;&#34;&#34;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span> <span class="c1"># Numpy Arrays are not JSON serializable</span>
+
+    <span class="k">def</span> <span class="nf">classify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">):</span>
+        <span class="s2">&#34;&#34;&#34; Serves a classification request using a trained model&#34;&#34;&#34;</span>
+        <span class="k">return</span> <span class="s2">&#34;not implemented&#34;</span>
+
+    <span class="k">def</span> <span class="nf">regress</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">):</span>
+        <span class="s2">&#34;&#34;&#34; Serves a regression request using a trained model&#34;&#34;&#34;</span>
+        <span class="k">return</span> <span class="s2">&#34;not implemented&#34;</span></code></pre></div>
+<p>Then upload this python script to some folder in your project and go to the &ldquo;Model Serving&rdquo; service in Hopsworks:</p>
+
+<p><img src="sklearn_serving1.png" alt="sklearn_serving1.png" /></p>
+
+<p>Then click on &ldquo;create serving&rdquo; and configure your serving:</p>
+
+<p><img src="sklearn_serving2.png" alt="sklearn_serving2.png" /></p>
+
+<p>Once the serving is created, you can start it and view information like server-logs and which kafka topic it is logging inference requests to.</p>
+
+<p><img src="sklearn_serving3.png" alt="sklearn_serving3.png" /></p>
+
+<p>It is a best-practice to put the script together with the trained model, below is the code for exporting the script from <code>Jupyter/Serving/sklearn/iris_flower_classifier.py</code> to <code>Models/irisFlowerClassifier/1/iris_flower_classifier.py</code>.</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">script_path</span> <span class="o">=</span> <span class="s2">&#34;Jupyter/Serving/sklearn/iris_flower_classifier.py&#34;</span>
+<span class="n">hdfs</span><span class="o">.</span><span class="n">cp</span><span class="p">(</span><span class="s2">&#34;Jupyter/End_To_End_Pipeline/sklearn/iris_flower_classifier.py&#34;</span><span class="p">,</span> <span class="s2">&#34;Resources/sklearn_model/iris_flower_classifier.py&#34;</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span></code></pre></div>
+<h3 id="export-the-trained-model-to-the-models-repository">Export the Trained Model to the Models Repository</h3>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">MODEL_NAME</span> <span class="o">=</span> <span class="s2">&#34;IrisFlowerClassifier&#34;</span>
+<span class="n">model</span><span class="o">.</span><span class="n">export</span><span class="p">(</span><span class="s2">&#34;Resources/sklearn_model&#34;</span><span class="p">,</span> <span class="n">MODEL_NAME</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;accuracy&#39;</span><span class="p">:</span> <span class="n">acc</span><span class="p">})</span></code></pre></div>
+<pre><code>Exported model IrisFlowerClassifier as version 1 successfully.
+Polling IrisFlowerClassifier version 1 for model availability.
+get model:/hopsworks-api/api/project/120/models/IrisFlowerClassifier_1?filter_by=endpoint_id:120
+Model now available.
+</code></pre>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">hdfs</span><span class="o">.</span><span class="n">ls</span><span class="p">(</span><span class="s2">&#34;Models/&#34;</span> <span class="o">+</span> <span class="n">MODEL_NAME</span><span class="p">,</span> <span class="n">recursive</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">p</span><span class="p">)</span></code></pre></div>
+<pre><code>hdfs://rpc.namenode.service.consul:8020/Projects/demo_ml_meb10000/Models/IrisFlowerClassifier/1
+hdfs://rpc.namenode.service.consul:8020/Projects/demo_ml_meb10000/Models/IrisFlowerClassifier/1/iris_flower_classifier.py
+hdfs://rpc.namenode.service.consul:8020/Projects/demo_ml_meb10000/Models/IrisFlowerClassifier/1/iris_knn.pkl
+hdfs://rpc.namenode.service.consul:8020/Projects/demo_ml_meb10000/Models/IrisFlowerClassifier/1/program.ipynb
+</code></pre>
+
+<h1 id="query-model-repository-for-best-irisflowerclassifier-model">Query Model Repository for best IrisFlowerClassifier Model</h1>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">EVALUATION_METRIC</span><span class="o">=</span><span class="s2">&#34;accuracy&#34;</span>
+<span class="kn">from</span> <span class="nn">hops.model</span> <span class="kn">import</span> <span class="n">Metric</span>
+
+<span class="n">best_model</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">get_best_model</span><span class="p">(</span><span class="n">MODEL_NAME</span><span class="p">,</span> <span class="n">EVALUATION_METRIC</span><span class="p">,</span> <span class="n">Metric</span><span class="o">.</span><span class="n">MAX</span><span class="p">)</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;Model name: &#39;</span> <span class="o">+</span> <span class="n">best_model</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">])</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;Model version: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">best_model</span><span class="p">[</span><span class="s1">&#39;version&#39;</span><span class="p">]))</span>
+<span class="k">print</span><span class="p">(</span><span class="n">best_model</span><span class="p">[</span><span class="s1">&#39;metrics&#39;</span><span class="p">])</span></code></pre></div>
+<pre><code>Model name: IrisFlowerClassifier
+Model version: 1
+{'accuracy': '0.98'}
+</code></pre>
+
+<p>Once all the files have been exported to the model directory, we can create a serving instance that points to the model files using <code>serving.create_or_update()</code></p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">script_path</span> <span class="o">=</span> <span class="s2">&#34;Models/&#34;</span> <span class="o">+</span> <span class="n">MODEL_NAME</span> <span class="o">+</span> <span class="s2">&#34;/&#34;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">best_model</span><span class="p">[</span><span class="s1">&#39;version&#39;</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&#34;/iris_flower_classifier.py&#34;</span>
+<span class="n">serving</span><span class="o">.</span><span class="n">create_or_update</span><span class="p">(</span><span class="n">script_path</span><span class="p">,</span> <span class="n">MODEL_NAME</span><span class="p">,</span> <span class="n">model_version</span><span class="o">=</span><span class="n">best_model</span><span class="p">[</span><span class="s1">&#39;version&#39;</span><span class="p">],</span> <span class="n">serving_type</span><span class="o">=</span><span class="s2">&#34;SKLEARN&#34;</span><span class="p">)</span></code></pre></div>
+<pre><code>Creating a serving for model IrisFlowerClassifier ...
+Serving for model IrisFlowerClassifier successfully created
+</code></pre>
+
+<p>After the serving have been created, you can find it in the Hopsworks UI by going to the &ldquo;Model Serving&rdquo; tab. You can also use the python module to query the Hopsworks REST API about information on the existing servings using methods like:</p>
+
+<ul>
+<li><code>get_servings()</code></li>
+<li><code>get_serving_id(serving_name)</code></li>
+<li><code>get_serving_artifact_path(serving_name)</code></li>
+<li><code>get_serving_type(serving_name)</code></li>
+<li><code>get_serving_version(serving_name)</code></li>
+<li><code>get_serving_kafka_topic(serving_name)</code></li>
+<li><code>get_serving_status(serving_name)</code></li>
+<li><code>exist(serving_name)</code></li>
+</ul>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">serving</span><span class="o">.</span><span class="n">get_all</span><span class="p">():</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">name</span><span class="p">)</span></code></pre></div>
+<pre><code>IrisFlowerClassifier
+</code></pre>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">serving</span><span class="o">.</span><span class="n">get_id</span><span class="p">(</span><span class="n">MODEL_NAME</span><span class="p">)</span></code></pre></div>
+<pre><code>1
+</code></pre>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">serving</span><span class="o">.</span><span class="n">get_artifact_path</span><span class="p">(</span><span class="n">MODEL_NAME</span><span class="p">)</span></code></pre></div>
+<pre><code>'/Projects/demo_ml_meb10000/Models/IrisFlowerClassifier/1/iris_flower_classifier.py'
+</code></pre>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">serving</span><span class="o">.</span><span class="n">get_type</span><span class="p">(</span><span class="n">MODEL_NAME</span><span class="p">)</span></code></pre></div>
+<pre><code>'SKLEARN'
+</code></pre>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">serving</span><span class="o">.</span><span class="n">get_version</span><span class="p">(</span><span class="n">MODEL_NAME</span><span class="p">)</span></code></pre></div>
+<pre><code>1
+</code></pre>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">serving</span><span class="o">.</span><span class="n">get_kafka_topic</span><span class="p">(</span><span class="n">MODEL_NAME</span><span class="p">)</span></code></pre></div>
+<pre><code>'IrisFlowerClassifier-inf1537'
+</code></pre>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">serving</span><span class="o">.</span><span class="n">get_status</span><span class="p">(</span><span class="n">MODEL_NAME</span><span class="p">)</span></code></pre></div>
+<pre><code>'Stopped'
+</code></pre>
+
+<p>You can start/stop the serving instance either from the Hopsworks UI or from the python/REST API as demonstrated below</p>
+
+<p>Shut down currently running serving</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="k">if</span> <span class="n">serving</span><span class="o">.</span><span class="n">get_status</span><span class="p">(</span><span class="n">MODEL_NAME</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&#34;Running&#34;</span><span class="p">:</span>
+    <span class="n">serving</span><span class="o">.</span><span class="n">stop</span><span class="p">(</span><span class="n">MODEL_NAME</span><span class="p">)</span>
+<span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span></code></pre></div>
+<p>Start new serving</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">serving</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="n">MODEL_NAME</span><span class="p">)</span></code></pre></div>
+<pre><code>Starting serving with name: IrisFlowerClassifier...
+Serving with name: IrisFlowerClassifier successfully started
+</code></pre>
+
+<p>Wait until serving is up and running</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="k">while</span> <span class="n">serving</span><span class="o">.</span><span class="n">get_status</span><span class="p">(</span><span class="n">MODEL_NAME</span><span class="p">)</span> <span class="o">!=</span> <span class="s2">&#34;Running&#34;</span><span class="p">:</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span> <span class="c1"># Let the serving startup correctly</span>
+<span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">15</span><span class="p">)</span></code></pre></div>
+<h3 id="send-prediction-requests-to-the-served-model-using-hopsworks-rest-api">Send Prediction Requests to the Served Model using Hopsworks REST API</h3>
+
+<h4 id="constants-1">Constants</h4>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">TOPIC_NAME</span> <span class="o">=</span> <span class="n">serving</span><span class="o">.</span><span class="n">get_kafka_topic</span><span class="p">(</span><span class="n">MODEL_NAME</span><span class="p">)</span>
+<span class="n">NUM_FEATURES</span> <span class="o">=</span> <span class="mi">4</span></code></pre></div>
+<p>For making inference requests you can use the utility method <code>serving.make_inference_request</code></p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">20</span><span class="p">):</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&#34;inputs&#34;</span> <span class="p">:</span> <span class="p">[[</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">NUM_FEATURES</span><span class="p">)]]}</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">serving</span><span class="o">.</span><span class="n">make_inference_request</span><span class="p">(</span><span class="n">MODEL_NAME</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">response</span><span class="p">)</span></code></pre></div>
+<pre><code>{'predictions': [0]}
+{'predictions': [0]}
+{'predictions': [0]}
+{'predictions': [0]}
+{'predictions': [1]}
+{'predictions': [0]}
+{'predictions': [0]}
+{'predictions': [0]}
+{'predictions': [0]}
+{'predictions': [0]}
+{'predictions': [2]}
+{'predictions': [1]}
+{'predictions': [1]}
+{'predictions': [0]}
+{'predictions': [2]}
+{'predictions': [0]}
+{'predictions': [0]}
+{'predictions': [2]}
+{'predictions': [0]}
+{'predictions': [0]}
+</code></pre>
+
+<h3 id="monitor-prediction-requests-and-responses-using-kafka">Monitor Prediction Requests and Responses using Kafka</h3>
+
+<p>All prediction requestst are automatically logged to Kafka which means that you can keep track for yourr model&rsquo;s performance and its predictions in a scalable manner.</p>
+
+<h5 id="setup-kafka-consumer-and-subscribe-to-the-topic-containing-the-inference-logs">Setup Kafka Consumer and Subscribe to the Topic containing the Inference Logs</h5>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">config</span> <span class="o">=</span> <span class="n">kafka</span><span class="o">.</span><span class="n">get_kafka_default_config</span><span class="p">()</span>
+<span class="n">config</span><span class="p">[</span><span class="s1">&#39;default.topic.config&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;auto.offset.reset&#39;</span><span class="p">:</span> <span class="s1">&#39;earliest&#39;</span><span class="p">}</span>
+<span class="n">consumer</span> <span class="o">=</span> <span class="n">Consumer</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+<span class="n">topics</span> <span class="o">=</span> <span class="p">[</span><span class="n">TOPIC_NAME</span><span class="p">]</span>
+<span class="n">consumer</span><span class="o">.</span><span class="n">subscribe</span><span class="p">(</span><span class="n">topics</span><span class="p">)</span></code></pre></div>
+<h5 id="read-kafka-avro-schema-from-hopsworks-and-setup-an-avro-reader">Read Kafka Avro Schema From Hopsworks and setup an Avro Reader</h5>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">json_schema</span> <span class="o">=</span> <span class="n">kafka</span><span class="o">.</span><span class="n">get_schema</span><span class="p">(</span><span class="n">TOPIC_NAME</span><span class="p">)</span>
+<span class="n">avro_schema</span> <span class="o">=</span> <span class="n">kafka</span><span class="o">.</span><span class="n">convert_json_schema_to_avro</span><span class="p">(</span><span class="n">json_schema</span><span class="p">)</span></code></pre></div>
+<h5 id="read-lookup-table-from-the-feature-store-for-converting-numerical-labels-to-categorical">Read Lookup Table from the Feature Store for Converting Numerical Labels to Categorical</h5>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">iris_labels_lookup</span> <span class="o">=</span> <span class="n">fs</span><span class="o">.</span><span class="n">get_feature_group</span><span class="p">(</span><span class="s2">&#34;iris_labels_lookup&#34;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">iris_labels_lookup_df</span> <span class="o">=</span> <span class="n">iris_labels_lookup</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">toPandas</span><span class="p">()</span></code></pre></div>
+<h5 id="read-10-messages-from-the-kafka-topic-parse-them-with-the-avro-schema-and-print-the-results">Read 10 Messages from the Kafka Topic, parse them with the Avro Schema and print the results</h5>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">):</span>
+    <span class="n">msg</span> <span class="o">=</span> <span class="n">consumer</span><span class="o">.</span><span class="n">poll</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">msg</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">msg</span><span class="o">.</span><span class="n">value</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">event_dict</span> <span class="o">=</span> <span class="n">kafka</span><span class="o">.</span><span class="n">parse_avro_msg</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">avro_schema</span><span class="p">)</span>
+            <span class="n">prediction</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">event_dict</span><span class="p">[</span><span class="s2">&#34;inferenceResponse&#34;</span><span class="p">])[</span><span class="s2">&#34;predictions&#34;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">prediction_label</span> <span class="o">=</span> <span class="n">iris_labels_lookup_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">iris_labels_lookup_df</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">prediction</span><span class="p">,</span> 
+                                                         <span class="s1">&#39;variety&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">print</span><span class="p">(</span><span class="s2">&#34;serving: {}, version: {}, timestamp: {},&#34;</span>\
+                  <span class="s2">&#34;</span><span class="se">\n</span><span class="s2">request: {},</span><span class="se">\n</span><span class="s2">prediction:{}, prediction_label:{}, http_response_code: {},&#34;</span>\
+                  <span class="s2">&#34; serving_type: {}</span><span class="se">\n</span><span class="s2">&#34;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                       <span class="n">event_dict</span><span class="p">[</span><span class="s2">&#34;modelName&#34;</span><span class="p">],</span>
+                       <span class="n">event_dict</span><span class="p">[</span><span class="s2">&#34;modelVersion&#34;</span><span class="p">],</span>
+                       <span class="n">event_dict</span><span class="p">[</span><span class="s2">&#34;requestTimestamp&#34;</span><span class="p">],</span>
+                       <span class="n">event_dict</span><span class="p">[</span><span class="s2">&#34;inferenceRequest&#34;</span><span class="p">],</span>
+                       <span class="n">prediction</span><span class="p">,</span>
+                       <span class="n">prediction_label</span><span class="p">,</span>
+                       <span class="n">event_dict</span><span class="p">[</span><span class="s2">&#34;responseHttpCode&#34;</span><span class="p">],</span>
+                       <span class="n">event_dict</span><span class="p">[</span><span class="s2">&#34;servingType&#34;</span><span class="p">]</span>
+            <span class="p">))</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">print</span><span class="p">(</span><span class="s2">&#34;A message was read but there was an error parsing it&#34;</span><span class="p">)</span>
+            <span class="k">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="s2">&#34;timeout.. no more messages to read from topic&#34;</span><span class="p">)</span></code></pre></div>
+<pre><code>serving: IrisFlowerClassifier, version: 1, timestamp: 1611001854374,
+request: {&quot;inputs&quot;: [[6.2.4.0084664543, 3.568130402613248, 3.256361283786694, 3.815533889051669]]},
+prediction:0, prediction_label:Virginica, http_response_code: 200, serving_type: SKLEARN
+
+serving: IrisFlowerClassifier, version: 1, timestamp: 1611001854663,
+request: {&quot;inputs&quot;: [[2.104549467272691, 3.855841595083812, 2.1809689573842954, 7.3054201935268654]]},
+prediction:1, prediction_label:Versicolor, http_response_code: 200, serving_type: SKLEARN
+
+serving: IrisFlowerClassifier, version: 1, timestamp: 1611001854369,
+request: {&quot;inputs&quot;: [[2.5197741375696885, 3.6019856210460697, 5.988084110644784, 4.929172608571895]]},
+prediction:0, prediction_label:Virginica, http_response_code: 200, serving_type: SKLEARN
+
+serving: IrisFlowerClassifier, version: 1, timestamp: 1611001854370,
+request: {&quot;inputs&quot;: [[2.790629592918459, 6.346613255661463, 6.768242715172722, 4.395056647130939]]},
+prediction:0, prediction_label:Virginica, http_response_code: 200, serving_type: SKLEARN
+
+serving: IrisFlowerClassifier, version: 1, timestamp: 1611001854537,
+request: {&quot;inputs&quot;: [[5.693688739878187, 3.22.4.09536544776, 1.6153670535079878, 6.892238506908413]]},
+prediction:0, prediction_label:Virginica, http_response_code: 200, serving_type: SKLEARN
+
+serving: IrisFlowerClassifier, version: 1, timestamp: 1611001854811,
+request: {&quot;inputs&quot;: [[1.8039307150621435, 5.459763734643744, 5.700934739485684, 5.629130516769272]]},
+prediction:0, prediction_label:Virginica, http_response_code: 200, serving_type: SKLEARN
+
+serving: IrisFlowerClassifier, version: 1, timestamp: 1611001854969,
+request: {&quot;inputs&quot;: [[5.301706282342762, 3.837298958656267, 4.297962207286714, 6.196162313233638]]},
+prediction:0, prediction_label:Virginica, http_response_code: 200, serving_type: SKLEARN
+
+serving: IrisFlowerClassifier, version: 1, timestamp: 1611001855094,
+request: {&quot;inputs&quot;: [[5.457166438660897, 1.5056217919916168, 4.297327974865399, 7.227607806334344]]},
+prediction:0, prediction_label:Virginica, http_response_code: 200, serving_type: SKLEARN
+
+serving: IrisFlowerClassifier, version: 1, timestamp: 1611001855212,
+request: {&quot;inputs&quot;: [[7.316527366395298, 3.470331447165138, 7.762356350419498, 2.1049707500305]]},
+prediction:0, prediction_label:Virginica, http_response_code: 200, serving_type: SKLEARN
+
+serving: IrisFlowerClassifier, version: 1, timestamp: 1611001855312,
+request: {&quot;inputs&quot;: [[7.356021278212896, 7.97728486589621, 5.822762182464963, 4.258943610501714]]},
+prediction:0, prediction_label:Virginica, http_response_code: 200, serving_type: SKLEARN
+</code></pre>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"></code></pre></div>
+    </div>
+    <aside>
+      <div class="bug_reporting">
+	<h4>Find an error or bug?</h4>
+	<p>Everything on this site is available on GitHub. Head to <a href='https://github.com/chrisalbon/notes/issues/new'>and submit a suggested change</a>. Include the tutorial's URL in the issue.</p>
+      </div>
+    </aside>
+
+  </div>
+</article>
+
+
+
+
+            </div>
+
+        </div>
+    </div>
+
+    
+
+    <footer class="footer text-center">
+        <div class="container">
+            <span class="text-muted">This project contains 59 pages and is available on <a href="https://github.com/napsterinblue/notes">GitHub</a>. Copyright &copy; NapsterInBlue, <time datetime="2018">2018</time>.</span>
+        </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ"
+        crossorigin="anonymous"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-66582-32"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-66582-32');
+    </script>
+
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+<meta property="og:title" content="TensorFlow End-to-End Example - MNIST" />
+<meta property="og:description" content="Tensorflow Keras example with SavedModel model saving Tested with TensorFlow 2.4.0
+ Machine Learning on Hopsworks  The hops python module hops is a helper library for Hops that facilitates development by hiding the complexity of running applications and iteracting with services.
+Have a feature request or encountered an issue? Please let us know on github.
+Using the experiment module To be able to run your Machine Learning code in Hopsworks, the code for the whole program needs to be provided and put inside a wrapper function." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://examples.hopsworks.ai/ml/end_to_end_pipeline/tensorflow/model_repo_and_serving/" />
+
+
+
+<meta property="article:published_time" content="2021-02-24T00:00:00&#43;00:00"/>
+
+<meta property="article:modified_time" content="2021-02-24T00:00:00&#43;00:00"/>
+
+
+
+
+
+
+
+
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="TensorFlow End-to-End Example - MNIST"/>
+<meta name="twitter:description" content="Tensorflow Keras example with SavedModel model saving Tested with TensorFlow 2.4.0
+ Machine Learning on Hopsworks  The hops python module hops is a helper library for Hops that facilitates development by hiding the complexity of running applications and iteracting with services.
+Have a feature request or encountered an issue? Please let us know on github.
+Using the experiment module To be able to run your Machine Learning code in Hopsworks, the code for the whole program needs to be provided and put inside a wrapper function."/>
+<meta name="generator" content="Hugo 0.40.3" />
+
+    
+<script type="application/ld+json">
+  {
+  "@context": "http://schema.org",
+  "@type": "BlogPosting",
+  "headline": "TensorFlow End-to-End Example - MNIST",
+  "url": "https://examples.hopsworks.ai/ml/end_to_end_pipeline/tensorflow/model_repo_and_serving/",
+  "wordCount": "1233",
+  "datePublished": "2021-02-24T00:00:00&#43;00:00",
+  "dateModified": "2021-02-24T00:00:00&#43;00:00",
+  "author": {
+  "@type": "Person",
+  "name": ""
+  }
+  }
+</script> 
+
+    <title>TensorFlow End-to-End Example - MNIST</title>
+
+    
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb"
+        crossorigin="anonymous">
+
+    
+    <link href="https://examples.hopsworks.ai/css/custom.css" rel="stylesheet">
+    <link href="https://examples.hopsworks.ai/css/syntax.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Muli:400,500,700" rel="stylesheet">
+
+    <link href="" rel="alternate" type="application/rss+xml" title="Hopsworks Examples" />
+
+    <script type="text/javascript" async
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[','\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre','code'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+</script>
+
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-sm fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="https://examples.hopsworks.ai">Hopsworks Examples</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="nav navbar-nav mr-auto"></ul>
+                <ul class="nav navbar-nav">
+                    <li><a href="https://hopsworks.ai" title="Hopsworks.ai">hopsworks.ai</a></li>
+                    <li><a href="https://docs.hopsworks.ai" title="Docs">docs.hopsworks.ai</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+
+    
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+
+                 
+
+
+<article>
+  <div class="technical_note">
+    <header>
+      <div class="alert alert-warning flashcard_ad" role="alert">
+	Want to learn machine learning? Try my <a href="https://machinelearningflashcards.com" class="alert-link">machine learning flashcards</a>, <a href='https://amzn.to/2HwnWty' class="alert-link">book</a>, or <a href='https://www.youtube.com/channel/UCnd4Fi-ODvuPbxR2fO2j7kA' class="alert-link">study with me.</a>.
+      </div>
+      <h1 class="technical_note_title">TensorFlow End-to-End Example - MNIST</h1>
+      <div class="technical_note_date">
+	<time datetime=" 2021-02-24T00:00:00Z "> 24 Feb 2021</time>
+      </div>
+    </header>
+    <div class="content">
+
+      
+
+<h1 id="tensorflow-keras-example-with-savedmodel-model-saving">Tensorflow Keras example with SavedModel model saving</h1>
+
+<hr />
+
+<p><font color='red'> <h3>Tested with TensorFlow 2.4.0</h3></font></p>
+
+<p>
+<h1>Machine Learning on <a href="https://github.com/logicalclocks/hopsworks">Hopsworks
+</a></h1> 
+</p>
+
+<p><img src="hops.png" alt="hops.png" /></p>
+
+<h2 id="the-hops-python-module">The <code>hops</code> python module</h2>
+
+<p><code>hops</code> is a helper library for Hops that facilitates development by hiding the complexity of running applications and iteracting with services.</p>
+
+<p>Have a feature request or encountered an issue? Please let us know on <a href="https://github.com/logicalclocks/hops-util-py">github</a>.</p>
+
+<h3 id="using-the-experiment-module">Using the <code>experiment</code> module</h3>
+
+<p>To be able to run your Machine Learning code in Hopsworks, the code for the whole program needs to be provided and put inside a wrapper function. Everything, from importing libraries to reading data and defining the model and running the program needs to be put inside a wrapper function.</p>
+
+<p>The <code>experiment</code> module provides an api to Python programs such as TensorFlow, Keras and PyTorch on a Hopsworks on any number of machines and GPUs.</p>
+
+<p>An Experiment could be a single Python program, which we refer to as an <strong>Experiment</strong>.</p>
+
+<p>Grid search or genetic hyperparameter optimization such as differential evolution which runs several Experiments in parallel, which we refer to as <strong>Parallel Experiment</strong>.</p>
+
+<p>ParameterServerStrategy, CollectiveAllReduceStrategy and MultiworkerMirroredStrategy making multi-machine/multi-gpu training as simple as invoking a function for orchestration. This mode is referred to as <strong>Distributed Training</strong>.</p>
+
+<h3 id="using-the-tensorboard-module">Using the <code>tensorboard</code> module</h3>
+
+<p>The <code>tensorboard</code> module allow us to get the log directory for summaries and checkpoints to be written to the TensorBoard we will see in a bit. The only function that we currently need to call is <code>tensorboard.logdir()</code>, which returns the path to the TensorBoard log directory. Furthermore, the content of this directory will be put in as a Dataset in your project&rsquo;s Experiments folder.</p>
+
+<p>The directory could in practice be used to store other data that should be accessible after the experiment is finished.</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="c1"># Use this module to get the TensorBoard logdir</span>
+<span class="kn">from</span> <span class="nn">hops</span> <span class="kn">import</span> <span class="n">tensorboard</span>
+<span class="n">tensorboard_logdir</span> <span class="o">=</span> <span class="n">tensorboard</span><span class="o">.</span><span class="n">logdir</span><span class="p">()</span></code></pre></div>
+<h3 id="using-the-hdfs-module">Using the <code>hdfs</code> module</h3>
+
+<p>The <code>hdfs</code> module provides a method to get the path in HopsFS where your data is stored, namely by calling <code>hdfs.project_path()</code>. The path resolves to the root path for your project, which is the view that you see when you click <code>Data Sets</code> in HopsWorks. To point where your actual data resides in the project you to append the full path from there to your Dataset. For example if you create a mnist folder in your Resources Dataset, the path to the mnist data would be <code>hdfs.project_path() + 'Resources/mnist'</code></p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="c1"># Use this module to get the path to your project in HopsFS, then append the path to your Dataset in your project</span>
+<span class="kn">from</span> <span class="nn">hops</span> <span class="kn">import</span> <span class="n">hdfs</span>
+<span class="n">project_path</span> <span class="o">=</span> <span class="n">hdfs</span><span class="o">.</span><span class="n">project_path</span><span class="p">()</span></code></pre></div><div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="c1"># Downloading the mnist dataset to the current working directory</span>
+<span class="kn">from</span> <span class="nn">hops</span> <span class="kn">import</span> <span class="n">hdfs</span>
+<span class="n">mnist_hdfs_path</span> <span class="o">=</span> <span class="n">hdfs</span><span class="o">.</span><span class="n">project_path</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&#34;Resources/mnist&#34;</span>
+<span class="n">local_mnist_path</span> <span class="o">=</span> <span class="n">hdfs</span><span class="o">.</span><span class="n">copy_to_local</span><span class="p">(</span><span class="n">mnist_hdfs_path</span><span class="p">)</span></code></pre></div>
+<h3 id="documentation">Documentation</h3>
+
+<p>See the following links to learn more about running experiments in Hopsworks</p>
+
+<ul>
+<li><a href="https://hopsworks.readthedocs.io/en/latest/hopsml/experiment.html">Learn more about experiments</a>
+<br></li>
+<li><a href="https://hopsworks.readthedocs.io/en/latest/hopsml/hopsML.html">Building End-To-End pipelines</a>
+<br></li>
+<li>Give us a star, create an issue or a feature request on  <a href="https://github.com/logicalclocks/hopsworks">Hopsworks github</a></li>
+</ul>
+
+<h3 id="managing-experiments">Managing experiments</h3>
+
+<p>Experiments service provides a unified view of all the experiments run using the <code>experiment</code> module.
+<br>
+As demonstrated in the gif it provides general information about the experiment and the resulting metric. Experiments can be visualized meanwhile or after training in a TensorBoard.
+<br>
+<br>
+<img src="experiments.gif" alt="Image7-Monitor.png" /></p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">keras_mnist</span><span class="p">():</span>
+    
+    <span class="kn">import</span> <span class="nn">os</span>
+    <span class="kn">import</span> <span class="nn">sys</span>
+    <span class="kn">import</span> <span class="nn">uuid</span>
+    <span class="kn">import</span> <span class="nn">random</span>
+    
+    <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+    
+    <span class="kn">from</span> <span class="nn">tensorflow</span> <span class="kn">import</span> <span class="n">keras</span>
+    <span class="kn">import</span> <span class="nn">tensorflow</span> <span class="kn">as</span> <span class="nn">tf</span>
+    <span class="kn">from</span> <span class="nn">tensorflow.keras.datasets</span> <span class="kn">import</span> <span class="n">mnist</span>
+    <span class="kn">from</span> <span class="nn">tensorflow.keras.models</span> <span class="kn">import</span> <span class="n">Sequential</span>
+    <span class="kn">from</span> <span class="nn">tensorflow.keras.layers</span> <span class="kn">import</span> <span class="n">Dense</span><span class="p">,</span> <span class="n">Dropout</span><span class="p">,</span> <span class="n">Flatten</span>
+    <span class="kn">from</span> <span class="nn">tensorflow.keras.layers</span> <span class="kn">import</span> <span class="n">Conv2D</span><span class="p">,</span> <span class="n">MaxPooling2D</span>
+    <span class="kn">from</span> <span class="nn">tensorflow.keras.callbacks</span> <span class="kn">import</span> <span class="n">TensorBoard</span>
+    <span class="kn">from</span> <span class="nn">tensorflow.keras</span> <span class="kn">import</span> <span class="n">backend</span> <span class="k">as</span> <span class="n">K</span>
+
+    <span class="kn">import</span> <span class="nn">math</span>
+    <span class="kn">from</span> <span class="nn">hops</span> <span class="kn">import</span> <span class="n">tensorboard</span>
+
+    <span class="kn">from</span> <span class="nn">hops</span> <span class="kn">import</span> <span class="n">model</span> <span class="k">as</span> <span class="n">hops_model</span>
+    <span class="kn">from</span> <span class="nn">hops</span> <span class="kn">import</span> <span class="n">hdfs</span>
+
+    <span class="kn">import</span> <span class="nn">pydoop.hdfs</span> <span class="kn">as</span> <span class="nn">pydoop</span>
+    
+
+    <span class="n">batch_size</span><span class="o">=</span><span class="mi">32</span>
+    <span class="n">num_classes</span> <span class="o">=</span> <span class="mi">10</span>
+
+    
+    <span class="c1"># Provide path to train and validation datasets</span>
+    <span class="n">train_filenames</span> <span class="o">=</span> <span class="p">[</span><span class="n">hdfs</span><span class="o">.</span><span class="n">project_path</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&#34;TourData/mnist/train/train.tfrecords&#34;</span><span class="p">]</span>
+    <span class="n">validation_filenames</span> <span class="o">=</span> <span class="p">[</span><span class="n">hdfs</span><span class="o">.</span><span class="n">project_path</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&#34;TourData/mnist/validation/validation.tfrecords&#34;</span><span class="p">]</span>
+    
+    <span class="c1"># Define input function</span>
+    <span class="k">def</span> <span class="nf">data_input</span><span class="p">(</span><span class="n">filenames</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span> <span class="n">num_classes</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">repeat</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+
+        <span class="k">def</span> <span class="nf">parser</span><span class="p">(</span><span class="n">serialized_example</span><span class="p">):</span>
+            <span class="s2">&#34;&#34;&#34;Parses a single tf.Example into image and label tensors.&#34;&#34;&#34;</span>
+            <span class="n">features</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">parse_single_example</span><span class="p">(</span>
+                <span class="n">serialized_example</span><span class="p">,</span>
+                <span class="n">features</span><span class="o">=</span><span class="p">{</span>
+                    <span class="s1">&#39;image_raw&#39;</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">FixedLenFeature</span><span class="p">([],</span> <span class="n">tf</span><span class="o">.</span><span class="n">string</span><span class="p">),</span>
+                    <span class="s1">&#39;label&#39;</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">FixedLenFeature</span><span class="p">([],</span> <span class="n">tf</span><span class="o">.</span><span class="n">int64</span><span class="p">),</span>
+                <span class="p">})</span>
+            <span class="n">image</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">decode_raw</span><span class="p">(</span><span class="n">features</span><span class="p">[</span><span class="s1">&#39;image_raw&#39;</span><span class="p">],</span> <span class="n">tf</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
+            <span class="n">image</span><span class="o">.</span><span class="n">set_shape</span><span class="p">([</span><span class="mi">28</span> <span class="o">*</span> <span class="mi">28</span><span class="p">])</span>
+
+            <span class="c1"># Normalize the values of the image from the range [0, 255] to [-0.5, 0.5]</span>
+            <span class="n">image</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">tf</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span> <span class="o">/</span> <span class="mi">255</span> <span class="o">-</span> <span class="mf">0.5</span>
+            <span class="n">label</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="n">features</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">],</span> <span class="n">tf</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+    
+            <span class="c1"># Create a one hot array for your labels</span>
+            <span class="n">label</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">one_hot</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">)</span>
+            
+            <span class="k">return</span> <span class="n">image</span><span class="p">,</span> <span class="n">label</span>
+
+        <span class="c1"># Import MNIST data</span>
+        <span class="n">dataset</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">TFRecordDataset</span><span class="p">(</span><span class="n">filenames</span><span class="p">)</span>
+
+        <span class="c1"># Map the parser over dataset, and batch results by up to batch_size</span>
+        <span class="n">dataset</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="nb">map</span><span class="p">(</span><span class="n">parser</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">shuffle</span><span class="p">:</span>
+            <span class="n">dataset</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">buffer_size</span><span class="o">=</span><span class="mi">128</span><span class="p">)</span>
+        <span class="n">dataset</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">batch</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">drop_remainder</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="n">dataset</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">repeat</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">dataset</span>
+
+    <span class="c1"># Define a Keras Model.</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">Sequential</span><span class="p">()</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;relu&#39;</span><span class="p">,</span> <span class="n">input_shape</span><span class="o">=</span><span class="p">(</span><span class="mi">784</span><span class="p">,)))</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="n">num_classes</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;softmax&#39;</span><span class="p">))</span>
+
+    <span class="c1"># Compile the model.</span>
+    <span class="n">model</span><span class="o">.</span><span class="nb">compile</span><span class="p">(</span><span class="n">loss</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">losses</span><span class="o">.</span><span class="n">categorical_crossentropy</span><span class="p">,</span>
+                  <span class="n">optimizer</span><span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">optimizers</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="mf">0.001</span><span class="p">),</span>
+                  <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;accuracy&#39;</span><span class="p">]</span>
+                 <span class="p">)</span>
+        
+    <span class="n">callbacks</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">TensorBoard</span><span class="p">(</span><span class="n">log_dir</span><span class="o">=</span><span class="n">tensorboard</span><span class="o">.</span><span class="n">logdir</span><span class="p">()),</span>
+        <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">ModelCheckpoint</span><span class="p">(</span><span class="n">filepath</span><span class="o">=</span><span class="n">tensorboard</span><span class="o">.</span><span class="n">logdir</span><span class="p">()),</span>
+    <span class="p">]</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">data_input</span><span class="p">(</span><span class="n">train_filenames</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">),</span> 
+        <span class="n">verbose</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">epochs</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> 
+        <span class="n">steps_per_epoch</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+        <span class="n">validation_data</span><span class="o">=</span><span class="n">data_input</span><span class="p">(</span><span class="n">validation_filenames</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">),</span>
+        <span class="n">validation_steps</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>                    
+        <span class="n">callbacks</span><span class="o">=</span><span class="n">callbacks</span>
+    <span class="p">)</span>
+    
+    <span class="n">score</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">data_input</span><span class="p">(</span><span class="n">validation_filenames</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">),</span> <span class="n">steps</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># Export model</span>
+    <span class="c1"># WARNING(break-tutorial-inline-code): The following code snippet is</span>
+    <span class="c1"># in-lined in tutorials, please update tutorial documents accordingly</span>
+    <span class="c1"># whenever code changes.</span>
+
+    <span class="n">export_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39;/model-&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">())</span>
+    <span class="k">print</span><span class="p">(</span><span class="s1">&#39;Exporting trained model to: {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">export_path</span><span class="p">))</span>
+    
+    <span class="n">tf</span><span class="o">.</span><span class="n">saved_model</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">export_path</span><span class="p">)</span>
+
+    <span class="k">print</span><span class="p">(</span><span class="s1">&#39;Done exporting!&#39;</span><span class="p">)</span>
+    
+    <span class="n">metrics</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;accuracy&#39;</span><span class="p">:</span> <span class="n">score</span><span class="p">[</span><span class="mi">1</span><span class="p">]}</span>
+    
+    <span class="n">hops_model</span><span class="o">.</span><span class="n">export</span><span class="p">(</span><span class="n">export_path</span><span class="p">,</span> <span class="s2">&#34;mnist&#34;</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="n">metrics</span><span class="p">)</span>    
+    
+    <span class="k">return</span> <span class="n">metrics</span></code></pre></div><div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="kn">from</span> <span class="nn">hops</span> <span class="kn">import</span> <span class="n">experiment</span>
+<span class="kn">from</span> <span class="nn">hops</span> <span class="kn">import</span> <span class="n">hdfs</span>
+
+<span class="n">experiment</span><span class="o">.</span><span class="n">launch</span><span class="p">(</span><span class="n">keras_mnist</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;mnist model&#39;</span><span class="p">,</span> <span class="n">local_logdir</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">metric_key</span><span class="o">=</span><span class="s1">&#39;accuracy&#39;</span><span class="p">)</span></code></pre></div>
+<pre><code>Finished Experiment 
+
+('hdfs://rpc.namenode.service.consul:8020/Projects/demo_ml_meb10000/Experiments/application_1612897516680_0003_2', {'accuracy': 0.71875, 'log': 'Experiments/application_1612897516680_0003_2/output.log'})
+</code></pre>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"></code></pre></div>
+<h1 id="check-model-repository-for-best-model-based-on-accuracy">Check Model Repository for best model based on accuracy</h1>
+
+<p><img src="models.gif" alt="Image7-Monitor.png" /></p>
+
+<h1 id="query-model-repository-for-best-mnist-model">Query Model Repository for best mnist Model</h1>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="kn">from</span> <span class="nn">hops</span> <span class="kn">import</span> <span class="n">model</span>
+<span class="kn">from</span> <span class="nn">hops.model</span> <span class="kn">import</span> <span class="n">Metric</span>
+<span class="n">MODEL_NAME</span><span class="o">=</span><span class="s2">&#34;mnist&#34;</span>
+<span class="n">EVALUATION_METRIC</span><span class="o">=</span><span class="s2">&#34;accuracy&#34;</span></code></pre></div><div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">best_model</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">get_best_model</span><span class="p">(</span><span class="n">MODEL_NAME</span><span class="p">,</span> <span class="n">EVALUATION_METRIC</span><span class="p">,</span> <span class="n">Metric</span><span class="o">.</span><span class="n">MAX</span><span class="p">)</span></code></pre></div><div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="k">print</span><span class="p">(</span><span class="s1">&#39;Model name: &#39;</span> <span class="o">+</span> <span class="n">best_model</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">])</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;Model version: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">best_model</span><span class="p">[</span><span class="s1">&#39;version&#39;</span><span class="p">]))</span>
+<span class="k">print</span><span class="p">(</span><span class="n">best_model</span><span class="p">[</span><span class="s1">&#39;metrics&#39;</span><span class="p">])</span></code></pre></div>
+<pre><code>Model name: mnist
+Model version: 1
+{'loss': '0.2189614474773407', 'accuracy': '0.9399999976158142'}
+</code></pre>
+
+<h1 id="create-model-serving-of-exported-model">Create Model Serving of Exported Model</h1>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="kn">from</span> <span class="nn">hops</span> <span class="kn">import</span> <span class="n">serving</span></code></pre></div><div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="c1"># Create serving</span>
+<span class="n">model_path</span><span class="o">=</span><span class="s2">&#34;/Models/&#34;</span> <span class="o">+</span> <span class="n">best_model</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">serving</span><span class="o">.</span><span class="n">create_or_update</span><span class="p">(</span><span class="n">model_path</span><span class="p">,</span> <span class="n">MODEL_NAME</span><span class="p">,</span> <span class="n">serving_type</span><span class="o">=</span><span class="s2">&#34;TENSORFLOW&#34;</span><span class="p">,</span> 
+                                 <span class="n">model_version</span><span class="o">=</span><span class="n">best_model</span><span class="p">[</span><span class="s1">&#39;version&#39;</span><span class="p">])</span></code></pre></div>
+<pre><code>Creating a serving for model mnist ...
+Serving for model mnist successfully created
+</code></pre>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="c1"># List all available servings in the project</span>
+<span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">serving</span><span class="o">.</span><span class="n">get_all</span><span class="p">():</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">name</span><span class="p">)</span></code></pre></div>
+<pre><code>mnist
+</code></pre>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="c1"># Get serving status</span>
+<span class="n">serving</span><span class="o">.</span><span class="n">get_status</span><span class="p">(</span><span class="n">MODEL_NAME</span><span class="p">)</span></code></pre></div>
+<pre><code>'Running'
+</code></pre>
+
+<h1 id="check-model-serving-for-active-servings">Check Model Serving for active servings</h1>
+
+<p><img src="servings.gif" alt="Image7-Monitor.png" /></p>
+
+<h1 id="start-model-serving-server">Start Model Serving Server</h1>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="k">if</span> <span class="n">serving</span><span class="o">.</span><span class="n">get_status</span><span class="p">(</span><span class="n">MODEL_NAME</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;Stopped&#39;</span><span class="p">:</span>
+    <span class="n">serving</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="n">MODEL_NAME</span><span class="p">)</span></code></pre></div><div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="kn">import</span> <span class="nn">time</span>
+<span class="k">while</span> <span class="n">serving</span><span class="o">.</span><span class="n">get_status</span><span class="p">(</span><span class="n">MODEL_NAME</span><span class="p">)</span> <span class="o">!=</span> <span class="s2">&#34;Running&#34;</span><span class="p">:</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span> <span class="c1"># Let the serving startup correctly</span>
+<span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span></code></pre></div>
+<h1 id="send-prediction-requests-to-the-served-model-using-hopsworks-rest-api">Send Prediction Requests to the Served Model using Hopsworks REST API</h1>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="n">TOPIC_NAME</span> <span class="o">=</span> <span class="n">serving</span><span class="o">.</span><span class="n">get_kafka_topic</span><span class="p">(</span><span class="n">MODEL_NAME</span><span class="p">)</span></code></pre></div><div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="kn">import</span> <span class="nn">json</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">20</span><span class="p">):</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">&#34;signature_name&#34;</span><span class="p">:</span> <span class="s2">&#34;serving_default&#34;</span><span class="p">,</span> <span class="s2">&#34;instances&#34;</span><span class="p">:</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">28</span><span class="p">,</span><span class="mi">28</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">()]</span>
+            <span class="p">}</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">serving</span><span class="o">.</span><span class="n">make_inference_request</span><span class="p">(</span><span class="n">MODEL_NAME</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">response</span><span class="p">)</span></code></pre></div>
+<pre><code>{'predictions': [[0.0779212415, 0.0206528381, 0.288687557, 0.121848293, 0.0503108464, 0.0873510465, 0.0276066549, 0.0781907663, 0.187041953, 0.0603887737]]}
+{'predictions': [[0.0436310805, 0.0138141597, 0.57867527, 0.135367453, 0.0119447764, 0.0748140812, 0.0262800828, 0.0130807236, 0.0904700607, 0.0119222971]]}
+{'predictions': [[0.14787294, 0.0144916158, 0.211063772, 0.0886604413, 0.0765435249, 0.109248385, 0.0546173975, 0.0572717749, 0.144594878, 0.0956352279]]}
+{'predictions': [[0.0628308281, 0.0197642893, 0.166323707, 0.120164581, 0.110938296, 0.170455411, 0.0530575439, 0.039069593, 0.15719, 0.100205734]]}
+{'predictions': [[0.0865588859, 0.0134802843, 0.200187, 0.169498667, 0.0459059887, 0.176918358, 0.0365497172, 0.0835796371, 0.138965875, 0.0483556092]]}
+{'predictions': [[0.0743007287, 0.0101258708, 0.261402428, 0.151558295, 0.0459520668, 0.127735451, 0.0289862081, 0.0383619443, 0.206681922, 0.0548950806]]}
+{'predictions': [[0.0573974513, 0.0199554805, 0.558617473, 0.0993415, 0.0227744412, 0.055287905, 0.0484865718, 0.0163362753, 0.0938799232, 0.0279229097]]}
+{'predictions': [[0.136011392, 0.0193816, 0.23983492, 0.104724601, 0.0435764454, 0.137507305, 0.0530057438, 0.0424882658, 0.188378915, 0.0350908265]]}
+{'predictions': [[0.0808366537, 0.0113092614, 0.196437895, 0.172132432, 0.0288104489, 0.20395799, 0.030593086, 0.0359038971, 0.199317485, 0.0407008566]]}
+{'predictions': [[0.0712962598, 0.0114868265, 0.196357056, 0.123690538, 0.0602613166, 0.16008386, 0.0313527249, 0.0852302611, 0.19700855, 0.0632326]]}
+{'predictions': [[0.112053499, 0.0147394678, 0.308953404, 0.10064631, 0.0105951196, 0.167411461, 0.0353867784, 0.0231331754, 0.207064912, 0.0200158209]]}
+{'predictions': [[0.119645983, 0.0123673091, 0.137011141, 0.10019888, 0.0733054131, 0.136026412, 0.0469873697, 0.0548896119, 0.239629224, 0.0799387544]]}
+{'predictions': [[0.110211149, 0.0151611241, 0.340642899, 0.124443188, 0.0493035726, 0.09111882, 0.0440291278, 0.0462933369, 0.122960515, 0.0558362901]]}
+{'predictions': [[0.0952871442, 0.0246779732, 0.190254971, 0.150301486, 0.0448088124, 0.186811075, 0.0349477455, 0.0800457075, 0.146037623, 0.046827469]]}
+{'predictions': [[0.0853213891, 0.0198458154, 0.205136046, 0.138573796, 0.0435453393, 0.22410652, 0.0379152261, 0.0488636941, 0.143376201, 0.0533159822]]}
+{'predictions': [[0.100863017, 0.0103625813, 0.369757593, 0.167217165, 0.0243374724, 0.12725547, 0.0223250668, 0.0423610508, 0.105823614, 0.0296969116]]}
+{'predictions': [[0.0927432254, 0.0068268911, 0.166491747, 0.0584302619, 0.0927049592, 0.243103638, 0.069480285, 0.0320171155, 0.162074924, 0.0761269629]]}
+{'predictions': [[0.0440622643, 0.0147205563, 0.317738354, 0.170422316, 0.0237440355, 0.148835912, 0.0301028509, 0.0189738106, 0.193881959, 0.0375178754]]}
+{'predictions': [[0.0493963882, 0.0283130165, 0.288004, 0.189685568, 0.0558851101, 0.111049548, 0.0214466415, 0.0489067659, 0.145695582, 0.0616173148]]}
+{'predictions': [[0.151540339, 0.0123999268, 0.337026715, 0.126781777, 0.0202505738, 0.0851887465, 0.0370752886, 0.0556211509, 0.141307309, 0.0328081362]]}
+</code></pre>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"></code></pre></div>
+    </div>
+    <aside>
+      <div class="bug_reporting">
+	<h4>Find an error or bug?</h4>
+	<p>Everything on this site is available on GitHub. Head to <a href='https://github.com/chrisalbon/notes/issues/new'>and submit a suggested change</a>. Include the tutorial's URL in the issue.</p>
+      </div>
+    </aside>
+
+  </div>
+</article>
+
+
+
+
+            </div>
+
+        </div>
+    </div>
+
+    
+
+    <footer class="footer text-center">
+        <div class="container">
+            <span class="text-muted">This project contains 59 pages and is available on <a href="https://github.com/napsterinblue/notes">GitHub</a>. Copyright &copy; NapsterInBlue, <time datetime="2018">2018</time>.</span>
+        </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ"
+        crossorigin="anonymous"></script>
+
+</body>
+
+</html>

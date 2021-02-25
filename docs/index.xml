@@ -1,0 +1,653 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Hopsworks Examples</title>
+    <link>https://examples.hopsworks.ai/</link>
+    <description>Recent content on Hopsworks Examples</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 24 Feb 2021 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://examples.hopsworks.ai/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Benchmark GPU vs CPU with TensorFlow</title>
+      <link>https://examples.hopsworks.ai/ml/benchmarks/benchmark/</link>
+      <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://examples.hopsworks.ai/ml/benchmarks/benchmark/</guid>
+      <description>Benchmark GPU vs CPU &amp;amp; multi-host vs single host This notebook can be used to benchmark performance using CPU, a single GPU or many GPUs.
+Tested with TensorFlow 2.4.0
+ Machine Learning on Hopsworks  The hops python module hops is a helper library for Hops that facilitates development by hiding the complexity of running applications and iteracting with services.
+Have a feature request or encountered an issue? Please let us know on github.</description>
+    </item>
+    
+    <item>
+      <title>Databricks Azure Feature Store Quickstart</title>
+      <link>https://examples.hopsworks.ai/featurestore/databricks/featurestorequickstartdatabricksazure/</link>
+      <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://examples.hopsworks.ai/featurestore/databricks/featurestorequickstartdatabricksazure/</guid>
+      <description>Feature Store Quick Start This notebook gives you a quick overview of how you can intergrate the Feature Store on Hopsworks with Databricks and Azure ADL. We&amp;rsquo;ll go over four steps:
+ Generate some sample data and store it on ADL Do some feature engineering with Databricks and the data from ADL Save the engineered features to the Feature Store Select a group of the features from the Feature Store and create a training dataset  This requries configuring the Databricks cluster to be able to interact with Hopsworks Feature Store, see Databricks Quick Start.</description>
+    </item>
+    
+    <item>
+      <title>Databricks Feature AWS Store Quickstart</title>
+      <link>https://examples.hopsworks.ai/featurestore/databricks/featurestorequickstartdatabricksaws/</link>
+      <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://examples.hopsworks.ai/featurestore/databricks/featurestorequickstartdatabricksaws/</guid>
+      <description>Databricks AWS Feature Store Quick Start This notebook gives you a quick overview of how you can intergrate the Feature Store on Hopsworks with Databricks and S3. We&amp;rsquo;ll go over four steps:
+ Generate some sample data and store it on S3 Do some feature engineering with Databricks and the data from S3 Save the engineered features to the Feature Store Select a group of the features from the Feature Store and create a training dataset of tf records stored on S3  This requries configuring the Databricks cluster to be able to interact with Hopsworks Feature Store, see Databricks Quick Start.</description>
+    </item>
+    
+    <item>
+      <title>Dataset Images on the Feature Store</title>
+      <link>https://examples.hopsworks.ai/featurestore/image_datasets/imagedatasetfeaturestore/</link>
+      <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://examples.hopsworks.ai/featurestore/image_datasets/imagedatasetfeaturestore/</guid>
+      <description>Example of Using a Raw Image Dataset in the Feature Store Images are often stored in binary formats for training machine learning models, such as tfrecords or parquet. However, sometimes it can be useful to store a large image dataset in a folder with one file per image, such as .jpg or .png.
+This notebook will demonstrate how to create a training dataset with .jpg files in the Hopsworks Feature Store</description>
+    </item>
+    
+    <item>
+      <title>Delta Lake on the Feature Store</title>
+      <link>https://examples.hopsworks.ai/featurestore/delta/deltaonhops/</link>
+      <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://examples.hopsworks.ai/featurestore/delta/deltaonhops/</guid>
+      <description>Delta Lake on Hops This notebook contains some examples of how you can use Delta Lake on Hops.
+Delta Lake is an open-source storage layer that brings ACID transactions to Apache Spark and big data workloads.
+Key Features:
+ ACID Transactions:Data lakes typically have multiple data pipelines reading and writing data concurrently, and data engineers have to go through a tedious process to ensure data integrity, due to the lack of transactions.</description>
+    </item>
+    
+    <item>
+      <title>Elasticsearch Python Example</title>
+      <link>https://examples.hopsworks.ai/spark/elasticsearch-python/</link>
+      <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://examples.hopsworks.ai/spark/elasticsearch-python/</guid>
+      <description>ElasticSearch In this example notebook we show how to write/read data to/from Elasticsearch using spark. We use the dataset from American Kennel Club dog breed data
+Setup  Dowload the dataset
+wget -O akc_breed_info.csv https://query.data.world/s/msmjhcmdjslsvjzcaqmtreu52gkuno  Upload akc_breed_info.csv to your resources dataset
+  Writing to Elasticsearch from hops import elasticsearch, hdfs df = spark.read.option(&amp;#34;header&amp;#34;,&amp;#34;true&amp;#34;).csv(&amp;#34;hdfs:///Projects/&amp;#34; + hdfs.project_name() + &amp;#34;/Resources/akc_breed_info.csv&amp;#34;) df.write.format( &amp;#39;org.elasticsearch.spark.sql&amp;#39; ).options( **elasticsearch.get_elasticsearch_config(&amp;#34;newindex&amp;#34;) ).mode(&amp;#34;Overwrite&amp;#34;).save() Reading from Elasticsearch reader = spark.</description>
+    </item>
+    
+    <item>
+      <title>Elasticsearch Scala Example</title>
+      <link>https://examples.hopsworks.ai/spark/elasticsearch-scala/</link>
+      <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://examples.hopsworks.ai/spark/elasticsearch-scala/</guid>
+      <description>ElasticSearch In this example notebook we show how to write/read data to/from Elasticsearch using spark. We use the dataset from American Kennel Club dog breed data
+Setup  Dowload the dataset
+wget -O akc_breed_info.csv https://query.data.world/s/msmjhcmdjslsvjzcaqmtreu52gkuno  Upload akc_breed_info.csv to your resources dataset
+  Writing to Elasticsearch import io.hops.util.Hops val df = spark.read.option(&amp;#34;header&amp;#34;,&amp;#34;true&amp;#34;).csv(&amp;#34;hdfs:///Projects/&amp;#34;+ Hops.getProjectName() +&amp;#34;/Resources/akc_breed_info.csv&amp;#34;) (df.write .format(&amp;#34;org.elasticsearch.spark.sql&amp;#34;) .options(Hops.getElasticConfiguration(&amp;#34;newindex&amp;#34;)) .mode(&amp;#34;Overwrite&amp;#34;) .save()) import io.hops.util.Hops df: org.apache.spark.sql.DataFrame = [Breed: string, height_low_inches: string .</description>
+    </item>
+    
+    <item>
+      <title>Feature Ingestion from Redshift</title>
+      <link>https://examples.hopsworks.ai/featurestore/aws/redshift/redshift_pyspark/</link>
+      <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://examples.hopsworks.ai/featurestore/aws/redshift/redshift_pyspark/</guid>
+      <description>Redshift Integration This notebooks guides through the ingestion of Redshift data in the Hopsworks feature store. To follow this notebook users should have an existing Redshift cluster, if not, they can follow the AWS documentation.
+The data for this tutorial is available in CSV format [here]() Users should create the following table in Redshift
+CREATE TABLE telco( customer_id varchar(200), gender varchar(200), senior_citizen integer, partner varchar(200), dependents varchar(200), tenure integer, phone_service varchar(200), multiple_lines varchar(200), internet_service varchar(200), online_security varchar(200), online_backup varchar(200), device_protection varchar(200), tech_support varchar(200), streaming_tv varchar(200), streaming_movies varchar(200), contract varchar(200), paperless_billing varchar(200), payment_method varchar(200), monthly_charges double precision, total_charges varchar(200), churn varchar(200) ) and populate the table using the copy command:</description>
+    </item>
+    
+    <item>
+      <title>Feature Ingestion from Redshift</title>
+      <link>https://examples.hopsworks.ai/featurestore/aws/redshift/redshift_spark/</link>
+      <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://examples.hopsworks.ai/featurestore/aws/redshift/redshift_spark/</guid>
+      <description>Redshift Integration This notebooks guides through the ingestion of Redshift data in the Hopsworks feature store. To follow this notebook users should have an existing Redshift cluster, if not, they can follow the AWS documentation.
+The data for this tutorial is available in CSV format [here]() Users should create the following table in Redshift
+CREATE TABLE telco( customer_id varchar(200), gender varchar(200), senior_citizen integer, partner varchar(200), dependents varchar(200), tenure integer, phone_service varchar(200), multiple_lines varchar(200), internet_service varchar(200), online_security varchar(200), online_backup varchar(200), device_protection varchar(200), tech_support varchar(200), streaming_tv varchar(200), streaming_movies varchar(200), contract varchar(200), paperless_billing varchar(200), payment_method varchar(200), monthly_charges double precision, total_charges varchar(200), churn varchar(200) ) and populate the table using the copy command:</description>
+    </item>
+    
+    <item>
+      <title>Feature Ingestion from S3</title>
+      <link>https://examples.hopsworks.ai/featurestore/aws/s3-featurestore/</link>
+      <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://examples.hopsworks.ai/featurestore/aws/s3-featurestore/</guid>
+      <description>Get started with S3 and the Feature Store This tutorial notebook will help you get started with working with the Hopsworks feature store and S3.
+To execute this tutorial, you can use the sample data from here - and place it in a S3 bucket.
+Before starting with the execution, you should also create a S3 storage connector pointing to the bucket where you uploaded the data. You can follow the Hopsworks documentation to see how you can create the storage connector from the feature store UI.</description>
+    </item>
+    
+    <item>
+      <title>Hive Feature Store Python Example</title>
+      <link>https://examples.hopsworks.ai/hive/pyhive/</link>
+      <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://examples.hopsworks.ai/hive/pyhive/</guid>
+      <description>Data Exploration and Reporting with PyHive In this example we show how to explore data in Hive and build reports.
+The example uses a dataset of real estate sales in the Sacramento area, which you can download from here. Create a dataset with a name of your choosing, for example RawData and upload the CSV file. Make sure the dataset is empty, you will need to delete the auto-generated README.</description>
+    </item>
+    
+    <item>
+      <title>Hive PySpark Example</title>
+      <link>https://examples.hopsworks.ai/spark/pysparkwithhive/</link>
+      <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://examples.hopsworks.ai/spark/pysparkwithhive/</guid>
+      <description>PySpark With Hive In this notebook we&amp;rsquo;ll cover how you can read/write to Hive using SparkSQL, this notebook assumes that you have enabled the service &amp;ldquo;Hive&amp;rdquo; in your project
+Create a SparkSession with Hive Enabled sparkmagic automatically creates a spark session in the cluster for us with Hive enabled
+spark Starting Spark application   IDYARN Application IDKindStateSpark UIDriver logCurrent session?0application_1540813611542_0002pysparkidleLinkLink✔ SparkSession available as &#39;spark&#39;. &amp;lt;pyspark.sql.session.SparkSession object at 0x7f183f464860&amp;gt;  Select Hive Database Using the spark session you can interact with Hive through the sql method on the sparkSession, or through auxillary methods likes .</description>
+    </item>
+    
+    <item>
+      <title>HopsFS Example in PySpark/Python</title>
+      <link>https://examples.hopsworks.ai/ml/filesystem/hopsfsoperations/</link>
+      <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://examples.hopsworks.ai/ml/filesystem/hopsfsoperations/</guid>
+      <description>Interacting with HopsFS HopsFS is a fork of the Hadoop Distributed File System (HDFS).
+To see what distinguishes HopsFS from HDFS from an architecural point of view refer to:
+ blogpost papers  To interact with HopsFS from python, you can use the hdfs module in the hops-util-py library, it provides an easy-to-use API that resembles interaction with the local filesystem using the python os module.
+Import the Module from hops import hdfs Getting Project Information When interacting with HopsFS from Hopsworks, you are always inside a project.</description>
+    </item>
+    
+    <item>
+      <title>Hsfs - Feature Engineering</title>
+      <link>https://examples.hopsworks.ai/featurestore/hsfs/feature_engineering/</link>
+      <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://examples.hopsworks.ai/featurestore/hsfs/feature_engineering/</guid>
+      <description>Feature Store Tour - Python API This set of notebooks contain a tour/reference for the Hopsworks feature store Scala/Java API. The notebook is meant to be run from feature store demo projects on Hopsworks. We will go over best practices for using the API as well as common pitfalls.
+There are 3 notebooks: - Feature groups: Discover how to work with features and feature groups, both offline and online - Feature Exploration: Discover how to join features from different feature groups - Training datasets: Discover how to save training datasets to be used by ML models</description>
+    </item>
+    
+    <item>
+      <title>Hsfs - Feature Exploration</title>
+      <link>https://examples.hopsworks.ai/featurestore/hsfs/feature_exploration/</link>
+      <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://examples.hopsworks.ai/featurestore/hsfs/feature_exploration/</guid>
+      <description>HSFS feature exploration In this notebook we are going to walk through how to use the HSFS library to explore feature groups and features in the Hopsworks Feature Store.
+A key component of the Hopsworks feature store is to enable sharing and re-using of features across models and use cases. As such, the HSFS libraries allows user to join features from different feature groups and use them to create training datasets.</description>
+    </item>
+    
+    <item>
+      <title>Hsfs - Feature Validation with Python</title>
+      <link>https://examples.hopsworks.ai/featurestore/hsfs/data_validation/feature_validation_python/</link>
+      <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://examples.hopsworks.ai/featurestore/hsfs/data_validation/feature_validation_python/</guid>
+      <description>Feature Validation with the Hopsworks Feature Store In this notebook we introduce feature validation operations with the Hopsworks Feature Store and its client API, hsfs.
+Background Motivation Data ingested into the Feature Store form the basis for the data fed as input to algorithms that develope machine learning models. The Feature store is a place where curated feature data is stored, therefore it is important that this data is validated against different rules to it adheres to business requirements.</description>
+    </item>
+    
+    <item>
+      <title>Hsfs - Feature Validation with Scala</title>
+      <link>https://examples.hopsworks.ai/featurestore/hsfs/data_validation/feature_validation_scala/</link>
+      <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://examples.hopsworks.ai/featurestore/hsfs/data_validation/feature_validation_scala/</guid>
+      <description>Feature Validation with the Hopsworks Feature Store In this notebook we introduce feature validation operations with the Hopsworks Feature Store and its client API, hsfs.
+Background Motivation Data ingested into the Feature Store form the basis for the data fed as input to algorithms that develope machine learning models. The Feature store is a place where curated feature data is stored, therefore it is important that this data is validated against different rules to it adheres to business requirements.</description>
+    </item>
+    
+    <item>
+      <title>Hsfs - Training Dataset Creation</title>
+      <link>https://examples.hopsworks.ai/featurestore/hsfs/training_datasets/</link>
+      <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://examples.hopsworks.ai/featurestore/hsfs/training_datasets/</guid>
+      <description>HSFS training datasets Training datasets is the third building block of the Hopsworks Feature Store. Data scientists can query the feature store (see feature_exploration notebook) and materialize their query in training datasets.
+Training datasets can be saved in a ML framework friendly format (eg. TfRecords, CSV, Numpy) and then be fed to a machine learning model for training.
+Training datasets can also be stored on external storage systems like Amazon S3 or GCS to be read by external model training platforms.</description>
+    </item>
+    
+    <item>
+      <title>Image Feature Group on the Feature Store</title>
+      <link>https://examples.hopsworks.ai/featurestore/image_datasets/imagefeaturegroup/</link>
+      <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://examples.hopsworks.ai/featurestore/image_datasets/imagefeaturegroup/</guid>
+      <description>Example of Save Image Data as a Feature Group in the Feature Store Often, image data can be fed in as raw data to deep learning models and requires less feature engineering than other type of data. Thus, in many cases you would not need need to store image data as a feature group in the feature store, but rather you would save it directly as a training dataset in for example .</description>
+    </item>
+    
+    <item>
+      <title>Inference (Batch) in PySpark Example</title>
+      <link>https://examples.hopsworks.ai/ml/inference/batch_inference_imagenet_spark/</link>
+      <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://examples.hopsworks.ai/ml/inference/batch_inference_imagenet_spark/</guid>
+      <description>Large Scale Batch Inference on HopsFS To run this notebook you must first install the following libraries in your project&amp;rsquo;s conda environment (in addition to the base libraries):
+ Pillow Matplotlib  Moreover, the notebook assumes that you have access to the ImageNet dataset, this can either be uploaded to your project or shared from another project.
+You also need access to an internet connection so that the pre-trained model can be downloaded.</description>
+    </item>
+    
+    <item>
+      <title>Inference (Image) in PySpark</title>
+      <link>https://examples.hopsworks.ai/ml/inference/inference_hello_world/</link>
+      <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://examples.hopsworks.ai/ml/inference/inference_hello_world/</guid>
+      <description>Image Inference using Pre-Trained Model on HopsFS Example To run this notebook you must first install the following libraries in your project&amp;rsquo;s conda environment (in addition to the base libraries):
+ Pillow Matplotlib  Moreover, the notebook assumes that you have access to the ImageNet dataset, this can either be uploaded to your project or shared from another project.
+You also need access to an internet connection so that the pre-trained model can be downloaded.</description>
+    </item>
+    
+    <item>
+      <title>Kafka PySpark Example</title>
+      <link>https://examples.hopsworks.ai/spark/kafkasparkpython/</link>
+      <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://examples.hopsworks.ai/spark/kafkasparkpython/</guid>
+      <description>Producing and Consuming Messages to/from Kafka and plotting, using python producer and spark consumer To run this notebook you must already have created a Kafka topic
+Imports We use utility functions from the hops library to make Kafka configuration simple
+Dependencies:
+ hops-py-util confluent-kafka  from hops import kafka from hops import tls from hops import hdfs from confluent_kafka import Producer, Consumer import numpy as np from pyspark.sql.types import StructType, StructField, FloatType, TimestampType Starting Spark application   IDYARN Application IDKindStateSpark UIDriver logCurrent session?</description>
+    </item>
+    
+    <item>
+      <title>Kafka PySpark Producer Example</title>
+      <link>https://examples.hopsworks.ai/spark/kafkasparkpython_consumedemoproducer/</link>
+      <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://examples.hopsworks.ai/spark/kafkasparkpython_consumedemoproducer/</guid>
+      <description>Consuming Messages from Kafka Tour Producer Using PySpark To run this notebook you should have taken the Kafka tour and created the Producer and Consumer jobs. I.e your Job UI should look like this:
+In this notebook we will consume messages from Kafka that were produced by the producer-job created in the Demo. Go to the Jobs-UI in hopsworks and start the Kafka producer job:
+Imports We use utility functions from the hops library to make Kafka configuration simple</description>
+    </item>
+    
+    <item>
+      <title>Kafka Python Feature Store Example</title>
+      <link>https://examples.hopsworks.ai/kafka/kafkapython/</link>
+      <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://examples.hopsworks.ai/kafka/kafkapython/</guid>
+      <description>Producing and Consuming Messages to/from Kafka, using Python Clients Tested with python 3.6 and python 2.7
+Before running this notebook, you should have created a Kafka topic with a name that you can configure in the TOPIC_NAME variable below in the code.
+The screenshots below illustrates the steps necessary to create a Kafka topic on Hops
+In this notebook we use two python dependencies:
+ hops-util-py confluent-kafka-python  To install the confluent-kafka-python libary, use the Hopsworks UI:</description>
+    </item>
+    
+    <item>
+      <title>Kafka Scala/Spark Producer/Consumer Example</title>
+      <link>https://examples.hopsworks.ai/spark/kafkasparkscala_consumedemoproducer/</link>
+      <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://examples.hopsworks.ai/spark/kafkasparkscala_consumedemoproducer/</guid>
+      <description>Consuming Messages from Kafka Tour Producer Using Scala Spark To run this notebook you should have taken the Kafka tour and created the Producer and Consumer jobs. I.e your Job UI should look like this:
+In this notebook we will consume messages from Kafka that were produced by the producer-job created in the Demo. Go to the Jobs-UI in hopsworks and start the Kafka producer job:
+Imports import org.apache.kafka.clients.consumer.ConsumerRecord import org.</description>
+    </item>
+    
+    <item>
+      <title>Keras/TensorFlow Example - MNIST</title>
+      <link>https://examples.hopsworks.ai/ml/experiment/tensorflow/mnist/</link>
+      <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://examples.hopsworks.ai/ml/experiment/tensorflow/mnist/</guid>
+      <description>Tensorflow Keras example with SavedModel model saving Tested with TensorFlow 2.4.0
+ Machine Learning on Hopsworks  The hops python module hops is a helper library for Hops that facilitates development by hiding the complexity of running applications and iteracting with services.
+Have a feature request or encountered an issue? Please let us know on github.
+Using the experiment module To be able to run your Machine Learning code in Hopsworks, the code for the whole program needs to be provided and put inside a wrapper function.</description>
+    </item>
+    
+    <item>
+      <title>Maggy Ablation Example -Titanic</title>
+      <link>https://examples.hopsworks.ai/ml/parallel_experiments/maggy/maggy-ablation-titanic-example/</link>
+      <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://examples.hopsworks.ai/ml/parallel_experiments/maggy/maggy-ablation-titanic-example/</guid>
+      <description>Maggy Ablation: Feature and Model Ablation for the Titanic Dataset Last Updated: 2020/09/04  Created: 2019/10/14
+In this notebook, we demonstrate Maggy&amp;rsquo;s Ablation API, while using a TensorFlow Keras Sequential model trained on the Titanic Dataset. To be able to follow along, make sure you have the Titanic training dataset registered on your Project&amp;rsquo;s Feature Store, as explained in this example notebook.
+Wait &amp;hellip; What is an Ablation Study? An Ablation Study, in medical and psychological research, is a research method in which the roles and functions of an organ, tissue, or any part of a living organism, is examined through its surgical removal and observing the behaviour of the organism in its absence.</description>
+    </item>
+    
+    <item>
+      <title>Maggy HParam Tuning Example - MNIST</title>
+      <link>https://examples.hopsworks.ai/ml/parallel_experiments/maggy/maggy-fashion-mnist-example/</link>
+      <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://examples.hopsworks.ai/ml/parallel_experiments/maggy/maggy-fashion-mnist-example/</guid>
+      <description>maggy - MNIST Example Updated: 04/09/2020
+This notebook illustrates the usage of the maggy framework for asynchronous hyperparameter optimization on the fashion MNIST dataset.
+In this specific example we are using random search over three parameters and we are deploying the median early stopping rule in order to make use of the asynchrony of the framework. The Median Stopping Rule implements the simple strategy of stopping a trial if its performance falls below the median of other trials at similar points in time.</description>
+    </item>
+    
+    <item>
+      <title>Maggy PyTorch HParam Tuning Example</title>
+      <link>https://examples.hopsworks.ai/ml/parallel_experiments/maggy/maggy-pytorch-example/</link>
+      <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://examples.hopsworks.ai/ml/parallel_experiments/maggy/maggy-pytorch-example/</guid>
+      <description># Start spark session print(&amp;#39;Startup&amp;#39;)# Import maggy, define searchspace from maggy import Searchspace sp = Searchspace(l1_size=(&amp;#39;Integer&amp;#39;, [2,32]), l2_size=(&amp;#39;Integer&amp;#39;, [2,32]), batch_size=(&amp;#39;integer&amp;#39;, [2,16]))# Hyperparameter tuning. Create oblivious training function. from maggy import experiment def training_function(l1_size, l2_size, batch_size, reporter): import torch import torch.nn as nn import torch.optim as optim import math # define torch model class NeuralNetwork(nn.Module): def __init__(self, l1_size, l2_size): super().__init__() self.linear1 = nn.Linear(2,l1_size) self.linear2 = nn.Linear(l1_size,l2_size) self.output = nn.Linear(l2_size, 1) def forward(self, x): x = torch.</description>
+    </item>
+    
+    <item>
+      <title>Mirrored Strategy Example with Simulated Data on TensorFlow</title>
+      <link>https://examples.hopsworks.ai/ml/distributed_training/mirrored_strategy/mirroredstrategy_simulated_data_example/</link>
+      <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://examples.hopsworks.ai/ml/distributed_training/mirrored_strategy/mirroredstrategy_simulated_data_example/</guid>
+      <description>MirroredStrategy on Hopsworks Tested with TensorFlow 2.4.0
+ Machine Learning on Hopsworks  The hops python module hops is a helper library for Hops that facilitates development by hiding the complexity of running applications and iteracting with services.
+Have a feature request or encountered an issue? Please let us know on github.
+Using the experiment module To be able to run your Machine Learning code in Hopsworks, the code for the whole program needs to be provided and put inside a wrapper function.</description>
+    </item>
+    
+    <item>
+      <title>Mirrored Strategy Example with TensorFlow</title>
+      <link>https://examples.hopsworks.ai/ml/distributed_training/mirrored_strategy/mirroredstrategy_mnist_example/</link>
+      <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://examples.hopsworks.ai/ml/distributed_training/mirrored_strategy/mirroredstrategy_mnist_example/</guid>
+      <description>MirroredStrategy on Hopsworks Tested with TensorFlow 2.4.0
+ Machine Learning on Hopsworks  The hops python module hops is a helper library for Hops that facilitates development by hiding the complexity of running applications and iteracting with services.
+Have a feature request or encountered an issue? Please let us know on github.
+Using the experiment module To be able to run your Machine Learning code in Hopsworks, the code for the whole program needs to be provided and put inside a wrapper function.</description>
+    </item>
+    
+    <item>
+      <title>MultiWorker Mirrored Strategy MNIST with TensorFlow</title>
+      <link>https://examples.hopsworks.ai/ml/distributed_training/multiworker_mirrored_strategy/multiworkermirroredstrategy_mnist_example/</link>
+      <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://examples.hopsworks.ai/ml/distributed_training/multiworker_mirrored_strategy/multiworkermirroredstrategy_mnist_example/</guid>
+      <description>MultiWorkerMirroredStrategy on Hopsworks Tested with TensorFlow 2.4.0
+ Machine Learning on Hopsworks  The hops python module hops is a helper library for Hops that facilitates development by hiding the complexity of running applications and iteracting with services.
+Have a feature request or encountered an issue? Please let us know on github.
+Using the experiment module To be able to run your Machine Learning code in Hopsworks, the code for the whole program needs to be provided and put inside a wrapper function.</description>
+    </item>
+    
+    <item>
+      <title>MultiWorker Mirrored Strategy with simulated data on TensorFlow</title>
+      <link>https://examples.hopsworks.ai/ml/distributed_training/multiworker_mirrored_strategy/multiworkermirroredstrategy_simulated_data_example/</link>
+      <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://examples.hopsworks.ai/ml/distributed_training/multiworker_mirrored_strategy/multiworkermirroredstrategy_simulated_data_example/</guid>
+      <description>MultiWorkerMirroredStrategy on Hopsworks Tested with TensorFlow 2.4.0
+ Machine Learning on Hopsworks  The hops python module hops is a helper library for Hops that facilitates development by hiding the complexity of running applications and iteracting with services.
+Have a feature request or encountered an issue? Please let us know on github.
+Using the experiment module To be able to run your Machine Learning code in Hopsworks, the code for the whole program needs to be provided and put inside a wrapper function.</description>
+    </item>
+    
+    <item>
+      <title>Numpy Example with HopsFS</title>
+      <link>https://examples.hopsworks.ai/ml/numpy/numpy-hdfs/</link>
+      <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://examples.hopsworks.ai/ml/numpy/numpy-hdfs/</guid>
+      <description> Numpy - read/write CSV files with HopsFS (HDFS) from hops import hdfs from hops import numpy_helper as numpy data = numpy.load(&amp;#34;TourData/numpy/C_test.npy&amp;#34;) data.shape numpy.save(&amp;#34;Resources/project-relative-path.npy&amp;#34;, data) numpy.save(hdfs.project_path() + &amp;#34;/Resources/full-path.npy&amp;#34;, data)</description>
+    </item>
+    
+    <item>
+      <title>Pandas Example with HopsFS</title>
+      <link>https://examples.hopsworks.ai/ml/pandas/pandas-hdfs/</link>
+      <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://examples.hopsworks.ai/ml/pandas/pandas-hdfs/</guid>
+      <description> Pandas - read/write CSV files with HopsFS (HDFS) from hops import hdfs from hops import pandas_helper as pandas import pandas as pd features = [&amp;#34;Age&amp;#34;, &amp;#34;Workclass&amp;#34;, &amp;#34;fnlwgt&amp;#34;, &amp;#34;Education&amp;#34;, &amp;#34;Education-Num&amp;#34;, &amp;#34;Marital Status&amp;#34;, &amp;#34;Occupation&amp;#34;, &amp;#34;Relationship&amp;#34;, &amp;#34;Race&amp;#34;, &amp;#34;Sex&amp;#34;, &amp;#34;Capital Gain&amp;#34;, &amp;#34;Capital Loss&amp;#34;, &amp;#34;Hours per week&amp;#34;, &amp;#34;Country&amp;#34;, &amp;#34;Target&amp;#34;] train_data = pandas.read_csv(hdfs.project_path() + &amp;#34;/TourData/census/adult.data&amp;#34;, names=features, sep=r&amp;#39;\s*,\s*&amp;#39;, engine=&amp;#39;python&amp;#39;, na_values=&amp;#34;?&amp;#34;) train_data.info() pandas.write_csv(&amp;#34;Resources/relative-path.csv&amp;#34;, train_data) pandas.write_csv(hdfs.project_path() + &amp;#34;/Resources/full-path.csv&amp;#34;, train_data)</description>
+    </item>
+    
+    <item>
+      <title>Petastorm - Hello World</title>
+      <link>https://examples.hopsworks.ai/featurestore/petastorm/petastormhelloworld/</link>
+      <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://examples.hopsworks.ai/featurestore/petastorm/petastormhelloworld/</guid>
+      <description>Petastorm Hello World Examples In this notebook we will introduce Uber&amp;rsquo;s Petastorm library (https://github.com/uber/petastorm) for creating training datasets for deep learning. We will go over some hello world examples and see how a petstorm store differs from other type of storage formats.
+Motivation Petastorm is an open source data access library. The main motivation for this library is to make it easier for data scienstists to work with big data stored in Hadoop-like data lakes.</description>
+    </item>
+    
+    <item>
+      <title>Petastorm Training Data Create</title>
+      <link>https://examples.hopsworks.ai/featurestore/petastorm/petastormmnist_createdataset/</link>
+      <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://examples.hopsworks.ai/featurestore/petastorm/petastormmnist_createdataset/</guid>
+      <description>Create MNIST Petastorm Dataset In this notebook we will go through how you can create a Petastorm dataset with the MNIST images of digits, and also how you can save it as a documented and reusable training dataset in the Hopsworks Feature Store. The petastorm dataset can later on be used to train models using either Tensorflow, PyTorch or SparkML
+from hops import hdfs, featurestore import numpy as np import pydoop import gzip from tempfile import TemporaryFile # IMPORTANT: must import tensorflow before petastorm.</description>
+    </item>
+    
+    <item>
+      <title>PyTorch Example - MNIST</title>
+      <link>https://examples.hopsworks.ai/ml/experiment/pytorch/mnist/</link>
+      <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://examples.hopsworks.ai/ml/experiment/pytorch/mnist/</guid>
+      <description>Simple PyTorch mnist experiment Tested with PyTorch 1.6.0 Tested with torchvision 0.7.0
+ Machine Learning on Hopsworks  The hops python module hops is a helper library for Hops that facilitates development by hiding the complexity of running applications and iteracting with services.
+Have a feature request or encountered an issue? Please let us know on github.
+Using the experiment module To be able to run your Machine Learning code in Hopsworks, the code for the whole program needs to be provided and put inside a wrapper function.</description>
+    </item>
+    
+    <item>
+      <title>PyTorch/Petastorm MNIST Example using the Feature Store</title>
+      <link>https://examples.hopsworks.ai/featurestore/petastorm/petastormmnist_pytorch/</link>
+      <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://examples.hopsworks.ai/featurestore/petastorm/petastormmnist_pytorch/</guid>
+      <description>Image Classification with MNIST Using a Petastorm Dataset and PyTorch In this notebook we will read a training dataset saved in the Petastorm format in the project&amp;rsquo;s feature store and use that to train a Deep CNN defined in PyTorch to classify images of digits in the MNIST dataset.
+This notebook assumes that you have already created the training datasets in the feature store, which you can do by running this notebook:</description>
+    </item>
+    
+    <item>
+      <title>Sagemaker Feature Store Tour</title>
+      <link>https://examples.hopsworks.ai/featurestore/aws/sagemakerfeaturestoretourpython/</link>
+      <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://examples.hopsworks.ai/featurestore/aws/sagemakerfeaturestoretourpython/</guid>
+      <description>Feature Store Tour - Python API This notebook contains a tour/reference for the Hopsworks feature store Python API on Amazon SageMaker. The notebook is meant to be run on Amazon SageMaker after setting up Hopsworks to work with AWS (see here).
+The notebook is designed to be used in combination with the Feature Store Tour on Hopsworks, it assumes that you have run the following feature engineering job: job (the job is added automatically when you start the feature store tour in Hopsworks.</description>
+    </item>
+    
+    <item>
+      <title>Scikit-Learn End-to-End Example - Iris</title>
+      <link>https://examples.hopsworks.ai/ml/end_to_end_pipeline/sklearn/irisclassification_and_serving_sklearn/</link>
+      <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://examples.hopsworks.ai/ml/end_to_end_pipeline/sklearn/irisclassification_and_serving_sklearn/</guid>
+      <description>Iris Flower Classification and Serving Using SkLearn, HopsML, and the Hopsworks Feature Store In this notebook we will,
+ Load the Iris Flower dataset from HopsFS Do feature engineering on the dataset Save the features to the feature store Read the feature data from the feature store Train a KNN Model using SkLearn Save the trained model to HopsFS Launch a serving instance to serve the trained model Send some prediction requests to the served model Monitor the predictions through Kafka  Imports from sklearn.</description>
+    </item>
+    
+    <item>
+      <title>Snowflake Ingestion (1) Get started with the Feature Store</title>
+      <link>https://examples.hopsworks.ai/featurestore/snowflake/get_started_setup/</link>
+      <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://examples.hopsworks.ai/featurestore/snowflake/get_started_setup/</guid>
+      <description>Get started with Snowflake and the Hopsworks Feature Store This tutorial notebook will help you to get started working with the Hopsworks feature store and Snowflake.
+ We assume that you already have snowflake account. If not please follow the tutorial to setup your Snowflake account and load telcom churn dataset
+  Create Snowflake connector in Hopsworks  Step1 ) From Hopsworks go to Feature Store select Storage Connectors and click Create New Step2 ) Fill in name and description of the connector.</description>
+    </item>
+    
+    <item>
+      <title>Snowflake Ingestion (2) Create Feature groups in PySpark</title>
+      <link>https://examples.hopsworks.ai/featurestore/snowflake/pysparkchurncreatefeaturegroups/</link>
+      <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://examples.hopsworks.ai/featurestore/snowflake/pysparkchurncreatefeaturegroups/</guid>
+      <description>1. Churn Feature Engineering Pyspark from hops import featurestore from pyspark.sql.types import DoubleType from pyspark.ml import Pipeline from pyspark.ml.feature import OneHotEncoderEstimator, StringIndexer, VectorAssembler, StandardScaler from pyspark.ml.linalg import Vectors 1.1 Data db_pass = featurestore.get_storage_connector(&amp;#34;snowflake_spark_connector&amp;#34;,featurestore=featurestore.project_featurestore()).argumentsdf = (spark.read. format(&amp;#34;net.snowflake.spark.snowflake&amp;#34;). option(&amp;#34;sfURL&amp;#34;, &amp;#34;https://ra96958.eu-central-1.snowflakecomputing.com&amp;#34;). option(&amp;#34;sfUser&amp;#34;, &amp;#34;HOPSWORKS&amp;#34;). option(&amp;#34;sfPassword&amp;#34;, db_pass). option(&amp;#34;sfDatabase&amp;#34;, &amp;#34;ML_WORKSHOP&amp;#34;). option(&amp;#34;sfSchema&amp;#34;, &amp;#34;PUBLIC&amp;#34;). option(&amp;#34;sfWarehouse&amp;#34;, &amp;#34;HOPSWORKS_WH&amp;#34;). option(&amp;#34;sfRole&amp;#34;, &amp;#34;HOPSWORKS_ROLE&amp;#34;). option(&amp;#34;dbtable&amp;#34;, &amp;#34;CUSTOMER_CHURN&amp;#34;). load())df = df.toDF(&amp;#39;customer_id&amp;#39;, &amp;#39;gender&amp;#39;, &amp;#39;senior_citizen&amp;#39;, &amp;#39;partner&amp;#39;, &amp;#39;dependents&amp;#39;, &amp;#39;tenure&amp;#39;, &amp;#39;phone_service&amp;#39;, &amp;#39;multiple_lines&amp;#39;, &amp;#39;internet_service&amp;#39;, &amp;#39;online_security&amp;#39;, &amp;#39;online_backup&amp;#39;, &amp;#39;device_protection&amp;#39;, &amp;#39;tech_support&amp;#39;, &amp;#39;streaming_tv&amp;#39;, &amp;#39;streaming_movies&amp;#39;, &amp;#39;contract&amp;#39;, &amp;#39;paperless_billing&amp;#39;, &amp;#39;payment_method&amp;#39;, &amp;#39;monthly_charges&amp;#39;, &amp;#39;total_charges&amp;#39;, &amp;#39;churn&amp;#39;) df = df.</description>
+    </item>
+    
+    <item>
+      <title>Snowflake Ingestion (2) Create Feature groups in Python</title>
+      <link>https://examples.hopsworks.ai/featurestore/snowflake/pythonchurncreatefeaturegroups/</link>
+      <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://examples.hopsworks.ai/featurestore/snowflake/pythonchurncreatefeaturegroups/</guid>
+      <description>Telecom Customer Churn Prediction Feature Engineering This tutorial is based on this Kaggle notebook and this Feast notebook
+1. Churn Feature Engineering from hops import pandas_helper as pandas from hops import featurestore import pandas as pd import numpy as np import os import sklearn # Tested with 0.22.1 from slugify import slugify import snowflake.connector # tested on snowflake-connector-python==2.3.1  Starting Spark application   IDYARN Application IDKindStateSpark UIDriver log51application_1598866185540_0015pysparkidleLinkLink SparkSession available as &#39;spark&#39;.</description>
+    </item>
+    
+    <item>
+      <title>TensorFlow End-to-End Example - MNIST</title>
+      <link>https://examples.hopsworks.ai/ml/end_to_end_pipeline/tensorflow/model_repo_and_serving/</link>
+      <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://examples.hopsworks.ai/ml/end_to_end_pipeline/tensorflow/model_repo_and_serving/</guid>
+      <description>Tensorflow Keras example with SavedModel model saving Tested with TensorFlow 2.4.0
+ Machine Learning on Hopsworks  The hops python module hops is a helper library for Hops that facilitates development by hiding the complexity of running applications and iteracting with services.
+Have a feature request or encountered an issue? Please let us know on github.
+Using the experiment module To be able to run your Machine Learning code in Hopsworks, the code for the whole program needs to be provided and put inside a wrapper function.</description>
+    </item>
+    
+    <item>
+      <title>TensorFlow/Petastorm MNIST Example using the Feature Store</title>
+      <link>https://examples.hopsworks.ai/featurestore/petastorm/petastormmnist_tensorflow/</link>
+      <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://examples.hopsworks.ai/featurestore/petastorm/petastormmnist_tensorflow/</guid>
+      <description>Image Classification with MNIST Using a Petastorm Dataset In this notebook we will read a training dataset saved in the Petastorm format in the project&amp;rsquo;s feature store and use that to train a Deep CNN defined in Keras/Tensorflow to classify images of digits in the MNIST dataset.
+This notebook assumes that you have already created the training datasets in the feature store, which you can do by running this notebook:</description>
+    </item>
+    
+    <item>
+      <title>Visualization - Folium HeapMap with Time</title>
+      <link>https://examples.hopsworks.ai/ml/plotting/folium_heat_map/</link>
+      <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://examples.hopsworks.ai/ml/plotting/folium_heat_map/</guid>
+      <description>Folium HeatMapWithTime Plugin In this example we show the most basic usage of the HeatMapWithTime plugin.
+We generate a random set of points with lat/lon coordinates to draw on the map, and then move these points slowly in a random direction to simulate a time dimension. The points are aranged into a list of sets of data to draw.
+import folium import folium.plugins as plugins import numpy as np np.</description>
+    </item>
+    
+    <item>
+      <title>Visualization - Matplotlib with PySpark</title>
+      <link>https://examples.hopsworks.ai/ml/plotting/matplotlib_sparkmagic/</link>
+      <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://examples.hopsworks.ai/ml/plotting/matplotlib_sparkmagic/</guid>
+      <description>Plotting With SparkMagic on Hops To run large scale computations in a hops cluster from Jupyter we use sparkmagic, a livy REST server, and the pyspark kernel.
+The fact that the default computation on a cluster is distributed over several machines makes it a little different to do things such as plotting compared to when running code locally.
+This notebook illustrates how you can combine plotting and large-scale computations on a Hops cluster in a single notebook.</description>
+    </item>
+    
+    <item>
+      <title>Visualization - What-if-Tool (Jupyter Classic)</title>
+      <link>https://examples.hopsworks.ai/ml/plotting/what_if_tool_notebook/</link>
+      <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://examples.hopsworks.ai/ml/plotting/what_if_tool_notebook/</guid>
+      <description>What-If Tool in a jupyter notebook WARNING: This notebook only runs on &amp;ldquo;classic&amp;rdquo; Jupyter, not on Jupyterlab.
+This notebook shows use of the What-If Tool inside of a jupyter notebook.
+This notebook trains a linear classifier on the UCI census problem (predicting whether a person earns more than $50K from their census information).
+It then visualizes the results of the trained classifier on test data using the What-If Tool.</description>
+    </item>
+    
+    <item>
+      <title>Visualization - ipyleaflet</title>
+      <link>https://examples.hopsworks.ai/ml/plotting/ipyleaflet/</link>
+      <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://examples.hopsworks.ai/ml/plotting/ipyleaflet/</guid>
+      <description>from __future__ import print_function from ipyleaflet import ( Map, Marker, TileLayer, ImageOverlay, Polyline, Polygon, Rectangle, Circle, CircleMarker, GeoJSON, DrawControl ) from traitlets import linkcenter = [34.6252978589571, -77.34580993652344] zoom = 7m = Map(center=center, zoom=zoom) mm.zoom Now create the DrawControl and add it to the Map using add_control. We also register a handler for draw events. This will fire when a drawn path is created, edited or deleted (there are the actions). The geo_json argument is the serialized geometry of the drawn path, along with its embedded style.</description>
+    </item>
+    
+    <item>
+      <title>Visualizations - PySpark examples</title>
+      <link>https://examples.hopsworks.ai/featurestore/visualizations/feature_visualizations/</link>
+      <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://examples.hopsworks.ai/featurestore/visualizations/feature_visualizations/</guid>
+      <description>Feature Visualization In this notebook we will visualize the feature statistics stored in the featurestore for featuregroups and training datasets. This notebook assumes that you have already run the featurestore tour and the notebook FeaturestoreTourPython.ipynb.
+The following featuregroups should exist in the featurestore:
+ games_features attendances_features players_features season_scores_features teams_features  And the following training dataset should exist in the featurestore:
+ team_position_prediction  Plotting using the PySpark Kernel Background When using Jupyter on Hopsworks, a library called sparkmagic is used to interact with the Hops cluster.</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://examples.hopsworks.ai/beam/portability_wordcount_python/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://examples.hopsworks.ai/beam/portability_wordcount_python/</guid>
+      <description>Apache Beam Portability Framework WordCount example This notebook demonstrates how to run the Beam wordcount.py in Hopsworks.
+Do the imports and start the Beam jobservice from __future__ import absolute_import import argparse import logging import re from past.builtins import unicode import apache_beam as beam from apache_beam.io import ReadFromText from apache_beam.io import WriteToText from apache_beam.metrics import Metrics from apache_beam.metrics.metric import MetricsFilter from apache_beam.options.pipeline_options import PipelineOptions from apache_beam.options.pipeline_options import SetupOptions import os from hops import beam as hops_beam from apache_beam.</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://examples.hopsworks.ai/featurestore/azure/azure-ml-studio/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://examples.hopsworks.ai/featurestore/azure/azure-ml-studio/</guid>
+      <description>--- title: &amp;#34;Azure ML Feature Store Tour&amp;#34; date: 2021-02-24 type: technical_note draft: false --- Azure ML and the Hopsworks Feature Store The Hopsworks Feature Store is an open platform that connects to the largest number of data stores, and data science platforms with the most comprehensive API support - Python, Spark (Python, Java/Scala). It supports Azure ML Studio Notebooks or Designer for feature engineering and as your data science platform.</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://examples.hopsworks.ai/featurestore/datasets/titanictrainingdatasetpython/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://examples.hopsworks.ai/featurestore/datasets/titanictrainingdatasetpython/</guid>
+      <description>Titanic Dataset for the Feature Store title: &amp;ldquo;Dataset Titanic on the Feature Store&amp;rdquo; date: 2021-02-24 type: technical_note
+draft: false This notebook prepares the Titanic dataset to be used with the feature store.
+The Titanic dataset contains information about the passengers of the famous Titanic ship. The training and test data come in form of two CSV files, which can be downloaded from the Titanic Competition page on Kaggle.
+Download the train.</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://examples.hopsworks.ai/featurestore/hsfs/time_travel_python/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://examples.hopsworks.ai/featurestore/hsfs/time_travel_python/</guid>
+      <description>Time travel operations in Hopsworks Feature Store In this notebook we will introduce time travel operations in Hopsworks Feature Store (HSFS). Currently HSFS supports Apache Hudi (http://hudi.apache.org/) a storage abstraction/library for doing incremental data ingestion to a Hopsworks Feature Store.
+Background Motivation Traditional ETL typically involves taking a snapshot of a production database and doing a full load into a data lake (typically stored on a distributed file system). Using the snapshot approach for ETL is simple since the snapshot is immutable and can be loaded as an atomic unit into the data lake.</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://examples.hopsworks.ai/featurestore/hsfs/time_travel_scala/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://examples.hopsworks.ai/featurestore/hsfs/time_travel_scala/</guid>
+      <description>Time travel operations in Hopsworks Feature Store In this notebook we will introduce time travel operations in Hopsworks Feature Store (HSFS). Currently HSFS supports Apache Hudi (http://hudi.apache.org/) a storage abstraction/library for doing incremental data ingestion to a Hopsworks Feature Store.
+Background Motivation Traditional ETL typically involves taking a snapshot of a production database and doing a full load into a data lake (typically stored on a distributed file system). Using the snapshot approach for ETL is simple since the snapshot is immutable and can be loaded as an atomic unit into the data lake.</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://examples.hopsworks.ai/ml/parallel_experiments/pytorch/differential_evolution/mnist/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://examples.hopsworks.ai/ml/parallel_experiments/pytorch/differential_evolution/mnist/</guid>
+      <description>Differential Evolution PyTorch mnist experiment Tested with PyTorch 1.6.0 Tested with torchvision 0.7.0
+ Machine Learning on Hopsworks  The hops python module hops is a helper library for Hops that facilitates development by hiding the complexity of running applications and iteracting with services.
+Have a feature request or encountered an issue? Please let us know on github.
+Using the experiment module To be able to run your Machine Learning code in Hopsworks, the code for the whole program needs to be provided and put inside a wrapper function.</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://examples.hopsworks.ai/ml/parallel_experiments/tensorflow/evolutionary_search/evolutionary_search_mnist/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://examples.hopsworks.ai/ml/parallel_experiments/tensorflow/evolutionary_search/evolutionary_search_mnist/</guid>
+      <description>Tensorflow 2 Keras example with differential evolution on Hopsworks Tested with TensorFlow 2.4.0
+ Machine Learning on Hopsworks  The hops python module hops is a helper library for Hops that facilitates development by hiding the complexity of running applications and iteracting with services.
+Have a feature request or encountered an issue? Please let us know on github.
+Using the experiment module To be able to run your Machine Learning code in Hopsworks, the code for the whole program needs to be provided and put inside a wrapper function.</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://examples.hopsworks.ai/ml/parallel_experiments/tensorflow/grid_search/grid_search_fashion_mnist/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://examples.hopsworks.ai/ml/parallel_experiments/tensorflow/grid_search/grid_search_fashion_mnist/</guid>
+      <description>Getting started: Fashion Mnist on Hops Notebook Tested with TensorFlow 2.4.0
+ Machine Learning on Hopsworks  The hops python module hops is a helper library for Hops that facilitates development by hiding the complexity of running applications and iteracting with services.
+Have a feature request or encountered an issue? Please let us know on github.
+Using the experiment module To be able to run your Machine Learning code in Hopsworks, the code for the whole program needs to be provided and put inside a wrapper function.</description>
+    </item>
+    
+  </channel>
+</rss>

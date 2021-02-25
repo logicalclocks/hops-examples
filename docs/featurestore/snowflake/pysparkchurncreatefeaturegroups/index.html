@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-66582-32"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-66582-32');
+    </script>
+
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+<meta property="og:title" content="Snowflake Ingestion (2) Create Feature groups in PySpark" />
+<meta property="og:description" content="1. Churn Feature Engineering Pyspark from hops import featurestore from pyspark.sql.types import DoubleType from pyspark.ml import Pipeline from pyspark.ml.feature import OneHotEncoderEstimator, StringIndexer, VectorAssembler, StandardScaler from pyspark.ml.linalg import Vectors 1.1 Data db_pass = featurestore.get_storage_connector(&#34;snowflake_spark_connector&#34;,featurestore=featurestore.project_featurestore()).argumentsdf = (spark.read. format(&#34;net.snowflake.spark.snowflake&#34;). option(&#34;sfURL&#34;, &#34;https://ra96958.eu-central-1.snowflakecomputing.com&#34;). option(&#34;sfUser&#34;, &#34;HOPSWORKS&#34;). option(&#34;sfPassword&#34;, db_pass). option(&#34;sfDatabase&#34;, &#34;ML_WORKSHOP&#34;). option(&#34;sfSchema&#34;, &#34;PUBLIC&#34;). option(&#34;sfWarehouse&#34;, &#34;HOPSWORKS_WH&#34;). option(&#34;sfRole&#34;, &#34;HOPSWORKS_ROLE&#34;). option(&#34;dbtable&#34;, &#34;CUSTOMER_CHURN&#34;). load())df = df.toDF(&#39;customer_id&#39;, &#39;gender&#39;, &#39;senior_citizen&#39;, &#39;partner&#39;, &#39;dependents&#39;, &#39;tenure&#39;, &#39;phone_service&#39;, &#39;multiple_lines&#39;, &#39;internet_service&#39;, &#39;online_security&#39;, &#39;online_backup&#39;, &#39;device_protection&#39;, &#39;tech_support&#39;, &#39;streaming_tv&#39;, &#39;streaming_movies&#39;, &#39;contract&#39;, &#39;paperless_billing&#39;, &#39;payment_method&#39;, &#39;monthly_charges&#39;, &#39;total_charges&#39;, &#39;churn&#39;) df = df." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://examples.hopsworks.ai/featurestore/snowflake/pysparkchurncreatefeaturegroups/" />
+
+
+
+<meta property="article:published_time" content="2021-02-24T00:00:00&#43;00:00"/>
+
+<meta property="article:modified_time" content="2021-02-24T00:00:00&#43;00:00"/>
+
+
+
+
+
+
+
+
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Snowflake Ingestion (2) Create Feature groups in PySpark"/>
+<meta name="twitter:description" content="1. Churn Feature Engineering Pyspark from hops import featurestore from pyspark.sql.types import DoubleType from pyspark.ml import Pipeline from pyspark.ml.feature import OneHotEncoderEstimator, StringIndexer, VectorAssembler, StandardScaler from pyspark.ml.linalg import Vectors 1.1 Data db_pass = featurestore.get_storage_connector(&#34;snowflake_spark_connector&#34;,featurestore=featurestore.project_featurestore()).argumentsdf = (spark.read. format(&#34;net.snowflake.spark.snowflake&#34;). option(&#34;sfURL&#34;, &#34;https://ra96958.eu-central-1.snowflakecomputing.com&#34;). option(&#34;sfUser&#34;, &#34;HOPSWORKS&#34;). option(&#34;sfPassword&#34;, db_pass). option(&#34;sfDatabase&#34;, &#34;ML_WORKSHOP&#34;). option(&#34;sfSchema&#34;, &#34;PUBLIC&#34;). option(&#34;sfWarehouse&#34;, &#34;HOPSWORKS_WH&#34;). option(&#34;sfRole&#34;, &#34;HOPSWORKS_ROLE&#34;). option(&#34;dbtable&#34;, &#34;CUSTOMER_CHURN&#34;). load())df = df.toDF(&#39;customer_id&#39;, &#39;gender&#39;, &#39;senior_citizen&#39;, &#39;partner&#39;, &#39;dependents&#39;, &#39;tenure&#39;, &#39;phone_service&#39;, &#39;multiple_lines&#39;, &#39;internet_service&#39;, &#39;online_security&#39;, &#39;online_backup&#39;, &#39;device_protection&#39;, &#39;tech_support&#39;, &#39;streaming_tv&#39;, &#39;streaming_movies&#39;, &#39;contract&#39;, &#39;paperless_billing&#39;, &#39;payment_method&#39;, &#39;monthly_charges&#39;, &#39;total_charges&#39;, &#39;churn&#39;) df = df."/>
+<meta name="generator" content="Hugo 0.40.3" />
+
+    
+<script type="application/ld+json">
+  {
+  "@context": "http://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Snowflake Ingestion (2) Create Feature groups in PySpark",
+  "url": "https://examples.hopsworks.ai/featurestore/snowflake/pysparkchurncreatefeaturegroups/",
+  "wordCount": "308",
+  "datePublished": "2021-02-24T00:00:00&#43;00:00",
+  "dateModified": "2021-02-24T00:00:00&#43;00:00",
+  "author": {
+  "@type": "Person",
+  "name": ""
+  }
+  }
+</script> 
+
+    <title>Snowflake Ingestion (2) Create Feature groups in PySpark</title>
+
+    
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb"
+        crossorigin="anonymous">
+
+    
+    <link href="https://examples.hopsworks.ai/css/custom.css" rel="stylesheet">
+    <link href="https://examples.hopsworks.ai/css/syntax.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Muli:400,500,700" rel="stylesheet">
+
+    <link href="" rel="alternate" type="application/rss+xml" title="Hopsworks Examples" />
+
+    <script type="text/javascript" async
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[','\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre','code'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+</script>
+
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-sm fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="https://examples.hopsworks.ai">Hopsworks Examples</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="nav navbar-nav mr-auto"></ul>
+                <ul class="nav navbar-nav">
+                    <li><a href="https://hopsworks.ai" title="Hopsworks.ai">hopsworks.ai</a></li>
+                    <li><a href="https://docs.hopsworks.ai" title="Docs">docs.hopsworks.ai</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+
+    
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+
+                 
+
+
+<article>
+  <div class="technical_note">
+    <header>
+      <div class="alert alert-warning flashcard_ad" role="alert">
+	Want to learn machine learning? Try my <a href="https://machinelearningflashcards.com" class="alert-link">machine learning flashcards</a>, <a href='https://amzn.to/2HwnWty' class="alert-link">book</a>, or <a href='https://www.youtube.com/channel/UCnd4Fi-ODvuPbxR2fO2j7kA' class="alert-link">study with me.</a>.
+      </div>
+      <h1 class="technical_note_title">Snowflake Ingestion (2) Create Feature groups in PySpark</h1>
+      <div class="technical_note_date">
+	<time datetime=" 2021-02-24T00:00:00Z "> 24 Feb 2021</time>
+      </div>
+    </header>
+    <div class="content">
+
+      
+
+<h2 id="1-churn-feature-engineering-pyspark">1. Churn Feature Engineering Pyspark</h2>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="kn">from</span> <span class="nn">hops</span> <span class="kn">import</span> <span class="n">featurestore</span>
+<span class="kn">from</span> <span class="nn">pyspark.sql.types</span> <span class="kn">import</span> <span class="n">DoubleType</span>
+<span class="kn">from</span> <span class="nn">pyspark.ml</span> <span class="kn">import</span> <span class="n">Pipeline</span>
+<span class="kn">from</span> <span class="nn">pyspark.ml.feature</span> <span class="kn">import</span> <span class="n">OneHotEncoderEstimator</span><span class="p">,</span> <span class="n">StringIndexer</span><span class="p">,</span> <span class="n">VectorAssembler</span><span class="p">,</span> <span class="n">StandardScaler</span>
+<span class="kn">from</span> <span class="nn">pyspark.ml.linalg</span> <span class="kn">import</span> <span class="n">Vectors</span></code></pre></div>
+<h3 id="1-1-data">1.1 Data</h3>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">db_pass</span> <span class="o">=</span> <span class="n">featurestore</span><span class="o">.</span><span class="n">get_storage_connector</span><span class="p">(</span><span class="s2">&#34;snowflake_spark_connector&#34;</span><span class="p">,</span><span class="n">featurestore</span><span class="o">=</span><span class="n">featurestore</span><span class="o">.</span><span class="n">project_featurestore</span><span class="p">())</span><span class="o">.</span><span class="n">arguments</span></code></pre></div><div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">df</span> <span class="o">=</span> <span class="p">(</span><span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span>
+<span class="n">format</span><span class="p">(</span><span class="s2">&#34;net.snowflake.spark.snowflake&#34;</span><span class="p">)</span><span class="o">.</span>
+<span class="n">option</span><span class="p">(</span><span class="s2">&#34;sfURL&#34;</span><span class="p">,</span> <span class="s2">&#34;https://ra96958.eu-central-1.snowflakecomputing.com&#34;</span><span class="p">)</span><span class="o">.</span>
+<span class="n">option</span><span class="p">(</span><span class="s2">&#34;sfUser&#34;</span><span class="p">,</span> <span class="s2">&#34;HOPSWORKS&#34;</span><span class="p">)</span><span class="o">.</span>
+<span class="n">option</span><span class="p">(</span><span class="s2">&#34;sfPassword&#34;</span><span class="p">,</span> <span class="n">db_pass</span><span class="p">)</span><span class="o">.</span>
+<span class="n">option</span><span class="p">(</span><span class="s2">&#34;sfDatabase&#34;</span><span class="p">,</span> <span class="s2">&#34;ML_WORKSHOP&#34;</span><span class="p">)</span><span class="o">.</span>    
+<span class="n">option</span><span class="p">(</span><span class="s2">&#34;sfSchema&#34;</span><span class="p">,</span> <span class="s2">&#34;PUBLIC&#34;</span><span class="p">)</span><span class="o">.</span>
+<span class="n">option</span><span class="p">(</span><span class="s2">&#34;sfWarehouse&#34;</span><span class="p">,</span> <span class="s2">&#34;HOPSWORKS_WH&#34;</span><span class="p">)</span><span class="o">.</span>
+<span class="n">option</span><span class="p">(</span><span class="s2">&#34;sfRole&#34;</span><span class="p">,</span> <span class="s2">&#34;HOPSWORKS_ROLE&#34;</span><span class="p">)</span><span class="o">.</span>
+<span class="n">option</span><span class="p">(</span><span class="s2">&#34;dbtable&#34;</span><span class="p">,</span> <span class="s2">&#34;CUSTOMER_CHURN&#34;</span><span class="p">)</span><span class="o">.</span>
+<span class="n">load</span><span class="p">())</span></code></pre></div><div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">toDF</span><span class="p">(</span><span class="s1">&#39;customer_id&#39;</span><span class="p">,</span> <span class="s1">&#39;gender&#39;</span><span class="p">,</span> <span class="s1">&#39;senior_citizen&#39;</span><span class="p">,</span> <span class="s1">&#39;partner&#39;</span><span class="p">,</span> <span class="s1">&#39;dependents&#39;</span><span class="p">,</span>
+       <span class="s1">&#39;tenure&#39;</span><span class="p">,</span> <span class="s1">&#39;phone_service&#39;</span><span class="p">,</span> <span class="s1">&#39;multiple_lines&#39;</span><span class="p">,</span> <span class="s1">&#39;internet_service&#39;</span><span class="p">,</span>
+       <span class="s1">&#39;online_security&#39;</span><span class="p">,</span> <span class="s1">&#39;online_backup&#39;</span><span class="p">,</span> <span class="s1">&#39;device_protection&#39;</span><span class="p">,</span> <span class="s1">&#39;tech_support&#39;</span><span class="p">,</span>
+       <span class="s1">&#39;streaming_tv&#39;</span><span class="p">,</span> <span class="s1">&#39;streaming_movies&#39;</span><span class="p">,</span> <span class="s1">&#39;contract&#39;</span><span class="p">,</span> <span class="s1">&#39;paperless_billing&#39;</span><span class="p">,</span>
+       <span class="s1">&#39;payment_method&#39;</span><span class="p">,</span> <span class="s1">&#39;monthly_charges&#39;</span><span class="p">,</span> <span class="s1">&#39;total_charges&#39;</span><span class="p">,</span> <span class="s1">&#39;churn&#39;</span><span class="p">)</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&#34;tenure&#34;</span><span class="p">,</span><span class="n">df</span><span class="o">.</span><span class="n">tenure</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="n">DoubleType</span><span class="p">()))</span></code></pre></div>
+<h3 id="1-2-data-manipulation-and-processing">1.2 Data Manipulation and Processing</h3>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">categoricalColumns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;gender&#39;</span><span class="p">,</span><span class="s1">&#39;senior_citizen&#39;</span><span class="p">,</span><span class="s1">&#39;partner&#39;</span><span class="p">,</span><span class="s1">&#39;dependents&#39;</span><span class="p">,</span><span class="s1">&#39;phone_service&#39;</span><span class="p">,</span><span class="s1">&#39;multiple_lines&#39;</span><span class="p">,</span><span class="s1">&#39;internet_service&#39;</span><span class="p">,</span> <span class="s1">&#39;online_security&#39;</span><span class="p">,</span> <span class="s1">&#39;online_backup&#39;</span><span class="p">,</span> <span class="s1">&#39;device_protection&#39;</span><span class="p">,</span> <span class="s1">&#39;tech_support&#39;</span><span class="p">,</span>
+                      <span class="s1">&#39;streaming_tv&#39;</span><span class="p">,</span> <span class="s1">&#39;streaming_movies&#39;</span><span class="p">,</span> <span class="s1">&#39;contract&#39;</span><span class="p">,</span> <span class="s1">&#39;paperless_billing&#39;</span><span class="p">,</span><span class="s1">&#39;payment_method&#39;</span><span class="p">]</span>
+
+<span class="n">numericalColumns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;tenure&#39;</span><span class="p">,</span> <span class="s1">&#39;monthly_charges&#39;</span><span class="p">,</span> <span class="s1">&#39;total_charges&#39;</span><span class="p">]</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">subset</span><span class="o">=</span><span class="n">numericalColumns</span> <span class="p">)</span>
+
+<span class="n">stages</span> <span class="o">=</span> <span class="p">[]</span> <span class="c1"># stages in our Pipeline</span>
+<span class="n">out_cat_col</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">categoricalCol</span> <span class="ow">in</span> <span class="n">categoricalColumns</span><span class="p">:</span>
+    <span class="c1"># Category Indexing with StringIndexer</span>
+    <span class="n">stringIndexer</span> <span class="o">=</span> <span class="n">StringIndexer</span><span class="p">(</span><span class="n">inputCol</span><span class="o">=</span><span class="n">categoricalCol</span><span class="p">,</span> <span class="n">outputCol</span><span class="o">=</span><span class="n">categoricalCol</span> <span class="o">+</span> <span class="s2">&#34;_Index&#34;</span><span class="p">)</span>
+    <span class="n">stages</span> <span class="o">+=</span> <span class="p">[</span><span class="n">stringIndexer</span><span class="p">]</span>
+    <span class="n">out_cat_col</span> <span class="o">+=</span> <span class="p">[</span><span class="n">categoricalCol</span> <span class="o">+</span> <span class="s2">&#34;_Index&#34;</span><span class="p">]</span>
+
+<span class="n">assembler</span> <span class="o">=</span> <span class="n">VectorAssembler</span><span class="p">(</span>
+    <span class="n">inputCols</span><span class="o">=</span><span class="n">numericalColumns</span><span class="p">,</span>
+    <span class="n">outputCol</span><span class="o">=</span><span class="s2">&#34;numFeatures&#34;</span><span class="p">)</span>
+<span class="n">stages</span> <span class="o">+=</span> <span class="p">[</span><span class="n">assembler</span><span class="p">]</span>
+
+<span class="c1"># scaling numericalColumns</span>
+<span class="n">standardScaler</span> <span class="o">=</span> <span class="n">StandardScaler</span><span class="p">(</span><span class="n">inputCol</span><span class="o">=</span><span class="s2">&#34;numFeatures&#34;</span><span class="p">,</span> <span class="n">outputCol</span><span class="o">=</span><span class="s2">&#34;scaledFeatures&#34;</span><span class="p">,</span><span class="n">withStd</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">withMean</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+<span class="n">stages</span> <span class="o">+=</span> <span class="p">[</span><span class="n">standardScaler</span><span class="p">]</span>
+    
+<span class="c1"># Convert label into label indices using the StringIndexer</span>
+<span class="n">label_stringIdx</span> <span class="o">=</span> <span class="n">StringIndexer</span><span class="p">(</span><span class="n">inputCol</span><span class="o">=</span><span class="s2">&#34;churn&#34;</span><span class="p">,</span> <span class="n">outputCol</span><span class="o">=</span><span class="s2">&#34;label&#34;</span><span class="p">)</span>
+<span class="n">stages</span> <span class="o">+=</span> <span class="p">[</span><span class="n">label_stringIdx</span><span class="p">]</span></code></pre></div><div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="c1"># Create a Pipeline.</span>
+<span class="n">pipeline</span> <span class="o">=</span> <span class="n">Pipeline</span><span class="p">(</span><span class="n">stages</span><span class="o">=</span><span class="n">stages</span><span class="p">)</span>
+<span class="c1"># Run the feature transformations.</span>
+<span class="c1">#  - fit() computes feature statistics as needed.</span>
+<span class="c1">#  - transform() actually transforms the features.</span>
+<span class="n">pipelineModel</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+<span class="n">dataset</span> <span class="o">=</span> <span class="n">pipelineModel</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">df</span><span class="p">)</span></code></pre></div><div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">extract</span><span class="p">(</span><span class="n">row</span><span class="p">):</span>
+    <span class="n">col_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">col_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&#34;label&#34;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">out_cat_col</span><span class="p">:</span>
+        <span class="n">col_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="n">x</span><span class="p">])</span>
+    <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">col_list</span><span class="p">)</span> <span class="o">+</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">&#34;scaledFeatures&#34;</span><span class="p">]</span><span class="o">.</span><span class="n">toArray</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
+
+<span class="n">telcom_churn_features</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">rdd</span><span class="o">.</span><span class="nb">map</span><span class="p">(</span><span class="n">extract</span><span class="p">)</span><span class="o">.</span><span class="n">toDF</span><span class="p">([</span><span class="s2">&#34;label&#34;</span> <span class="p">]</span><span class="o">+</span> <span class="n">categoricalColumns</span> <span class="o">+</span> <span class="n">numericalColumns</span><span class="p">)</span></code></pre></div>
+<h3 id="1-4-create-featuregroups">1.4 Create FeatureGroups</h3>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">featurestore</span><span class="o">.</span><span class="n">create_featuregroup</span><span class="p">(</span>
+    <span class="n">telcom_churn_features</span><span class="p">,</span>
+    <span class="s2">&#34;telcom_featuregroup&#34;</span><span class="p">,</span>
+    <span class="n">description</span><span class="o">=</span><span class="s2">&#34;Telecom churn prediction feature group&#34;</span><span class="p">,</span> 
+    <span class="n">online</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+    <span class="n">descriptive_statistics</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+    <span class="n">feature_correlation</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+    <span class="n">feature_histograms</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+    <span class="n">cluster_analysis</span><span class="o">=</span><span class="bp">True</span>
+<span class="p">)</span></code></pre></div>
+<pre><code>computing descriptive statistics for : telcom_churn_features, version: 1
+computing feature correlation for: telcom_churn_features, version: 1
+computing feature histograms for: telcom_churn_features, version: 1
+computing cluster analysis for: telcom_churn_features, version: 1
+Registering feature metadata...
+Registering feature metadata... [COMPLETE]
+Writing feature data to offline feature group (Hive)...
+Running sql: use demo_featurestore_davit000_featurestore against offline feature store
+Writing feature data to offline feature group (Hive)... [COMPLETE]
+Feature group created successfully
+</code></pre>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"></code></pre></div>
+    </div>
+    <aside>
+      <div class="bug_reporting">
+	<h4>Find an error or bug?</h4>
+	<p>Everything on this site is available on GitHub. Head to <a href='https://github.com/chrisalbon/notes/issues/new'>and submit a suggested change</a>. Include the tutorial's URL in the issue.</p>
+      </div>
+    </aside>
+
+  </div>
+</article>
+
+
+
+
+            </div>
+
+        </div>
+    </div>
+
+    
+
+    <footer class="footer text-center">
+        <div class="container">
+            <span class="text-muted">This project contains 59 pages and is available on <a href="https://github.com/napsterinblue/notes">GitHub</a>. Copyright &copy; NapsterInBlue, <time datetime="2018">2018</time>.</span>
+        </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ"
+        crossorigin="anonymous"></script>
+
+</body>
+
+</html>

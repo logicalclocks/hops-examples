@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-66582-32"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-66582-32');
+    </script>
+
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+<meta property="og:title" content="Petastorm - Hello World" />
+<meta property="og:description" content="Petastorm Hello World Examples In this notebook we will introduce Uber&rsquo;s Petastorm library (https://github.com/uber/petastorm) for creating training datasets for deep learning. We will go over some hello world examples and see how a petstorm store differs from other type of storage formats.
+Motivation Petastorm is an open source data access library. The main motivation for this library is to make it easier for data scienstists to work with big data stored in Hadoop-like data lakes." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://examples.hopsworks.ai/featurestore/petastorm/petastormhelloworld/" />
+
+
+
+<meta property="article:published_time" content="2021-02-24T00:00:00&#43;00:00"/>
+
+<meta property="article:modified_time" content="2021-02-24T00:00:00&#43;00:00"/>
+
+
+
+
+
+
+
+
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Petastorm - Hello World"/>
+<meta name="twitter:description" content="Petastorm Hello World Examples In this notebook we will introduce Uber&rsquo;s Petastorm library (https://github.com/uber/petastorm) for creating training datasets for deep learning. We will go over some hello world examples and see how a petstorm store differs from other type of storage formats.
+Motivation Petastorm is an open source data access library. The main motivation for this library is to make it easier for data scienstists to work with big data stored in Hadoop-like data lakes."/>
+<meta name="generator" content="Hugo 0.40.3" />
+
+    
+<script type="application/ld+json">
+  {
+  "@context": "http://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Petastorm - Hello World",
+  "url": "https://examples.hopsworks.ai/featurestore/petastorm/petastormhelloworld/",
+  "wordCount": "2654",
+  "datePublished": "2021-02-24T00:00:00&#43;00:00",
+  "dateModified": "2021-02-24T00:00:00&#43;00:00",
+  "author": {
+  "@type": "Person",
+  "name": ""
+  }
+  }
+</script> 
+
+    <title>Petastorm - Hello World</title>
+
+    
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb"
+        crossorigin="anonymous">
+
+    
+    <link href="https://examples.hopsworks.ai/css/custom.css" rel="stylesheet">
+    <link href="https://examples.hopsworks.ai/css/syntax.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Muli:400,500,700" rel="stylesheet">
+
+    <link href="" rel="alternate" type="application/rss+xml" title="Hopsworks Examples" />
+
+    <script type="text/javascript" async
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[','\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre','code'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+</script>
+
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-sm fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="https://examples.hopsworks.ai">Hopsworks Examples</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="nav navbar-nav mr-auto"></ul>
+                <ul class="nav navbar-nav">
+                    <li><a href="https://hopsworks.ai" title="Hopsworks.ai">hopsworks.ai</a></li>
+                    <li><a href="https://docs.hopsworks.ai" title="Docs">docs.hopsworks.ai</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+
+    
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+
+                 
+
+
+<article>
+  <div class="technical_note">
+    <header>
+      <div class="alert alert-warning flashcard_ad" role="alert">
+	Want to learn machine learning? Try my <a href="https://machinelearningflashcards.com" class="alert-link">machine learning flashcards</a>, <a href='https://amzn.to/2HwnWty' class="alert-link">book</a>, or <a href='https://www.youtube.com/channel/UCnd4Fi-ODvuPbxR2fO2j7kA' class="alert-link">study with me.</a>.
+      </div>
+      <h1 class="technical_note_title">Petastorm - Hello World</h1>
+      <div class="technical_note_date">
+	<time datetime=" 2021-02-24T00:00:00Z "> 24 Feb 2021</time>
+      </div>
+    </header>
+    <div class="content">
+
+      
+
+<h1 id="petastorm-hello-world-examples">Petastorm Hello World Examples</h1>
+
+<p>In this notebook we will introduce Uber&rsquo;s Petastorm library (<a href="https://github.com/uber/petastorm">https://github.com/uber/petastorm</a>) for creating training datasets for deep learning. We will go over some hello world examples and see how a petstorm store differs from other type of storage formats.</p>
+
+<h3 id="motivation">Motivation</h3>
+
+<p>Petastorm is an open source <strong>data access library</strong>. The main motivation for this library is to make it easier for data scienstists to work with big data stored in Hadoop-like data lakes. The benefits of Petastorm are the following:</p>
+
+<ul>
+<li><p>It enables to use a single data format that can be used for both Tensorflow and PyTorch datasets (before Petastorm users on Hopsworks would typically have one dataset in tfrecords for training with Tensorflow and another in hdf5 for training with PyTorch). This reduces the number of ETL steps necessary to prepare data for deep learning.</p></li>
+
+<li><p>Petastorm datasets integrate very well in Apache Spark, the main processing engine used in Hopsworks. Petastorm datasets are built on top of Parquet, which has better support in Spark than for example TFRecords or HDF5.</p></li>
+
+<li><p>A Petastorm dataset is self-contained, the data is stored together with its schema, which means that a data scientist can read a dataset into tensorflow or Pytorch without having to specify the schema to parse the data. As compared to TFRecords, where you need the schema at read-time, and if any discrepancy between your schema and the data on disk you might run into erros where you have to manually inspect protobuf files to figure out the serialization errors. With Petastorm, the API looks a little bit like a database, you do not need to know anything a-priori about the schema of the data you just call <code>make_reader()</code> and then the library will use the metadata to infer everything for you. <strong>Note</strong>: When you create a petastorm in the first place and write it to disk you pay the price for the simplicity for <em>reading</em> petastorm datasets, i.e when you write Petastorm datasets you have to be very explicit with specifying the schema and other configuration.</p></li>
+
+<li><p>The dataset is optimized for filesystems like HDFS, streaming records from large files rather than using billions of small files. (Although HopsFS is a bit special in this regard as it can deal very well with both large and small files (<a href="https://www.logicalclocks.com/fixing-the-small-files-problem-in-hdfs/)">https://www.logicalclocks.com/fixing-the-small-files-problem-in-hdfs/)</a>)</p></li>
+
+<li><p>Petastorm is supported in Hopsworks Feature Store</p></li>
+
+<li><p>When training deep learning models it is important that you can stream data in a way taht does not starve your GPUs, Petastorm is designed to be performant and usable for deep learning from the beginning. Moreover, petastorm have support partitioning data to optimize for distributed deep learning</p></li>
+</ul>
+
+<p><img src="petastorm1.png" alt="Petastorm 1" title="Petastorm 1" /></p>
+
+<h3 id="background">Background</h3>
+
+<p>TLDR; A petastorm dataset is a Parquet dataset with extended metadata.</p>
+
+<p>Petastorm is built on top of Parquet files. Parquet is a columnar data format with great support for Spark and other big data applications such as Hive or HDFS. However, Parquet is not supported natively by deep learning frameworks such as Tensorflow or PyTorch. Morover, Parquet has some buit-in primitive data types like integer, string and binary, but it does not include higher-order tensors which is typical in datasets for deep learning. Petastorm solves this by adding a data-access library on top of Parquet and storing extended metadata as a custom-field in the Parquet schema in the footer, which enables to store tensor data in Parquet files.</p>
+
+<p>Petastorm stores tensors as binary blobs in Parquet but also stores the necessary schema with information about the name of the tensors, the shape/dimensions, and the data type inside the tensor. Petastorm also provides a set of codecs for specifying how to compress the  data. All of this is specified in a Petastorm schema called a <strong>Unischema</strong>.</p>
+
+<p><img src="petastorm2.png" alt="Petastorm 2" title="Petastorm 2" /></p>
+
+<p>To be able to utilize the added metadata to the Parquet we use the Petastorm client library which uses Apache Arrow to manipulat the dataset in memory:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="kn">import</span> <span class="nn">petastorm</span></code></pre></div>
+<h3 id="generating-a-sample-petastorm-dataset">Generating A  Sample Petastorm Dataset</h3>
+<div class="highlight"><pre class="chroma"><code class="language-pyspark" data-lang="pyspark">import numpy as np
+from hops import hdfs, featurestore
+import pyarrow as pa
+import random
+import pandas as pd
+from pyspark.sql import SQLContext, Row
+from pyspark.sql.types import StructType, StructField, IntegerType
+
+# IMPORTANT: must import  tensorflow before petastorm.tf_utils due to a bug in petastorm
+import tensorflow as tf
+from petastorm.unischema import dict_to_spark_row, Unischema, UnischemaField
+from petastorm.codecs import ScalarCodec, CompressedImageCodec, NdarrayCodec
+from pyspark.sql.types import StructType, StructField, IntegerType
+from petastorm.etl.dataset_metadata import materialize_dataset
+from petastorm.spark_utils import dataset_as_rdd
+from petastorm import make_reader
+from petastorm.tf_utils import tf_tensors, make_petastorm_dataset
+from petastorm.pytorch import DataLoader
+from petastorm import make_batch_reader</code></pre></div>
+<h4 id="specify-the-petastorm-schema">Specify the Petastorm Schema</h4>
+
+<p>Below we specify a sample petastorm schema with three fields, including multi-dimensional tensors which are not supported natively by Parquet.</p>
+<div class="highlight"><pre class="chroma"><code class="language-pyspark" data-lang="pyspark"># The schema defines how the dataset schema looks like
+HelloWorldSchema = Unischema(&#39;HelloWorldSchema&#39;, [
+    UnischemaField(&#39;id&#39;, np.int32, (), ScalarCodec(IntegerType()), False),
+    UnischemaField(&#39;image1&#39;, np.uint8, (128, 256, 3), CompressedImageCodec(&#39;png&#39;), False),
+    UnischemaField(&#39;array_4d&#39;, np.uint8, (None, 128, 30, None), NdarrayCodec(), False),
+])</code></pre></div>
+<p>The Petastorm Unischema is designed so that it can be converted to Spark/Numpy/Tensorflow/Pytorch schemas</p>
+<div class="highlight"><pre class="chroma"><code class="language-pyspark" data-lang="pyspark">HelloWorldSchema.as_spark_schema()</code></pre></div>
+<pre><code>StructType(List(StructField(array_4d,BinaryType,false),StructField(id,IntegerType,false),StructField(image1,BinaryType,false)))
+</code></pre>
+
+<h4 id="create-a-spark-dataframe-that-conforms-to-the-petastorm-schema-and-write-the-petastorm-dataset">Create a Spark Dataframe that Conforms to the Petastorm Schema and Write the Petastorm Dataset</h4>
+
+<p>As petastorm datasets are built on top of Parquet files we can use Spark in combination with the context manager <code>materialize_dataset</code>.</p>
+
+<p>However, first we must create a spark dataframe that conforms to the Petastorm schema. To  do this we can first create a an rdd of dicts and use <code>dict_to-spark_row(Unischema, dict-row)</code>. We could also have created the spark dataframe directly from <code>HelloWorldSchema.as_spark_schema()</code>.</p>
+<div class="highlight"><pre class="chroma"><code class="language-pyspark" data-lang="pyspark">OUTPUT_URL = hdfs.project_path() + &#34;Resources/hello_world&#34;</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-pyspark" data-lang="pyspark">def row_generator(x):
+    &#34;&#34;&#34;Returns a single entry in the generated dataset. Return a bunch of random values as an example.&#34;&#34;&#34;
+    return {&#39;id&#39;: x,
+            &#39;image1&#39;: np.random.randint(0, 255, dtype=np.uint8, size=(128, 256, 3)),
+            &#39;array_4d&#39;: np.random.randint(0, 255, dtype=np.uint8, size=(4, 128, 30, 3))}
+
+
+def generate_petastorm_dataset():
+    &#34;&#34;&#34; Generates a petastorm dataset and saves it to HopsFS using Spark and materialize_dataset context manager &#34;&#34;&#34;
+    rowgroup_size_mb = 256
+    # Wrap dataset materialization portion. Will take care of setting up spark environment variables as
+    # well as save petastorm specific metadata
+    rows_count = 10
+    filesystem_factory= lambda: pa.hdfs.connect(driver=&#39;libhdfs&#39;)
+    with materialize_dataset(spark, OUTPUT_URL, HelloWorldSchema, rowgroup_size_mb,filesystem_factory=filesystem_factory):
+
+        rows_rdd = sc.parallelize(range(rows_count))\
+            .map(row_generator)\
+            .map(lambda x: dict_to_spark_row(HelloWorldSchema, x))
+
+        spark.createDataFrame(rows_rdd, HelloWorldSchema.as_spark_schema()) \
+            .coalesce(10) \
+            .write \
+            .mode(&#39;overwrite&#39;) \
+            .parquet(OUTPUT_URL)</code></pre></div>
+<p>By writing the parquet files (<code>spark.write.parquet()</code>) using the petastorm context manager <code>materialize_dataset()</code>, the petastorm library will take care of writing out the necessary petastorm-specific metadata to the parquet files at the end.</p>
+<div class="highlight"><pre class="chroma"><code class="language-pyspark" data-lang="pyspark">generate_petastorm_dataset()</code></pre></div>
+<h4 id="alternative-ways-of-creating-spark-data-frames-that-conforms-to-a-petastorm-schema">Alternative Ways of Creating Spark Data Frames that conforms to a Petastorm Schema</h4>
+
+<p>You don&rsquo;t have to use the <code>dict_to_spark_row</code> and <code>spark.createDataFrame(rdd, schema.as_spark_schema())</code>, these are just helper methods to make sure that your Unischema actually is consistent with the spark schema. An alternative way is illustrated below (with less gurantees about consistency)</p>
+<div class="highlight"><pre class="chroma"><code class="language-pyspark" data-lang="pyspark">sql_context = SQLContext(sc)
+pandas_df = pd.DataFrame(np.random.randint(0,100,size=(100, 4)), columns=list(&#39;ABCD&#39;))
+spark_df = sql_context.createDataFrame(pandas_df)</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-pyspark" data-lang="pyspark">spark_df.printSchema()</code></pre></div>
+<pre><code>root
+ |-- A: long (nullable = true)
+ |-- B: long (nullable = true)
+ |-- C: long (nullable = true)
+ |-- D: long (nullable = true)
+</code></pre>
+<div class="highlight"><pre class="chroma"><code class="language-pyspark" data-lang="pyspark">TestSchema = Unischema(&#39;TestSchema&#39;, [
+    UnischemaField(&#39;A&#39;, np.int32, (), ScalarCodec(IntegerType()), False),
+    UnischemaField(&#39;B&#39;, np.int32, (), ScalarCodec(IntegerType()), False),
+    UnischemaField(&#39;C&#39;, np.int32, (), ScalarCodec(IntegerType()), False),
+    UnischemaField(&#39;D&#39;, np.int32, (), ScalarCodec(IntegerType()), False)
+])
+TEST_URL = hdfs.project_path() + &#34;Logs/test.petastorm&#34;</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-pyspark" data-lang="pyspark">filesystem_factory= lambda: pa.hdfs.connect(driver=&#39;libhdfs&#39;)
+with materialize_dataset(spark, TEST_URL, TestSchema, filesystem_factory=filesystem_factory):
+    spark_df.write.mode(&#39;overwrite&#39;).parquet(TEST_URL)</code></pre></div>
+<h3 id="read-a-petastorm-dataset">Read a Petastorm Dataset</h3>
+
+<p>A petastorm dataset can be read directly with Spark, Pytorch or Tensorflow using the Petastorm library. This is really where the Petastorm data format shines. Due to being so explicit with schema when writing the dataset, reading the data is very simple.</p>
+
+<h4 id="reading-a-petastorm-dataset-using-plain-python">Reading a Petastorm Dataset using plain python</h4>
+<div class="highlight"><pre class="chroma"><code class="language-pyspark" data-lang="pyspark">def python_hello_world():
+    &#34;&#34;&#34; Creates a python reader to read a petastorm dataset&#34;&#34;&#34;
+    with make_reader(OUTPUT_URL, hdfs_driver=&#39;libhdfs&#39;) as reader:
+        # Pure python
+        for sample in reader:
+            print(sample.id)</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-pyspark" data-lang="pyspark">python_hello_world()</code></pre></div>
+<pre><code>5
+6
+7
+8
+9
+0
+1
+2
+3
+4
+</code></pre>
+
+<h4 id="reading-a-petastorm-dataset-using-pyspark">Reading a Petastorm Dataset using Pyspark</h4>
+
+<p>To read a petastorm dataset in pyspspark we can either read dataframe directly with spark <code>spark.read.parquet(OUTPUT_URL)</code>, however this does not utilize the added metadata that petastorm creates. We can also read a petastorm dataset into pyspark by using Petastorm&rsquo;s utility methods, such as <code>dataset_as_rdd</code>.</p>
+<div class="highlight"><pre class="chroma"><code class="language-pyspark" data-lang="pyspark">def pyspark_hello_world():
+    &#34;&#34;&#34; Reads a petastorm dataset into spark rdd and dataframe&#34;&#34;&#34;
+    # dataset_as_rdd creates an rdd of named tuples.
+    rdd = dataset_as_rdd(OUTPUT_URL, spark, [HelloWorldSchema.id, HelloWorldSchema.image1], hdfs_driver=&#34;libhdfs&#34;)
+    print(&#39;An id in the dataset: &#39;, rdd.first().id)
+
+    # Create a dataframe object from a parquet file
+    dataframe = spark.read.parquet(OUTPUT_URL)
+
+    # Show a schema
+    dataframe.printSchema()
+
+    # Count all
+    dataframe.count()
+
+    # Show just some columns
+    dataframe.select(&#39;id&#39;).show()
+
+    # This is how you can use a standard SQL to query a dataset. Note that the data is not decoded in this case.
+    number_of_rows = spark.sql(
+        &#39;SELECT count(id) &#39;
+        &#39;from parquet.`{}` &#39;.format(OUTPUT_URL)).collect()
+    print(&#39;Number of rows in the dataset: {}&#39;.format(number_of_rows[0][0]))</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-pyspark" data-lang="pyspark">pyspark_hello_world()</code></pre></div>
+<pre><code>An id in the dataset:  0
+root
+ |-- array_4d: binary (nullable = true)
+ |-- id: integer (nullable = true)
+ |-- image1: binary (nullable = true)
+
++---+
+| id|
++---+
+|  0|
+|  1|
+|  2|
+|  3|
+|  4|
+|  5|
+|  6|
+|  7|
+|  8|
+|  9|
++---+
+
+Number of rows in the dataset: 10
+</code></pre>
+
+<h4 id="reading-a-petastorm-dataset-using-tensorflow">Reading a Petastorm Dataset using Tensorflow</h4>
+
+<p>Petastorm enables to store multi-dimensional tensors (e.g images) as Parquet and then read it directly in Tensorflow using a very simple API that supports both the old TF-API and the tf.Dataset API.</p>
+<div class="highlight"><pre class="chroma"><code class="language-pyspark" data-lang="pyspark">def tensorflow_hello_world():
+    &#34;&#34;&#34; Creates a tensorflow reader for reading a petastorm dataset &#34;&#34;&#34;
+    # Example: tf_tensors will return tensors with dataset data
+    with make_reader(OUTPUT_URL, hdfs_driver=&#39;libhdfs&#39;) as reader:
+        tensor = tf_tensors(reader)
+        with tf.Session() as sess:
+            sample = sess.run(tensor)
+            print(sample.id)
+
+    # Example: use tf.data.Dataset API
+    with make_reader(OUTPUT_URL, hdfs_driver=&#39;libhdfs&#39;) as reader:
+        dataset = make_petastorm_dataset(reader)
+        iterator = dataset.make_one_shot_iterator()
+        tensor = iterator.get_next()
+        with tf.Session() as sess:
+            sample = sess.run(tensor)
+            print(sample.id)</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-pyspark" data-lang="pyspark">tensorflow_hello_world()</code></pre></div>
+<pre><code>5
+5
+</code></pre>
+
+<h4 id="reading-a-petastorm-dataset-using-pytorch">Reading a Petastorm Dataset using PyTorch</h4>
+<div class="highlight"><pre class="chroma"><code class="language-pyspark" data-lang="pyspark">def pytorch_hello_world():
+    &#34;&#34;&#34; Creates a PyTorch reader for reading a petastorm dataset &#34;&#34;&#34;
+    with DataLoader(make_reader(OUTPUT_URL, hdfs_driver=&#34;libhdfs&#34;)) as train_loader:
+        sample = next(iter(train_loader))
+        print(sample[&#39;id&#39;])</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-pyspark" data-lang="pyspark">pytorch_hello_world()</code></pre></div>
+<pre><code>tensor([0], dtype=torch.int32)
+</code></pre>
+
+<h3 id="external-datasets-in-petastorm">External Datasets in Petastorm</h3>
+
+<p><code>external dataset</code> in Petastorm library refers to existing Parquet-stores that do not include the extended Petastorm metadata. Petastorm library is able to read such datasets as well by using <code>make_batch_reader</code>.</p>
+
+<p><code>make_batch_reader</code> works with any parquet stores and returns batches of records, as opposed to <code>make_reader</code> that only works with Petastorm datasets and returns one record at a time.</p>
+
+<h4 id="generate-an-external-petastorm-dataset-regular-parquet-store">Generate an external Petastorm dataset (regular Parquet store)</h4>
+<div class="highlight"><pre class="chroma"><code class="language-pyspark" data-lang="pyspark">OUTPUT_URL2 = hdfs.project_path() + &#34;Resources/hello_world_external&#34;</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-pyspark" data-lang="pyspark">def row_generator_external(x):
+    &#34;&#34;&#34;Returns a single entry in the generated dataset. Return a bunch of random values as an example.&#34;&#34;&#34;
+    return Row(id=x, value1=random.randint(-255, 255), value2=random.randint(-255, 255))</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-pyspark" data-lang="pyspark">def generate_external_dataset():
+    &#34;&#34;&#34;Creates an example dataset at output_url in Parquet format&#34;&#34;&#34;
+
+    rows_count = 10
+    rows_rdd = sc.parallelize(range(rows_count))\
+        .map(row_generator_external)
+
+    spark.createDataFrame(rows_rdd).\
+        write.\
+        mode(&#39;overwrite&#39;).\
+        parquet(OUTPUT_URL2)</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-pyspark" data-lang="pyspark">generate_external_dataset()</code></pre></div>
+<h4 id="read-external-dataset-using-plain-python-and-the-petastorm-api">Read External Dataset using Plain Python and the Petastorm API</h4>
+<div class="highlight"><pre class="chroma"><code class="language-pyspark" data-lang="pyspark">def python_hello_world_external():
+    &#34;&#34;&#34; Creates a python reader for reading a regular parquet store using Petastorm library&#34;&#34;&#34;
+    # Reading data from the non-Petastorm Parquet via pure Python
+    with make_batch_reader(OUTPUT_URL2, schema_fields=[&#34;id&#34;, &#34;value1&#34;, &#34;value2&#34;], hdfs_driver=&#39;libhdfs&#39;) as reader:
+        for schema_view in reader:
+            # make_batch_reader() returns batches of rows instead of individual rows
+            print(&#34;Batched read:\nid: {0} value1: {1} value2: {2}&#34;.format(
+                schema_view.id, schema_view.value1, schema_view.value2))</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-pyspark" data-lang="pyspark">python_hello_world_external()</code></pre></div>
+<pre><code>Batched read:
+id: [5 6 7 8 9] value1: [-189   51 -169  244   81] value2: [  72 -175    8  -17 -134]
+Batched read:
+id: [0 1 2 3 4] value1: [-189   51 -169  244   81] value2: [  72 -175    8  -17 -134]
+</code></pre>
+
+<h4 id="read-external-dataset-using-pytorch-and-the-petastorm-api">Read External Dataset using Pytorch and the Petastorm API</h4>
+<div class="highlight"><pre class="chroma"><code class="language-pyspark" data-lang="pyspark">def pytorch_hello_world_external():
+    &#34;&#34;&#34; Creates a pyTorch reader for reading a regular parquet store using Petastorm library&#34;&#34;&#34;
+    with DataLoader(make_batch_reader(OUTPUT_URL2, hdfs_driver=&#39;libhdfs&#39;)) as train_loader:
+        sample = next(iter(train_loader))
+        # Because we are using make_batch_reader(), each read returns a batch of rows instead of a single row
+        print(&#34;id batch: {0}&#34;.format(sample[&#39;id&#39;]))</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-pyspark" data-lang="pyspark">pytorch_hello_world_external()</code></pre></div>
+<pre><code>id batch: tensor([[0, 1, 2, 3, 4]])
+</code></pre>
+
+<h4 id="read-external-dataset-using-tensorflow-and-the-petastorm-api">Read External Dataset using Tensorflow and the Petastorm API</h4>
+<div class="highlight"><pre class="chroma"><code class="language-pyspark" data-lang="pyspark">def tensorflow_hello_world_external():
+    &#34;&#34;&#34; Creates a Tensorflow reader for reading a regular parquet store using Petastorm library&#34;&#34;&#34;
+    # Example: tf_tensors will return tensors with dataset data
+    with make_batch_reader(OUTPUT_URL2, hdfs_driver=&#39;libhdfs&#39;) as reader:
+        tensor = tf_tensors(reader)
+        with tf.Session() as sess:
+            # Because we are using make_batch_reader(), each read returns a batch of rows instead of a single row
+            batched_sample = sess.run(tensor)
+            print(&#34;id batch: {0}&#34;.format(batched_sample.id))
+    # Example: use tf.data.Dataset API
+    with make_batch_reader(OUTPUT_URL2, hdfs_driver=&#39;libhdfs&#39;) as reader:
+        dataset = make_petastorm_dataset(reader)
+        iterator = dataset.make_one_shot_iterator()
+        tensor = iterator.get_next()
+        with tf.Session() as sess:
+            batched_sample = sess.run(tensor)
+            print(&#34;id batch: {0}&#34;.format(batched_sample.id))</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-pyspark" data-lang="pyspark">tensorflow_hello_world_external()</code></pre></div>
+<pre><code>id batch: [0 1 2 3 4]
+id batch: [0 1 2 3 4]
+</code></pre>
+
+<h2 id="advanced-features">Advanced Features</h2>
+
+<p>Petastorm also support more advanced features for data access:</p>
+
+<ul>
+<li><p>Selective column selection, since petastorm is built on a columnat format (Parquet) selective column selection is efficient (as opposed to row-based formats like TF-Records where you must parse the entire row in to memory to do column-selection).</p></li>
+
+<li><p>Parallelized reads</p></li>
+
+<li><p>Dataset Sharding for distributed training</p></li>
+
+<li><p>N-grams (windowing) support. If your data is sorted by time-stamp, Petstorm can efficiently do I/O and autoamtically window it into n-grams for you.</p></li>
+
+<li><p>Row filtering (row predicates)</p></li>
+
+<li><p>Shuffling, when doing machine learning shuffling is an important step to avoid that you introduce artifical correlations in the dataset based on ordering</p></li>
+</ul>
+
+<h4 id="selective-column-selection">Selective Column Selection</h4>
+<div class="highlight"><pre class="chroma"><code class="language-pyspark" data-lang="pyspark">def tensorflow_selective_column_selection(schema_fields):
+    &#34;&#34;&#34; Tensorflow Selective Column Selection &#34;&#34;&#34;
+
+    with make_reader(OUTPUT_URL, hdfs_driver=&#39;libhdfs&#39;, schema_fields=schema_fields) as reader:
+        dataset = make_petastorm_dataset(reader)
+        iterator = dataset.make_one_shot_iterator()
+        tensor = iterator.get_next()
+        with tf.Session() as sess:
+            sample = sess.run(tensor)
+            print(&#34;Number of columns: {}&#34;.format(len(sample)))
+            print(&#34;fields:&#34;)
+            print(sample._fields)</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-pyspark" data-lang="pyspark">OUTPUT_URL = hdfs.project_path() + &#34;Resources/hello_world&#34;</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-pyspark" data-lang="pyspark">tensorflow_selective_column_selection(None) #read all fields</code></pre></div>
+<pre><code>Number of columns: 3
+fields:
+('array_4d', 'id', 'image1')
+</code></pre>
+<div class="highlight"><pre class="chroma"><code class="language-pyspark" data-lang="pyspark">tensorflow_selective_column_selection([&#34;array_4d&#34;, &#34;id&#34;]) #read only fields &#39;array_4d&#39; and &#39;id</code></pre></div>
+<pre><code>Number of columns: 2
+fields:
+('array_4d', 'id')
+</code></pre>
+
+<h4 id="parallelized-reads">Parallelized reads</h4>
+<div class="highlight"><pre class="chroma"><code class="language-pyspark" data-lang="pyspark">def tensorflow_thread_pool_read(reader_pool_type, workers_count):
+    &#34;&#34;&#34; Tensorflow Parallel Read with Threads &#34;&#34;&#34;
+
+    with make_reader(OUTPUT_URL, hdfs_driver=&#39;libhdfs&#39;, reader_pool_type = reader_pool_type, 
+                     workers_count=workers_count) as reader:
+        dataset = make_petastorm_dataset(reader)
+        iterator = dataset.make_one_shot_iterator()
+        tensor = iterator.get_next()
+        with tf.Session() as sess:
+            sample = sess.run(tensor)
+            print(sample._fields)</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-pyspark" data-lang="pyspark">tensorflow_thread_pool_read(&#34;thread&#34;, 15) # thread pool of size 15 for reading</code></pre></div>
+<pre><code>('array_4d', 'id', 'image1')
+</code></pre>
+<div class="highlight"><pre class="chroma"><code class="language-pyspark" data-lang="pyspark">tensorflow_thread_pool_read(&#34;thread&#34;, 5) # process pool of size 5 for reading</code></pre></div>
+<pre><code>('array_4d', 'id', 'image1')
+</code></pre>
+
+<h4 id="dataset-sharding">Dataset Sharding</h4>
+<div class="highlight"><pre class="chroma"><code class="language-pyspark" data-lang="pyspark">def tensorflow_dataset_sharding(shard_count, cur_shard):
+    &#34;&#34;&#34; 
+    Tensorflow dataset sharding 
+    
+    Args:
+        :shard_count: An int denoting the number of shards to break this dataset into. Defaults to None
+        :cur_shard: An int denoting the current shard number. 
+                    Each node reading a shard should pass in a unique shard number in the range [0, shard_count). 
+                    shard_count must be supplied as well.
+    &#34;&#34;&#34;
+
+    with make_reader(OUTPUT_URL, hdfs_driver=&#39;libhdfs&#39;, shard_count=shard_count, 
+                     cur_shard=cur_shard) as reader:
+        dataset = make_petastorm_dataset(reader)
+        iterator = dataset.make_one_shot_iterator()
+        tensor = iterator.get_next()
+        with tf.Session() as sess:
+            sample = sess.run(tensor)
+            print(sample._fields)</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-pyspark" data-lang="pyspark">tensorflow_dataset_sharding(2, 1) # shard dataset into 2 shards and read the first shard</code></pre></div>
+<pre><code>('array_4d', 'id', 'image1')
+</code></pre>
+
+<h4 id="row-predicates">Row Predicates</h4>
+<div class="highlight"><pre class="chroma"><code class="language-pyspark" data-lang="pyspark">def tensorflow_dataset_sharding(predicate):
+    &#34;&#34;&#34; 
+    Tensorflow reader with row predicate
+    &#34;&#34;&#34;
+
+    with make_reader(OUTPUT_URL, hdfs_driver=&#39;libhdfs&#39;, predicate=predicate) as reader:
+        dataset = make_petastorm_dataset(reader)
+        iterator = dataset.make_one_shot_iterator()
+        tensor = iterator.get_next()
+        with tf.Session() as sess:
+            sample = sess.run(tensor)
+            print(sample.id)</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-pyspark" data-lang="pyspark">#tensorflow_dataset_sharding(predicate = lambda x: x.id == 5)
+from petastorm.predicates import in_lambda
+predicate = in_lambda([&#34;id&#34;], lambda id: id==5)
+tensorflow_dataset_sharding(predicate)</code></pre></div>
+<pre><code>5
+</code></pre>
+
+<h4 id="shuffling">Shuffling</h4>
+<div class="highlight"><pre class="chroma"><code class="language-pyspark" data-lang="pyspark">def tensorflow_dataset_shuffling(shuffle_row_groups, shuffle_row_drop_partitions):
+    &#34;&#34;&#34; 
+    Tensorflow dataset shuffling
+    
+    Args:
+         :shuffle_row_groups: Whether to shuffle row groups (the order in which full row groups are read)
+         :shuffle_row_drop_partitions: This is is a positive integer which determines how many partitions 
+                                       to break up a row group into for increased shuffling in exchange for 
+                                       worse performance (extra reads). For example if you specify 
+                                       2 each row group read will drop half of the rows within every 
+                                       row group and read the remaining rows in separate reads. 
+                                       It is recommended to keep this number below the regular row group 
+                                       size in order to not waste reads which drop all rows.
+    &#34;&#34;&#34;
+
+    with make_reader(OUTPUT_URL, hdfs_driver=&#39;libhdfs&#39;, predicate=predicate) as reader:
+        dataset = make_petastorm_dataset(reader)
+        iterator = dataset.make_one_shot_iterator()
+        tensor = iterator.get_next()
+        with tf.Session() as sess:
+            sample = sess.run(tensor)
+            print(sample._fields)</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-pyspark" data-lang="pyspark">tensorflow_dataset_shuffling(True, 5)</code></pre></div>
+<pre><code>('array_4d', 'id', 'image1')
+</code></pre>
+
+<h3 id="integration-with-the-feature-store">Integration with the Feature Store</h3>
+
+<p>Petastorm is a supported format for saving training datasets in the feature store. To save a spark dataframe in the Petastorm format in the feature store, use the method <code>featurestore.create_training_dataset()</code> and supply the dataframe together with petastorm arguments in a dict <code>petastorm_args</code>.</p>
+<div class="highlight"><pre class="chroma"><code class="language-pyspark" data-lang="pyspark">sql_context = SQLContext(sc)
+pandas_df = pd.DataFrame(np.random.randint(0,100,size=(100, 4)), columns=list(&#39;ABCD&#39;))
+spark_df = sql_context.createDataFrame(pandas_df)
+TestSchema = Unischema(&#39;TestSchema&#39;, [
+    UnischemaField(&#39;A&#39;, np.int32, (), ScalarCodec(IntegerType()), False),
+    UnischemaField(&#39;B&#39;, np.int32, (), ScalarCodec(IntegerType()), False),
+    UnischemaField(&#39;C&#39;, np.int32, (), ScalarCodec(IntegerType()), False),
+    UnischemaField(&#39;D&#39;, np.int32, (), ScalarCodec(IntegerType()), False)
+])</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-pyspark" data-lang="pyspark">petastorm_args = {&#34;schema&#34;: TestSchema}
+featurestore.create_training_dataset(spark_df, &#34;petastorm_hello_world&#34;, data_format=&#34;petastorm&#34;,
+                                     petastorm_args=petastorm_args)</code></pre></div>
+<pre><code>computing descriptive statistics for : petastorm_hello_world
+computing feature correlation for: petastorm_hello_world
+computing feature histograms for: petastorm_hello_world
+computing cluster analysis for: petastorm_hello_world
+</code></pre>
+<div class="highlight"><pre class="chroma"><code class="language-pyspark" data-lang="pyspark">df = featurestore.get_training_dataset(&#34;petastorm_hello_world&#34;)
+df.printSchema()</code></pre></div>
+<pre><code>root
+ |-- A: long (nullable = true)
+ |-- B: long (nullable = true)
+ |-- C: long (nullable = true)
+ |-- D: long (nullable = true)
+</code></pre>
+<div class="highlight"><pre class="chroma"><code class="language-pyspark" data-lang="pyspark"></code></pre></div>
+    </div>
+    <aside>
+      <div class="bug_reporting">
+	<h4>Find an error or bug?</h4>
+	<p>Everything on this site is available on GitHub. Head to <a href='https://github.com/chrisalbon/notes/issues/new'>and submit a suggested change</a>. Include the tutorial's URL in the issue.</p>
+      </div>
+    </aside>
+
+  </div>
+</article>
+
+
+
+
+            </div>
+
+        </div>
+    </div>
+
+    
+
+    <footer class="footer text-center">
+        <div class="container">
+            <span class="text-muted">This project contains 59 pages and is available on <a href="https://github.com/napsterinblue/notes">GitHub</a>. Copyright &copy; NapsterInBlue, <time datetime="2018">2018</time>.</span>
+        </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ"
+        crossorigin="anonymous"></script>
+
+</body>
+
+</html>

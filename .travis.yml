@@ -1,0 +1,29 @@
+language: python
+
+# Install the apt prerequisites
+addons:
+  apt:
+    packages:
+      - python-pygments
+
+before_install:
+  - chmod +x binaries/hugo
+
+# Clean and don't fail
+install:
+  - rm -rf public || exit 0
+  - pip install jupyter
+
+# Build the website
+script:
+  - python make.py
+  - binaries/hugo
+
+# Deploy to GitHub pages
+deploy:
+  provider: pages
+  skip_cleanup: true
+  local_dir: docs
+  github_token: $GITHUB_TOKEN # Set in travis-ci.org dashboard
+  on:
+    branch: master

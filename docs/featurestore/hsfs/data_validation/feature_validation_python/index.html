@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-66582-32"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-66582-32');
+    </script>
+
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+<meta property="og:title" content="Hsfs - Feature Validation with Python" />
+<meta property="og:description" content="Feature Validation with the Hopsworks Feature Store In this notebook we introduce feature validation operations with the Hopsworks Feature Store and its client API, hsfs.
+Background Motivation Data ingested into the Feature Store form the basis for the data fed as input to algorithms that develope machine learning models. The Feature store is a place where curated feature data is stored, therefore it is important that this data is validated against different rules to it adheres to business requirements." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://examples.hopsworks.ai/featurestore/hsfs/data_validation/feature_validation_python/" />
+
+
+
+<meta property="article:published_time" content="2021-02-24T00:00:00&#43;00:00"/>
+
+<meta property="article:modified_time" content="2021-02-24T00:00:00&#43;00:00"/>
+
+
+
+
+
+
+
+
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Hsfs - Feature Validation with Python"/>
+<meta name="twitter:description" content="Feature Validation with the Hopsworks Feature Store In this notebook we introduce feature validation operations with the Hopsworks Feature Store and its client API, hsfs.
+Background Motivation Data ingested into the Feature Store form the basis for the data fed as input to algorithms that develope machine learning models. The Feature store is a place where curated feature data is stored, therefore it is important that this data is validated against different rules to it adheres to business requirements."/>
+<meta name="generator" content="Hugo 0.40.3" />
+
+    
+<script type="application/ld+json">
+  {
+  "@context": "http://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Hsfs - Feature Validation with Python",
+  "url": "https://examples.hopsworks.ai/featurestore/hsfs/data_validation/feature_validation_python/",
+  "wordCount": "2833",
+  "datePublished": "2021-02-24T00:00:00&#43;00:00",
+  "dateModified": "2021-02-24T00:00:00&#43;00:00",
+  "author": {
+  "@type": "Person",
+  "name": ""
+  }
+  }
+</script> 
+
+    <title>Hsfs - Feature Validation with Python</title>
+
+    
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb"
+        crossorigin="anonymous">
+
+    
+    <link href="https://examples.hopsworks.ai/css/custom.css" rel="stylesheet">
+    <link href="https://examples.hopsworks.ai/css/syntax.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Muli:400,500,700" rel="stylesheet">
+
+    <link href="" rel="alternate" type="application/rss+xml" title="Hopsworks Examples" />
+
+    <script type="text/javascript" async
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[','\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre','code'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+</script>
+
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-sm fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="https://examples.hopsworks.ai">Hopsworks Examples</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="nav navbar-nav mr-auto"></ul>
+                <ul class="nav navbar-nav">
+                    <li><a href="https://hopsworks.ai" title="Hopsworks.ai">hopsworks.ai</a></li>
+                    <li><a href="https://docs.hopsworks.ai" title="Docs">docs.hopsworks.ai</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+
+    
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+
+                 
+
+
+<article>
+  <div class="technical_note">
+    <header>
+      <div class="alert alert-warning flashcard_ad" role="alert">
+	Want to learn machine learning? Try my <a href="https://machinelearningflashcards.com" class="alert-link">machine learning flashcards</a>, <a href='https://amzn.to/2HwnWty' class="alert-link">book</a>, or <a href='https://www.youtube.com/channel/UCnd4Fi-ODvuPbxR2fO2j7kA' class="alert-link">study with me.</a>.
+      </div>
+      <h1 class="technical_note_title">Hsfs - Feature Validation with Python</h1>
+      <div class="technical_note_date">
+	<time datetime=" 2021-02-24T00:00:00Z "> 24 Feb 2021</time>
+      </div>
+    </header>
+    <div class="content">
+
+      
+
+<h1 id="feature-validation-with-the-hopsworks-feature-store">Feature Validation with the Hopsworks Feature Store</h1>
+
+<p>In this notebook we introduce feature validation operations with the Hopsworks Feature Store and its client API, hsfs.</p>
+
+<h2 id="background">Background</h2>
+
+<h3 id="motivation">Motivation</h3>
+
+<p>Data ingested into the Feature Store form the basis for the data fed as input to algorithms that develope machine learning models. The Feature store is a place where curated feature data is stored, therefore it is important that this data is validated against different rules to it adheres to business requirements.</p>
+
+<p>For example, ingested features might be expected to never be empty or to lie within a certain range, for example a feature <code>age</code> should always be a non-negative number.</p>
+
+<p>The Hopsworks Feature Store provides users with an API to create <code>Expectations</code> on ingested feature data by utilizing the <code>Deequ</code> <a href="https://github.com/awslabs/deequ">https://github.com/awslabs/deequ</a> open source library. Feature validation is part of the HSFS Java/Scala and Python API for working with Feature Groups. Users work with the abstractions:</p>
+
+<ul>
+<li>Rules: A set of validation rules applied on a Spark/PySpark dataframe that is inserted into a Feature Group.</li>
+<li>Expectations: A set of rules that is applied on a set of features as provided by the user. Expecations are created at the feature store level and can be attached to multiple feature groups.</li>
+<li>Validations: The results of expectations against the ingested dataframe are assigned a ValidationTime and are persisted within the Feature Store. Users can then retrieve validation results by validation time and by commit time for time-travel enabled feature groups.</li>
+</ul>
+
+<p>Feature Validation is disabled by default, by having the <code>validation_type</code> feature group attribute set to <code>NONE</code>. The list of allowed validation types are:
+- STRICT: Data validation is performed and feature group is updated only if validation status is &ldquo;Success&rdquo;
+- WARNING: Data validation is performed and feature group is updated only if validation status is &ldquo;Warning&rdquo; or lower
+- ALL: Data validation is performed and feature group is updated only if validation status is &ldquo;Failure&rdquo; or lower
+- NONE: Data validation not performed on feature group</p>
+
+<h2 id="examples">Examples</h2>
+
+<h3 id="create-time-travel-enabled-feature-group-and-bulk-insert-sample-dataset">Create time travel enabled feature group and Bulk Insert Sample Dataset</h3>
+
+<p>For this demo we will use small sample of the Agarwal Generator that is a widely used dataset. It contains the hypothetical data of people applying for a loan. <code>Rakesh Agrawal, Tomasz Imielinksi, and Arun Swami, &quot;Database Mining: A Performance Perspective&quot;, IEEE Transactions on Knowledge and Data Engineering, 5(6), December 1993. &lt;br/&gt;&lt;br/&gt;</code></p>
+
+<h5 id="for-simplicity-of-demo-purposes-we-split-agarwal-dataset-into-3-freature-groups-and-demostrate-feature-validaton-on-the-economy-fg-feature-group">For simplicity of demo purposes we split Agarwal dataset into 3 freature groups and demostrate feature validaton on the economy_fg feature group:</h5>
+
+<ul>
+<li><code>economy_fg</code> with customer id, salary, loan, value of house, age of house, commission and type of car features;</li>
+</ul>
+
+<h3 id="importing-necessary-libraries">Importing necessary libraries</h3>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="kn">import</span> <span class="nn">hsfs</span>
+<span class="kn">from</span> <span class="nn">hsfs.rule</span> <span class="kn">import</span> <span class="n">Rule</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">from</span> <span class="nn">pyspark.sql</span> <span class="kn">import</span> <span class="n">DataFrame</span><span class="p">,</span> <span class="n">Row</span>
+<span class="kn">from</span> <span class="nn">pyspark.sql.types</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">pyspark.sql.functions</span> <span class="kn">import</span> <span class="n">unix_timestamp</span><span class="p">,</span> <span class="n">from_unixtime</span>
+
+<span class="n">connection</span> <span class="o">=</span> <span class="n">hsfs</span><span class="o">.</span><span class="n">connection</span><span class="p">()</span>
+<span class="c1"># get a reference to the feature store, you can access also shared feature stores by providing the feature store name</span>
+<span class="n">fs</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">get_feature_store</span><span class="p">();</span></code></pre></div>
+<pre><code>Starting Spark application
+</code></pre>
+
+<table>
+<tr><th>ID</th><th>YARN Application ID</th><th>Kind</th><th>State</th><th>Spark UI</th><th>Driver log</th></tr><tr><td>6</td><td>application_1612535100309_0042</td><td>pyspark</td><td>idle</td><td><a target="_blank" href="http://resourcemanager.service.consul:8088/proxy/application_1612535100309_0042/">Link</a></td><td><a target="_blank" href="http://hopsworks0.logicalclocks.com:8042/node/containerlogs/container_e01_1612535100309_0042_01_000001/demo_fs_meb10000__meb10000">Link</a></td></tr></table>
+
+<pre><code>SparkSession available as 'spark'.
+Connected. Call `.close()` to terminate connection gracefully.
+</code></pre>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">economy_fg_schema</span> <span class="o">=</span> <span class="n">StructType</span><span class="p">([</span>
+  <span class="n">StructField</span><span class="p">(</span><span class="s2">&#34;id&#34;</span><span class="p">,</span> <span class="n">IntegerType</span><span class="p">(),</span> <span class="bp">True</span><span class="p">),</span>
+  <span class="n">StructField</span><span class="p">(</span><span class="s2">&#34;salary&#34;</span><span class="p">,</span> <span class="n">FloatType</span><span class="p">(),</span> <span class="bp">True</span><span class="p">),</span>
+  <span class="n">StructField</span><span class="p">(</span><span class="s2">&#34;commission&#34;</span><span class="p">,</span> <span class="n">FloatType</span><span class="p">(),</span> <span class="bp">True</span><span class="p">),</span>
+  <span class="n">StructField</span><span class="p">(</span><span class="s2">&#34;car&#34;</span><span class="p">,</span> <span class="n">StringType</span><span class="p">(),</span> <span class="bp">True</span><span class="p">),</span> 
+  <span class="n">StructField</span><span class="p">(</span><span class="s2">&#34;hvalue&#34;</span><span class="p">,</span> <span class="n">FloatType</span><span class="p">(),</span> <span class="bp">True</span><span class="p">),</span>      
+  <span class="n">StructField</span><span class="p">(</span><span class="s2">&#34;hyears&#34;</span><span class="p">,</span> <span class="n">IntegerType</span><span class="p">(),</span> <span class="bp">True</span><span class="p">),</span>     
+  <span class="n">StructField</span><span class="p">(</span><span class="s2">&#34;loan&#34;</span><span class="p">,</span> <span class="n">FloatType</span><span class="p">(),</span> <span class="bp">True</span><span class="p">),</span>
+  <span class="n">StructField</span><span class="p">(</span><span class="s2">&#34;year&#34;</span><span class="p">,</span> <span class="n">IntegerType</span><span class="p">(),</span> <span class="bp">True</span><span class="p">)</span>    
+<span class="p">])</span></code></pre></div>
+<h3 id="create-spark-dataframes-for-each-feature-groups">Create spark dataframes for each Feature groups</h3>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">economy_bulk_insert_data</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">Row</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mf">110499.73</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span>  <span class="s2">&#34;car15&#34;</span><span class="p">,</span>  <span class="mf">235000.0</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mf">354724.18</span><span class="p">,</span> <span class="mi">2020</span><span class="p">),</span>
+    <span class="n">Row</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mf">140893.77</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span>  <span class="s2">&#34;car20&#34;</span><span class="p">,</span>  <span class="mf">135000.0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mf">395015.33</span><span class="p">,</span> <span class="mi">2020</span><span class="p">),</span>
+    <span class="n">Row</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mf">119159.65</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span>  <span class="s2">&#34;car1&#34;</span><span class="p">,</span> <span class="mf">145000.0</span><span class="p">,</span> <span class="mi">22</span><span class="p">,</span> <span class="mf">122025.08</span><span class="p">,</span> <span class="mi">2020</span><span class="p">),</span>
+    <span class="n">Row</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mf">20000.0</span><span class="p">,</span> <span class="mf">52593.63</span><span class="p">,</span> <span class="s2">&#34;car9&#34;</span><span class="p">,</span> <span class="mf">185000.0</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mf">99629.62</span><span class="p">,</span> <span class="mi">2020</span><span class="p">)</span>    
+<span class="p">]</span>
+
+<span class="n">economy_bulk_insert_df</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">createDataFrame</span><span class="p">(</span><span class="n">economy_bulk_insert_data</span><span class="p">,</span> <span class="n">economy_fg_schema</span><span class="p">)</span></code></pre></div><div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">economy_bulk_insert_df</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></code></pre></div>
+<pre><code>+---+---------+----------+-----+--------+------+---------+----+
+| id|   salary|commission|  car|  hvalue|hyears|     loan|year|
++---+---------+----------+-----+--------+------+---------+----+
+|  1|110499.73|       0.0|car15|235000.0|    30| 354724.2|2020|
+|  2|140893.77|       0.0|car20|135000.0|     2|395015.34|2020|
+|  3|119159.65|       0.0| car1|145000.0|    22|122025.08|2020|
+|  4|  20000.0|  52593.63| car9|185000.0|    30| 99629.62|2020|
++---+---------+----------+-----+--------+------+---------+----+
+</code></pre>
+
+<h1 id="data-validation">Data Validation</h1>
+
+<p>The next sections shows you how to create feature store expectations, attach them to feature groups, and apply them to dataframes being appended to the feature group.</p>
+
+<h3 id="discover-data-validation-rules-supported-in-hopsworks">Discover data validation rules supported in Hopsworks</h3>
+
+<p>Hopsworks comes shipped with a set of data validation rules. These rules are <strong>immutable</strong>, uniquely identified by <strong>name</strong> and are available across all feature stores. These rules are used to create feature store expectations which can then be attached to feature groups.</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="c1"># Get all rule definitions available in Hopsworks</span>
+<span class="n">rules</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">get_rules</span><span class="p">()</span>
+<span class="p">[</span><span class="k">print</span><span class="p">(</span><span class="n">rule</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())</span> <span class="k">for</span> <span class="n">rule</span> <span class="ow">in</span> <span class="n">rules</span><span class="p">]</span></code></pre></div>
+<pre><code>{'name': 'HAS_SIZE', 'predicate': 'VALUE', 'valueType': 'Integral', 'description': 'A rule that asserts the number of rows of the dataframe'}
+{'name': 'HAS_MEAN', 'predicate': 'VALUE', 'valueType': 'Fractional', 'description': 'A rule that asserts on the mean of the feature'}
+{'name': 'HAS_DATATYPE', 'predicate': 'ACCEPTED_TYPE', 'valueType': 'String', 'description': ''}
+{'name': 'HAS_SUM', 'predicate': 'VALUE', 'valueType': 'Fractional', 'description': 'A rule that asserts on the sum of the feature'}
+{'name': 'IS_LESS_THAN', 'predicate': 'LEGAL_VALUES', 'valueType': 'Fractional', 'description': ''}
+{'name': 'IS_GREATER_THAN_OR_EQUAL_TO', 'predicate': 'LEGAL_VALUES', 'valueType': 'Fractional', 'description': ''}
+{'name': 'HAS_STANDARD_DEVIATION', 'predicate': 'VALUE', 'valueType': 'Fractional', 'description': ''}
+{'name': 'HAS_PATTERN', 'predicate': 'PATTERN', 'valueType': 'String', 'description': ''}
+{'name': 'HAS_NUMBER_OF_DISTINCT_VALUES', 'predicate': 'VALUE', 'valueType': 'Integral', 'description': ''}
+{'name': 'HAS_MAX', 'predicate': 'VALUE', 'valueType': 'Fractional', 'description': 'A rule that asserts on the max of the feature'}
+{'name': 'IS_CONTAINED_IN', 'predicate': 'LEGAL_VALUES', 'valueType': 'String', 'description': ''}
+{'name': 'IS_NON_NEGATIVE', 'predicate': 'VALUE', 'valueType': 'Fractional', 'description': ''}
+{'name': 'IS_POSITIVE', 'predicate': 'VALUE', 'valueType': 'Boolean', 'description': ''}
+{'name': 'HAS_MUTUAL_INFORMATION', 'predicate': 'LEGAL_VALUES', 'valueType': 'Fractional', 'description': ''}
+{'name': 'HAS_UNIQUE_VALUE_RATIO', 'predicate': 'VALUE', 'valueType': 'Fractional', 'description': ''}
+{'name': 'IS_GREATER_THAN', 'predicate': 'LEGAL_VALUES', 'valueType': 'Fractional', 'description': ''}
+{'name': 'HAS_COMPLETENESS', 'predicate': 'VALUE', 'valueType': 'Fractional', 'description': ''}
+{'name': 'HAS_ENTROPY', 'predicate': 'VALUE', 'valueType': 'Fractional', 'description': ''}
+{'name': 'HAS_MIN', 'predicate': 'VALUE', 'valueType': 'Fractional', 'description': 'A rule that asserts on the min of the feature'}
+{'name': 'HAS_UNIQUENESS', 'predicate': 'VALUE', 'valueType': 'Fractional', 'description': ''}
+{'name': 'HAS_DISTINCTNESS', 'predicate': 'VALUE', 'valueType': 'Fractional', 'description': ''}
+{'name': 'HAS_CORRELATION', 'predicate': 'LEGAL_VALUES', 'valueType': 'Fractional', 'description': ''}
+{'name': 'HAS_APPROX_QUANTILE', 'predicate': 'VALUE', 'valueType': 'Fractional', 'description': ''}
+{'name': 'HAS_APPROX_COUNT_DISTINCT', 'predicate': 'VALUE', 'valueType': 'Fractional', 'description': ''}
+{'name': 'IS_LESS_THAN_OR_EQUAL_TO', 'predicate': 'LEGAL_VALUES', 'valueType': 'Fractional', 'description': ''}
+[None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None]
+</code></pre>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="c1"># Get a rule definition by name</span>
+<span class="n">rule_max</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">get_rule</span><span class="p">(</span><span class="s2">&#34;HAS_MAX&#34;</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">rule_max</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())</span></code></pre></div>
+<pre><code>{'name': 'HAS_MAX', 'predicate': 'VALUE', 'valueType': 'Fractional', 'description': 'A rule that asserts on the max of the feature'}
+</code></pre>
+
+<h3 id="create-expectations-based-on-hopsworks-rules">Create Expectations based on Hopsworks rules</h3>
+
+<p>Expectations are created at the feature store level. Multiple expectations can be created per feature store.</p>
+
+<p>An expectation is comprised from one or multiple rules and can refer to one or multiple features. An expectation can be utilized by attaching it to a feature group, as shown in the next sections</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">expectation_sales</span> <span class="o">=</span> <span class="n">fs</span><span class="o">.</span><span class="n">create_expectation</span><span class="p">(</span><span class="s2">&#34;sales&#34;</span><span class="p">,</span>
+                                          <span class="n">description</span><span class="o">=</span><span class="s2">&#34;min and max sales limits&#34;</span><span class="p">,</span>
+                                          <span class="n">features</span><span class="o">=</span><span class="p">[</span><span class="s2">&#34;salary&#34;</span><span class="p">,</span> <span class="s2">&#34;commission&#34;</span><span class="p">],</span> 
+                                          <span class="n">rules</span><span class="o">=</span><span class="p">[</span><span class="n">Rule</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&#34;HAS_MIN&#34;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&#34;WARNING&#34;</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">Rule</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&#34;HAS_MAX&#34;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&#34;ERROR&#34;</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mi">1000000</span><span class="p">)])</span>
+<span class="n">expectation_sales</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+
+<span class="n">expectation_year</span> <span class="o">=</span> <span class="n">fs</span><span class="o">.</span><span class="n">create_expectation</span><span class="p">(</span><span class="s2">&#34;year&#34;</span><span class="p">,</span>
+                                         <span class="n">features</span><span class="o">=</span><span class="p">[</span><span class="s2">&#34;year&#34;</span><span class="p">],</span> 
+                                         <span class="n">description</span><span class="o">=</span><span class="s2">&#34;validate year correctness&#34;</span><span class="p">,</span>
+                                         <span class="n">rules</span><span class="o">=</span><span class="p">[</span><span class="n">Rule</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&#34;HAS_MIN&#34;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&#34;ERROR&#34;</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="mi">2018</span><span class="p">),</span> <span class="n">Rule</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&#34;HAS_MAX&#34;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&#34;WARNING&#34;</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mi">2021</span><span class="p">)])</span>
+
+<span class="n">expectation_year</span><span class="o">.</span><span class="n">save</span><span class="p">()</span></code></pre></div>
+<pre><code>expectation.rules[0].to_dict(){'name': 'HAS_MIN', 'level': 'WARNING', 'min': 0, 'max': None, 'pattern': None, 'acceptedType': None, 'legalValues': None}
+ExpectationsApi.expectation.to_dict(){'name': 'sales', 'description': 'min and max sales limits', 'features': ['salary', 'commission'], 'rules': [&lt;hsfs.rule.Rule object at 0x7fa9efe54850&gt;, &lt;hsfs.rule.Rule object at 0x7fa9efe54690&gt;]}
+ExpectationsApi.expectation.rules[0].to_dict(){'name': 'HAS_MIN', 'level': 'WARNING', 'min': 0, 'max': None, 'pattern': None, 'acceptedType': None, 'legalValues': None}
+ExpectationsApi.expectation.payload{&quot;name&quot;: &quot;sales&quot;, &quot;description&quot;: &quot;min and max sales limits&quot;, &quot;features&quot;: [&quot;salary&quot;, &quot;commission&quot;], &quot;rules&quot;: [{&quot;name&quot;: &quot;HAS_MIN&quot;, &quot;level&quot;: &quot;WARNING&quot;, &quot;min&quot;: 0, &quot;max&quot;: null, &quot;pattern&quot;: null, &quot;acceptedType&quot;: null, &quot;legalValues&quot;: null}, {&quot;name&quot;: &quot;HAS_MAX&quot;, &quot;level&quot;: &quot;ERROR&quot;, &quot;min&quot;: null, &quot;max&quot;: 1000000, &quot;pattern&quot;: null, &quot;acceptedType&quot;: null, &quot;legalValues&quot;: null}]}
+expectation.rules[0].to_dict(){'name': 'HAS_MIN', 'level': 'ERROR', 'min': 2018, 'max': None, 'pattern': None, 'acceptedType': None, 'legalValues': None}
+ExpectationsApi.expectation.to_dict(){'name': 'year', 'description': 'validate year correctness', 'features': ['year'], 'rules': [&lt;hsfs.rule.Rule object at 0x7fa9e0f779d0&gt;, &lt;hsfs.rule.Rule object at 0x7fa9efe7ad50&gt;]}
+ExpectationsApi.expectation.rules[0].to_dict(){'name': 'HAS_MIN', 'level': 'ERROR', 'min': 2018, 'max': None, 'pattern': None, 'acceptedType': None, 'legalValues': None}
+ExpectationsApi.expectation.payload{&quot;name&quot;: &quot;year&quot;, &quot;description&quot;: &quot;validate year correctness&quot;, &quot;features&quot;: [&quot;year&quot;], &quot;rules&quot;: [{&quot;name&quot;: &quot;HAS_MIN&quot;, &quot;level&quot;: &quot;ERROR&quot;, &quot;min&quot;: 2018, &quot;max&quot;: null, &quot;pattern&quot;: null, &quot;acceptedType&quot;: null, &quot;legalValues&quot;: null}, {&quot;name&quot;: &quot;HAS_MAX&quot;, &quot;level&quot;: &quot;WARNING&quot;, &quot;min&quot;: null, &quot;max&quot;: 2021, &quot;pattern&quot;: null, &quot;acceptedType&quot;: null, &quot;legalValues&quot;: null}]}
+</code></pre>
+
+<h3 id="discover-feature-store-expectations">Discover Feature Store Expectations</h3>
+
+<p>Using the Python API you can easily find out which expectations are availeble in this feature store.</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="c1"># Get all Feature Store expectations</span>
+<span class="n">fs_expectations</span> <span class="o">=</span> <span class="n">fs</span><span class="o">.</span><span class="n">get_expectations</span><span class="p">()</span>
+<span class="p">[</span><span class="k">print</span><span class="p">(</span><span class="n">expectation</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())</span> <span class="k">for</span> <span class="n">expectation</span> <span class="ow">in</span> <span class="n">fs_expectations</span><span class="p">]</span></code></pre></div>
+<pre><code>{'name': 'year', 'description': 'validate year correctness', 'features': ['year'], 'rules': [{'level': 'ERROR', 'min': 2018.0, 'name': 'HAS_MIN'}, {'level': 'WARNING', 'max': 2021.0, 'name': 'HAS_MAX'}]}
+{'name': 'sales', 'description': 'min and max sales limits', 'features': ['salary', 'commission'], 'rules': [{'level': 'WARNING', 'min': 0.0, 'name': 'HAS_MIN'}, {'level': 'ERROR', 'max': 1000000.0, 'name': 'HAS_MAX'}]}
+[None, None]
+</code></pre>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="c1"># Get an expectation by its unique name</span>
+<span class="n">fs_expectation</span> <span class="o">=</span> <span class="n">fs</span><span class="o">.</span><span class="n">get_expectation</span><span class="p">(</span><span class="s2">&#34;year&#34;</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">fs_expectation</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())</span></code></pre></div>
+<pre><code>{'name': 'year', 'description': 'validate year correctness', 'features': ['year'], 'rules': [{'level': 'ERROR', 'min': 2018.0, 'name': 'HAS_MIN'}, {'level': 'WARNING', 'max': 2021.0, 'name': 'HAS_MAX'}]}
+</code></pre>
+
+<h3 id="create-feature-group-with-expectations-and-validation-type">Create feature group with expectations and validation type</h3>
+
+<p>Feature store expectations can be attached and detached from feature groups. That enables ingestions pipelines to validate incoming data against expectations. Expectations can be set when creating a feature group.
+Later in the notebook we describe the possible validation type values and what that means for the feature group ingestion. For the moment, we initialize the validation type to STRICT</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">economy_fg</span> <span class="o">=</span> <span class="n">fs</span><span class="o">.</span><span class="n">create_feature_group</span><span class="p">(</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s2">&#34;economy_fg_p43&#34;</span><span class="p">,</span>
+    <span class="n">description</span> <span class="o">=</span> <span class="s2">&#34;Hudi Household Economy Feature Group&#34;</span><span class="p">,</span>
+    <span class="n">version</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">primary_key</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&#34;id&#34;</span><span class="p">],</span> 
+    <span class="n">partition_key</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&#34;year&#34;</span><span class="p">],</span> 
+    <span class="n">time_travel_format</span> <span class="o">=</span> <span class="s2">&#34;HUDI&#34;</span><span class="p">,</span>
+    <span class="n">validation_type</span><span class="o">=</span><span class="s2">&#34;STRICT&#34;</span><span class="p">,</span>
+    <span class="n">expectations</span><span class="o">=</span> <span class="p">[</span><span class="n">expectation_sales</span><span class="p">,</span> <span class="n">expectation_year</span><span class="p">]</span>
+<span class="p">)</span></code></pre></div>
+<h3 id="bulk-insert-data-into-the-feature-group">Bulk insert data into the feature group</h3>
+
+<p>Since we have not yet saved any data into newly created feature groups we will use Apache hudi terminology and <code>Bulk Insert</code> data. In HSFS its just issuing <code>save</code> method.</p>
+
+<p>Data will be validated prior to being persisted into the Feature Store.</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">economy_fg</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">economy_bulk_insert_df</span><span class="p">)</span></code></pre></div>
+<pre><code>&lt;hsfs.feature_group.FeatureGroup object at 0x7fa9efe79f50&gt;
+</code></pre>
+
+<h3 id="attach-expectations-to-feature-groups">Attach expectations to Feature Groups</h3>
+
+<p>Expectations can be attached and detached from feature groups even after the latter are created. If an expectation is attached to a feature group, it will be used when inserted data is validated. An expectation can be attached to multiple feature groups, as long as the expectation&rsquo;s features exist in that feature group.</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="c1"># Detach expectation by using its name or the metadata object, example shows the latter</span>
+<span class="n">economy_fg</span><span class="o">.</span><span class="n">detach_expectation</span><span class="p">(</span><span class="n">expectation_year</span><span class="p">)</span></code></pre></div><div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="c1"># Attach expectation by using its name or the metadata object, example shows the former</span>
+<span class="n">economy_fg</span><span class="o">.</span><span class="n">attach_expectation</span><span class="p">(</span><span class="n">expectation_year</span><span class="p">)</span></code></pre></div>
+<h3 id="validations">Validations</h3>
+
+<h4 id="you-can-also-validate-the-dataframe-without-having-to-insert-the-data-into-a-feature-group">You can also validate the dataframe without having to insert the data into a feature group</h4>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">economy_fg</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">economy_bulk_insert_df</span><span class="p">)</span></code></pre></div>
+<pre><code>&lt;hsfs.feature_group_validation.FeatureGroupValidation object at 0x7fa9f0067290&gt;
+</code></pre>
+
+<h4 id="you-get-retrieve-all-the-validations-of-a-feature-group">You get retrieve all the validations of a feature group</h4>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">economy_fg_validations</span> <span class="o">=</span> <span class="n">economy_fg</span><span class="o">.</span><span class="n">get_validations</span><span class="p">()</span>
+<span class="p">[</span><span class="k">print</span><span class="p">(</span><span class="n">validation</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())</span> <span class="k">for</span> <span class="n">validation</span> <span class="ow">in</span> <span class="n">economy_fg_validations</span><span class="p">]</span></code></pre></div>
+<pre><code>{'validationId': 15, 'validationTime': 1612890460069, 'expectationResults': [{'expectation': {'features': ['salary', 'commission'], 'rules': [{'level': 'WARNING', 'min': 0.0, 'name': 'HAS_MIN'}, {'level': 'ERROR', 'max': 1000000.0, 'name': 'HAS_MAX'}], 'description': 'min and max sales limits', 'name': 'sales'}, 'results': [{'feature': 'salary', 'message': 'Success', 'rule': {'level': 'ERROR', 'max': 1000000.0, 'name': 'HAS_MAX'}, 'status': 'SUCCESS', 'value': '140893.765625'}, {'feature': 'commission', 'message': 'Success', 'rule': {'level': 'ERROR', 'max': 1000000.0, 'name': 'HAS_MAX'}, 'status': 'SUCCESS', 'value': '52593.62890625'}, {'feature': 'salary', 'message': 'Success', 'rule': {'level': 'WARNING', 'min': 0.0, 'name': 'HAS_MIN'}, 'status': 'SUCCESS', 'value': '20000.0'}, {'feature': 'commission', 'message': 'Success', 'rule': {'level': 'WARNING', 'min': 0.0, 'name': 'HAS_MIN'}, 'status': 'SUCCESS', 'value': '0.0'}], 'status': 'SUCCESS'}, {'expectation': {'features': ['year'], 'rules': [{'level': 'ERROR', 'min': 2018.0, 'name': 'HAS_MIN'}, {'level': 'WARNING', 'max': 2021.0, 'name': 'HAS_MAX'}], 'description': 'validate year correctness', 'name': 'year'}, 'results': [{'feature': 'year', 'message': 'Success', 'rule': {'level': 'ERROR', 'min': 2018.0, 'name': 'HAS_MIN'}, 'status': 'SUCCESS', 'value': '2020.0'}, {'feature': 'year', 'message': 'Success', 'rule': {'level': 'WARNING', 'max': 2021.0, 'name': 'HAS_MAX'}, 'status': 'SUCCESS', 'value': '2020.0'}], 'status': 'SUCCESS'}]}
+{'validationId': 16, 'validationTime': 1612890570580, 'expectationResults': [{'expectation': {'features': ['salary', 'commission'], 'rules': [{'level': 'WARNING', 'min': 0.0, 'name': 'HAS_MIN'}, {'level': 'ERROR', 'max': 1000000.0, 'name': 'HAS_MAX'}], 'description': 'min and max sales limits', 'name': 'sales'}, 'results': [{'feature': 'salary', 'message': 'Success', 'rule': {'level': 'ERROR', 'max': 1000000.0, 'name': 'HAS_MAX'}, 'status': 'SUCCESS', 'value': '140893.765625'}, {'feature': 'commission', 'message': 'Success', 'rule': {'level': 'ERROR', 'max': 1000000.0, 'name': 'HAS_MAX'}, 'status': 'SUCCESS', 'value': '52593.62890625'}, {'feature': 'salary', 'message': 'Success', 'rule': {'level': 'WARNING', 'min': 0.0, 'name': 'HAS_MIN'}, 'status': 'SUCCESS', 'value': '20000.0'}, {'feature': 'commission', 'message': 'Success', 'rule': {'level': 'WARNING', 'min': 0.0, 'name': 'HAS_MIN'}, 'status': 'SUCCESS', 'value': '0.0'}], 'status': 'SUCCESS'}, {'expectation': {'features': ['year'], 'rules': [{'level': 'ERROR', 'min': 2018.0, 'name': 'HAS_MIN'}, {'level': 'WARNING', 'max': 2021.0, 'name': 'HAS_MAX'}], 'description': 'validate year correctness', 'name': 'year'}, 'results': [{'feature': 'year', 'message': 'Success', 'rule': {'level': 'ERROR', 'min': 2018.0, 'name': 'HAS_MIN'}, 'status': 'SUCCESS', 'value': '2020.0'}, {'feature': 'year', 'message': 'Success', 'rule': {'level': 'WARNING', 'max': 2021.0, 'name': 'HAS_MAX'}, 'status': 'SUCCESS', 'value': '2020.0'}], 'status': 'SUCCESS'}]}
+[None, None]
+</code></pre>
+
+<h4 id="or-retrieve-a-validation-by-validation-or-commit-time">&hellip; or retrieve a validation by validation or commit time.</h4>
+
+<p>Validation time is the timestamp when the validation started.</p>
+
+<p>Commit time is the time data was peristed in the time travel enabled feature group</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">commit_time</span> <span class="o">=</span> <span class="n">economy_fg</span><span class="o">.</span><span class="n">get_validations</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">commit_time</span></code></pre></div><div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">validation_time</span> <span class="o">=</span> <span class="n">economy_fg</span><span class="o">.</span><span class="n">get_validations</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">validation_time</span></code></pre></div><div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="c1"># Get validation by validation time</span>
+<span class="n">validation</span> <span class="o">=</span> <span class="n">economy_fg</span><span class="o">.</span><span class="n">get_validations</span><span class="p">(</span><span class="n">validation_time</span><span class="o">=</span><span class="n">validation_time</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+<span class="k">print</span><span class="p">(</span><span class="n">validation</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())</span></code></pre></div>
+<pre><code>{'validationId': 15, 'validationTime': 1612890460069, 'expectationResults': [{'expectation': {'features': ['salary', 'commission'], 'rules': [{'level': 'WARNING', 'min': 0.0, 'name': 'HAS_MIN'}, {'level': 'ERROR', 'max': 1000000.0, 'name': 'HAS_MAX'}], 'description': 'min and max sales limits', 'name': 'sales'}, 'results': [{'feature': 'salary', 'message': 'Success', 'rule': {'level': 'ERROR', 'max': 1000000.0, 'name': 'HAS_MAX'}, 'status': 'SUCCESS', 'value': '140893.765625'}, {'feature': 'commission', 'message': 'Success', 'rule': {'level': 'ERROR', 'max': 1000000.0, 'name': 'HAS_MAX'}, 'status': 'SUCCESS', 'value': '52593.62890625'}, {'feature': 'salary', 'message': 'Success', 'rule': {'level': 'WARNING', 'min': 0.0, 'name': 'HAS_MIN'}, 'status': 'SUCCESS', 'value': '20000.0'}, {'feature': 'commission', 'message': 'Success', 'rule': {'level': 'WARNING', 'min': 0.0, 'name': 'HAS_MIN'}, 'status': 'SUCCESS', 'value': '0.0'}], 'status': 'SUCCESS'}, {'expectation': {'features': ['year'], 'rules': [{'level': 'ERROR', 'min': 2018.0, 'name': 'HAS_MIN'}, {'level': 'WARNING', 'max': 2021.0, 'name': 'HAS_MAX'}], 'description': 'validate year correctness', 'name': 'year'}, 'results': [{'feature': 'year', 'message': 'Success', 'rule': {'level': 'ERROR', 'min': 2018.0, 'name': 'HAS_MIN'}, 'status': 'SUCCESS', 'value': '2020.0'}, {'feature': 'year', 'message': 'Success', 'rule': {'level': 'WARNING', 'max': 2021.0, 'name': 'HAS_MAX'}, 'status': 'SUCCESS', 'value': '2020.0'}], 'status': 'SUCCESS'}]}
+</code></pre>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="c1"># Get validation by commit time</span>
+<span class="n">validation</span> <span class="o">=</span> <span class="n">economy_fg</span><span class="o">.</span><span class="n">get_validations</span><span class="p">(</span><span class="n">commit_time</span><span class="o">=</span><span class="n">commit_time</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+<span class="k">print</span><span class="p">(</span><span class="n">validation</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())</span></code></pre></div>
+<pre><code>{'validationId': 15, 'validationTime': 1612890460069, 'expectationResults': [{'expectation': {'features': ['salary', 'commission'], 'rules': [{'level': 'WARNING', 'min': 0.0, 'name': 'HAS_MIN'}, {'level': 'ERROR', 'max': 1000000.0, 'name': 'HAS_MAX'}], 'description': 'min and max sales limits', 'name': 'sales'}, 'results': [{'feature': 'salary', 'message': 'Success', 'rule': {'level': 'ERROR', 'max': 1000000.0, 'name': 'HAS_MAX'}, 'status': 'SUCCESS', 'value': '140893.765625'}, {'feature': 'commission', 'message': 'Success', 'rule': {'level': 'ERROR', 'max': 1000000.0, 'name': 'HAS_MAX'}, 'status': 'SUCCESS', 'value': '52593.62890625'}, {'feature': 'salary', 'message': 'Success', 'rule': {'level': 'WARNING', 'min': 0.0, 'name': 'HAS_MIN'}, 'status': 'SUCCESS', 'value': '20000.0'}, {'feature': 'commission', 'message': 'Success', 'rule': {'level': 'WARNING', 'min': 0.0, 'name': 'HAS_MIN'}, 'status': 'SUCCESS', 'value': '0.0'}], 'status': 'SUCCESS'}, {'expectation': {'features': ['year'], 'rules': [{'level': 'ERROR', 'min': 2018.0, 'name': 'HAS_MIN'}, {'level': 'WARNING', 'max': 2021.0, 'name': 'HAS_MAX'}], 'description': 'validate year correctness', 'name': 'year'}, 'results': [{'feature': 'year', 'message': 'Success', 'rule': {'level': 'ERROR', 'min': 2018.0, 'name': 'HAS_MIN'}, 'status': 'SUCCESS', 'value': '2020.0'}, {'feature': 'year', 'message': 'Success', 'rule': {'level': 'WARNING', 'max': 2021.0, 'name': 'HAS_MAX'}, 'status': 'SUCCESS', 'value': '2020.0'}], 'status': 'SUCCESS'}]}
+</code></pre>
+
+<h4 id="get-the-status-of-a-validation">Get the status of a validation</h4>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="k">print</span><span class="p">(</span><span class="s2">&#34;Validation status: {}&#34;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">validation</span><span class="o">.</span><span class="n">status</span><span class="p">))</span></code></pre></div>
+<pre><code>Validation status: SUCCESS
+</code></pre>
+
+<h3 id="upsert-new-invalid-data-into-a-feature-group">Upsert new invalid data into a Feature Group</h3>
+
+<p>Now we will try to upsert some invalid data (year feature does not meet the maximum expectation). An error is returned to the client along with the failed expectation</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">economy_upsert_data</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">Row</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mf">120499.73</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&#34;car17&#34;</span><span class="p">,</span> <span class="mf">205000.0</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mf">564724.18</span><span class="p">,</span> <span class="mi">2022</span><span class="p">),</span>    <span class="c1">#update</span>
+    <span class="n">Row</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mf">160893.77</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&#34;car10&#34;</span><span class="p">,</span> <span class="mf">179000.0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mf">455015.33</span><span class="p">,</span> <span class="mi">2020</span><span class="p">),</span>     <span class="c1">#update</span>
+    <span class="n">Row</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mf">93956.32</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&#34;car15&#34;</span><span class="p">,</span>  <span class="mf">135000.0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mf">458679.82</span><span class="p">,</span> <span class="mi">2020</span><span class="p">),</span>     <span class="c1">#insert</span>
+    <span class="n">Row</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mf">41365.43</span><span class="p">,</span> <span class="mf">52809.15</span><span class="p">,</span> <span class="s2">&#34;car7&#34;</span><span class="p">,</span> <span class="mf">135000.0</span><span class="p">,</span> <span class="mi">19</span><span class="p">,</span> <span class="mf">216839.71</span><span class="p">,</span> <span class="mi">2020</span><span class="p">),</span> <span class="c1">#insert</span>
+    <span class="n">Row</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mf">94805.61</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&#34;car17&#34;</span><span class="p">,</span> <span class="mf">135000.0</span><span class="p">,</span> <span class="mi">23</span><span class="p">,</span> <span class="mf">233216.07</span><span class="p">,</span> <span class="mi">2022</span><span class="p">)</span>      <span class="c1">#insert    </span>
+<span class="p">]</span>
+
+<span class="n">economy_upsert_df</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">createDataFrame</span><span class="p">(</span><span class="n">economy_upsert_data</span><span class="p">,</span> <span class="n">economy_fg_schema</span><span class="p">)</span>
+
+<span class="n">economy_upsert_df</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span></code></pre></div>
+<pre><code>+---+---------+----------+-----+--------+------+---------+----+
+| id|   salary|commission|  car|  hvalue|hyears|     loan|year|
++---+---------+----------+-----+--------+------+---------+----+
+|  1|120499.73|       0.0|car17|205000.0|    30| 564724.2|2022|
+|  2|160893.77|       0.0|car10|179000.0|     2|455015.34|2020|
+|  5| 93956.32|       0.0|car15|135000.0|     1| 458679.8|2020|
+|  6| 41365.43|  52809.15| car7|135000.0|    19| 216839.7|2020|
+|  7| 94805.61|       0.0|car17|135000.0|    23|233216.06|2022|
++---+---------+----------+-----+--------+------+---------+----+
+</code></pre>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="c1"># Insert call will fail as invalid data (year feature) is about to be ingested. Error shows the expectation that was not met</span>
+<span class="n">economy_fg</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">economy_upsert_df</span><span class="p">)</span></code></pre></div>
+<pre><code>An error was encountered:
+Metadata operation error: (url: https://hopsworks.glassfish.service.consul:8182/hopsworks-api/api/project/150/featurestores/98/featuregroups/64/validations). Server response: 
+HTTP code: 417, HTTP reason: Expectation Failed, error code: 270149, error msg: Feature group validation checks did not pass, will not persist validation results., user msg: Results: [ExpectationResult{status=Failure, results=[ValidationResult{status=Success, message='Success', value='2020.0', feature='year', rule=Rule{name=HAS_MIN, level=ERROR, min=2018.0, max=null, pattern='null', acceptedType=null, legalValues=null}}, ValidationResult{status=Failure, message='Value: 2022.0 does not meet the constraint requirement! HAS_MAX', value='2022.0', feature='year', rule=Rule{name=HAS_MAX, level=WARNING, min=null, max=2021.0, pattern='null', acceptedType=null, legalValues=null}}], expectation=Expectation{name='year', features=[year], rules=[Rule{name=HAS_MIN, level=ERROR, min=2018.0, max=null, pattern='null', acceptedType=null, legalValues=null}, Rule{name=HAS_MAX, level=WARNING, min=null, max=2021.0, pattern='null', acceptedType=null, legalValues=null}]}}]
+Traceback (most recent call last):
+  File &quot;/srv/hops/anaconda/envs/theenv/lib/python3.7/site-packages/hsfs/feature_group.py&quot;, line 690, in insert
+    write_options,
+  File &quot;/srv/hops/anaconda/envs/theenv/lib/python3.7/site-packages/hsfs/core/feature_group_engine.py&quot;, line 93, in insert
+    validation = feature_group.validate(feature_dataframe)
+  File &quot;/srv/hops/anaconda/envs/theenv/lib/python3.7/site-packages/hsfs/feature_group.py&quot;, line 857, in validate
+    return self._data_validation_engine.validate(self, dataframe)
+  File &quot;/srv/hops/anaconda/envs/theenv/lib/python3.7/site-packages/hsfs/core/data_validation_engine.py&quot;, line 115, in validate
+    return self._feature_group_validation_api.put(feature_group, validation_python)
+  File &quot;/srv/hops/anaconda/envs/theenv/lib/python3.7/site-packages/hsfs/core/validations_api.py&quot;, line 49, in put
+    data=feature_group_validation.json(),
+  File &quot;/srv/hops/anaconda/envs/theenv/lib/python3.7/site-packages/hsfs/decorators.py&quot;, line 35, in if_connected
+    return fn(inst, *args, **kwargs)
+  File &quot;/srv/hops/anaconda/envs/theenv/lib/python3.7/site-packages/hsfs/client/base.py&quot;, line 147, in _send_request
+    raise exceptions.RestAPIError(url, response)
+hsfs.client.exceptions.RestAPIError: Metadata operation error: (url: https://hopsworks.glassfish.service.consul:8182/hopsworks-api/api/project/150/featurestores/98/featuregroups/64/validations). Server response: 
+HTTP code: 417, HTTP reason: Expectation Failed, error code: 270149, error msg: Feature group validation checks did not pass, will not persist validation results., user msg: Results: [ExpectationResult{status=Failure, results=[ValidationResult{status=Success, message='Success', value='2020.0', feature='year', rule=Rule{name=HAS_MIN, level=ERROR, min=2018.0, max=null, pattern='null', acceptedType=null, legalValues=null}}, ValidationResult{status=Failure, message='Value: 2022.0 does not meet the constraint requirement! HAS_MAX', value='2022.0', feature='year', rule=Rule{name=HAS_MAX, level=WARNING, min=null, max=2021.0, pattern='null', acceptedType=null, legalValues=null}}], expectation=Expectation{name='year', features=[year], rules=[Rule{name=HAS_MIN, level=ERROR, min=2018.0, max=null, pattern='null', acceptedType=null, legalValues=null}, Rule{name=HAS_MAX, level=WARNING, min=null, max=2021.0, pattern='null', acceptedType=null, legalValues=null}]}}]
+</code></pre>
+
+<h3 id="validation-type">Validation type</h3>
+
+<p>The validation type determines the validation behavior. Available types are:
+- STRICT: Data validation is performed and data is ingested into feature group is updated only if validation status is &ldquo;SUCCESS&rdquo;
+- WARNING: Data validation is performed and data is ingested into the feature group only if validation status is &ldquo;WARNING&rdquo; or &ldquo;SUCCESS&rdquo;
+- ALL: Data validation is performed and data is ingested into the feature group regardless of the validation status
+- NONE: Data validation not performed on feature group</p>
+
+<p>The validation type can easily be changed for a feature group</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="c1"># The previous economy_upsert_df contains invalid data but we still want to persist the data, so we set the validation type from STRICT to ALL</span>
+<span class="n">economy_fg</span><span class="o">.</span><span class="n">validation_type</span> <span class="o">=</span> <span class="s2">&#34;ALL&#34;</span></code></pre></div><div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="c1"># We try to insert the invalid df again</span>
+<span class="n">economy_fg</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">economy_upsert_df</span><span class="p">)</span></code></pre></div>
+    </div>
+    <aside>
+      <div class="bug_reporting">
+	<h4>Find an error or bug?</h4>
+	<p>Everything on this site is available on GitHub. Head to <a href='https://github.com/chrisalbon/notes/issues/new'>and submit a suggested change</a>. Include the tutorial's URL in the issue.</p>
+      </div>
+    </aside>
+
+  </div>
+</article>
+
+
+
+
+            </div>
+
+        </div>
+    </div>
+
+    
+
+    <footer class="footer text-center">
+        <div class="container">
+            <span class="text-muted">This project contains 59 pages and is available on <a href="https://github.com/napsterinblue/notes">GitHub</a>. Copyright &copy; NapsterInBlue, <time datetime="2018">2018</time>.</span>
+        </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ"
+        crossorigin="anonymous"></script>
+
+</body>
+
+</html>

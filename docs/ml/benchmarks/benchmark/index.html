@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-66582-32"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-66582-32');
+    </script>
+
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+<meta property="og:title" content="Benchmark GPU vs CPU with TensorFlow" />
+<meta property="og:description" content="Benchmark GPU vs CPU &amp; multi-host vs single host This notebook can be used to benchmark performance using CPU, a single GPU or many GPUs.
+Tested with TensorFlow 2.4.0
+ Machine Learning on Hopsworks  The hops python module hops is a helper library for Hops that facilitates development by hiding the complexity of running applications and iteracting with services.
+Have a feature request or encountered an issue? Please let us know on github." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://examples.hopsworks.ai/ml/benchmarks/benchmark/" />
+
+
+
+<meta property="article:published_time" content="2021-02-24T00:00:00&#43;00:00"/>
+
+<meta property="article:modified_time" content="2021-02-24T00:00:00&#43;00:00"/>
+
+
+
+
+
+
+
+
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Benchmark GPU vs CPU with TensorFlow"/>
+<meta name="twitter:description" content="Benchmark GPU vs CPU &amp; multi-host vs single host This notebook can be used to benchmark performance using CPU, a single GPU or many GPUs.
+Tested with TensorFlow 2.4.0
+ Machine Learning on Hopsworks  The hops python module hops is a helper library for Hops that facilitates development by hiding the complexity of running applications and iteracting with services.
+Have a feature request or encountered an issue? Please let us know on github."/>
+<meta name="generator" content="Hugo 0.40.3" />
+
+    
+<script type="application/ld+json">
+  {
+  "@context": "http://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Benchmark GPU vs CPU with TensorFlow",
+  "url": "https://examples.hopsworks.ai/ml/benchmarks/benchmark/",
+  "wordCount": "715",
+  "datePublished": "2021-02-24T00:00:00&#43;00:00",
+  "dateModified": "2021-02-24T00:00:00&#43;00:00",
+  "author": {
+  "@type": "Person",
+  "name": ""
+  }
+  }
+</script> 
+
+    <title>Benchmark GPU vs CPU with TensorFlow</title>
+
+    
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb"
+        crossorigin="anonymous">
+
+    
+    <link href="https://examples.hopsworks.ai/css/custom.css" rel="stylesheet">
+    <link href="https://examples.hopsworks.ai/css/syntax.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Muli:400,500,700" rel="stylesheet">
+
+    <link href="" rel="alternate" type="application/rss+xml" title="Hopsworks Examples" />
+
+    <script type="text/javascript" async
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[','\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre','code'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+</script>
+
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-sm fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="https://examples.hopsworks.ai">Hopsworks Examples</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="nav navbar-nav mr-auto"></ul>
+                <ul class="nav navbar-nav">
+                    <li><a href="https://hopsworks.ai" title="Hopsworks.ai">hopsworks.ai</a></li>
+                    <li><a href="https://docs.hopsworks.ai" title="Docs">docs.hopsworks.ai</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+
+    
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+
+                 
+
+
+<article>
+  <div class="technical_note">
+    <header>
+      <div class="alert alert-warning flashcard_ad" role="alert">
+	Want to learn machine learning? Try my <a href="https://machinelearningflashcards.com" class="alert-link">machine learning flashcards</a>, <a href='https://amzn.to/2HwnWty' class="alert-link">book</a>, or <a href='https://www.youtube.com/channel/UCnd4Fi-ODvuPbxR2fO2j7kA' class="alert-link">study with me.</a>.
+      </div>
+      <h1 class="technical_note_title">Benchmark GPU vs CPU with TensorFlow</h1>
+      <div class="technical_note_date">
+	<time datetime=" 2021-02-24T00:00:00Z "> 24 Feb 2021</time>
+      </div>
+    </header>
+    <div class="content">
+
+      
+
+<h1 id="benchmark-gpu-vs-cpu-multi-host-vs-single-host">Benchmark GPU vs CPU &amp; multi-host vs single host</h1>
+
+<hr />
+
+<p>This notebook can be used to benchmark performance using CPU, a single GPU or many GPUs.</p>
+
+<p><font color='red'> <h3>Tested with TensorFlow 2.4.0</h3></font></p>
+
+<p>
+<h1>Machine Learning on <a href="https://github.com/logicalclocks/hopsworks">Hopsworks
+</a></h1> 
+</p>
+
+<p><img src="hops.png" alt="hops.png" /></p>
+
+<h2 id="the-hops-python-module">The <code>hops</code> python module</h2>
+
+<p><code>hops</code> is a helper library for Hops that facilitates development by hiding the complexity of running applications and iteracting with services.</p>
+
+<p>Have a feature request or encountered an issue? Please let us know on <a href="https://github.com/logicalclocks/hops-util-py">github</a>.</p>
+
+<h3 id="using-the-experiment-module">Using the <code>experiment</code> module</h3>
+
+<p>To be able to run your Machine Learning code in Hopsworks, the code for the whole program needs to be provided and put inside a wrapper function. Everything, from importing libraries to reading data and defining the model and running the program needs to be put inside a wrapper function.</p>
+
+<p>The <code>experiment</code> module provides an api to Python programs such as TensorFlow, Keras and PyTorch on a Hopsworks on any number of machines and GPUs.</p>
+
+<p>An Experiment could be a single Python program, which we refer to as an <strong>Experiment</strong>.</p>
+
+<p>Grid search or genetic hyperparameter optimization such as differential evolution which runs several Experiments in parallel, which we refer to as <strong>Parallel Experiment</strong>.</p>
+
+<p>ParameterServerStrategy, CollectiveAllReduceStrategy and MultiworkerMirroredStrategy making multi-machine/multi-gpu training as simple as invoking a function for orchestration. This mode is referred to as <strong>Distributed Training</strong>.</p>
+
+<h3 id="using-the-tensorboard-module">Using the <code>tensorboard</code> module</h3>
+
+<p>The <code>tensorboard</code> module allow us to get the log directory for summaries and checkpoints to be written to the TensorBoard we will see in a bit. The only function that we currently need to call is <code>tensorboard.logdir()</code>, which returns the path to the TensorBoard log directory. Furthermore, the content of this directory will be put in as a Dataset in your project&rsquo;s Experiments folder.</p>
+
+<p>The directory could in practice be used to store other data that should be accessible after the experiment is finished.</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="c1"># Use this module to get the TensorBoard logdir</span>
+<span class="kn">from</span> <span class="nn">hops</span> <span class="kn">import</span> <span class="n">tensorboard</span>
+<span class="n">tensorboard_logdir</span> <span class="o">=</span> <span class="n">tensorboard</span><span class="o">.</span><span class="n">logdir</span><span class="p">()</span></code></pre></div>
+<h3 id="using-the-hdfs-module">Using the <code>hdfs</code> module</h3>
+
+<p>The <code>hdfs</code> module provides a method to get the path in HopsFS where your data is stored, namely by calling <code>hdfs.project_path()</code>. The path resolves to the root path for your project, which is the view that you see when you click <code>Data Sets</code> in HopsWorks. To point where your actual data resides in the project you to append the full path from there to your Dataset. For example if you create a mnist folder in your Resources Dataset, the path to the mnist data would be <code>hdfs.project_path() + 'Resources/mnist'</code></p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="c1"># Use this module to get the path to your project in HopsFS, then append the path to your Dataset in your project</span>
+<span class="kn">from</span> <span class="nn">hops</span> <span class="kn">import</span> <span class="n">hdfs</span>
+<span class="n">project_path</span> <span class="o">=</span> <span class="n">hdfs</span><span class="o">.</span><span class="n">project_path</span><span class="p">()</span></code></pre></div><div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="c1"># Downloading the mnist dataset to the current working directory</span>
+<span class="kn">from</span> <span class="nn">hops</span> <span class="kn">import</span> <span class="n">hdfs</span>
+<span class="n">mnist_hdfs_path</span> <span class="o">=</span> <span class="n">hdfs</span><span class="o">.</span><span class="n">project_path</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&#34;Resources/mnist&#34;</span>
+<span class="n">local_mnist_path</span> <span class="o">=</span> <span class="n">hdfs</span><span class="o">.</span><span class="n">copy_to_local</span><span class="p">(</span><span class="n">mnist_hdfs_path</span><span class="p">)</span></code></pre></div>
+<h3 id="documentation">Documentation</h3>
+
+<p>See the following links to learn more about running experiments in Hopsworks</p>
+
+<ul>
+<li><a href="https://hopsworks.readthedocs.io/en/latest/hopsml/experiment.html">Learn more about experiments</a>
+<br></li>
+<li><a href="https://hopsworks.readthedocs.io/en/latest/hopsml/hopsML.html">Building End-To-End pipelines</a>
+<br></li>
+<li>Give us a star, create an issue or a feature request on  <a href="https://github.com/logicalclocks/hopsworks">Hopsworks github</a></li>
+</ul>
+
+<h3 id="managing-experiments">Managing experiments</h3>
+
+<p>Experiments service provides a unified view of all the experiments run using the <code>experiment</code> module.
+<br>
+As demonstrated in the gif it provides general information about the experiment and the resulting metric. Experiments can be visualized meanwhile or after training in a TensorBoard.
+<br>
+<br>
+<img src="experiments.gif" alt="Image7-Monitor.png" /></p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">wrapper</span><span class="p">():</span>
+    <span class="kn">import</span> <span class="nn">tensorflow</span> <span class="kn">as</span> <span class="nn">tf</span>
+    
+    <span class="c1"># Wrapper for keras_applications, you can import any model you want to try (like ResNet50)</span>
+    <span class="kn">from</span> <span class="nn">tensorflow.keras.applications</span> <span class="kn">import</span> <span class="n">ResNet50</span>
+
+    <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+    
+    <span class="kn">from</span> <span class="nn">hops</span> <span class="kn">import</span> <span class="n">tensorboard</span>
+    
+    <span class="c1"># Utility module for getting number of GPUs accessible by the container (Spark Executor)</span>
+    <span class="kn">from</span> <span class="nn">hops</span> <span class="kn">import</span> <span class="n">devices</span>
+
+    <span class="n">batch_size</span> <span class="o">=</span> <span class="mi">8</span> <span class="c1"># Number of samples to process on each GPU every iteration</span>
+    
+    <span class="c1"># Image dimensions</span>
+    <span class="n">height</span> <span class="o">=</span> <span class="mi">224</span>
+    <span class="n">width</span> <span class="o">=</span> <span class="mi">224</span>
+    <span class="n">channels</span> <span class="o">=</span> <span class="mi">3</span>
+    <span class="n">num_classes</span> <span class="o">=</span> <span class="mi">1000</span>
+    
+    <span class="n">num_iterations</span> <span class="o">=</span> <span class="mi">5000</span> <span class="c1"># Number of iterations, increase to run longer</span>
+    
+
+    <span class="n">log_dir</span> <span class="o">=</span> <span class="n">tensorboard</span><span class="o">.</span><span class="n">logdir</span><span class="p">()</span>
+    
+    <span class="c1"># Read synthetic data (can be replaced with real data)</span>
+    <span class="k">def</span> <span class="nf">input_fn</span><span class="p">():</span>
+      <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">((</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">channels</span><span class="p">))</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+      <span class="n">labels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">((</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">))</span>
+      <span class="n">dataset</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">Dataset</span><span class="o">.</span><span class="n">from_tensor_slices</span><span class="p">((</span><span class="n">data</span><span class="p">,</span> <span class="n">labels</span><span class="p">))</span>
+      <span class="n">dataset</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">num_iterations</span><span class="p">)</span>
+      <span class="n">dataset</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">batch</span><span class="p">(</span><span class="n">batch_size</span><span class="p">)</span>
+      <span class="k">return</span> <span class="n">dataset</span>    
+    
+    <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">backend</span><span class="o">.</span><span class="n">set_learning_phase</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
+
+    
+    <span class="c1"># Define distribution strategy</span>
+    <span class="n">strategy</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">distribute</span><span class="o">.</span><span class="n">MirroredStrategy</span><span class="p">()</span>
+
+
+    <span class="k">with</span> <span class="n">strategy</span><span class="o">.</span><span class="n">scope</span><span class="p">():</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">ResNet50</span><span class="p">(</span><span class="n">weights</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">input_shape</span><span class="o">=</span><span class="p">(</span><span class="n">height</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">channels</span><span class="p">),</span> <span class="n">classes</span><span class="o">=</span><span class="n">num_classes</span><span class="p">)</span>
+
+        <span class="n">optimizer</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">optimizers</span><span class="o">.</span><span class="n">RMSprop</span><span class="p">(</span><span class="mf">0.2</span><span class="p">)</span>
+        <span class="n">model</span><span class="o">.</span><span class="nb">compile</span><span class="p">(</span><span class="n">loss</span><span class="o">=</span><span class="s1">&#39;categorical_crossentropy&#39;</span><span class="p">,</span> <span class="n">optimizer</span><span class="o">=</span><span class="n">optimizer</span><span class="p">)</span>
+
+
+    <span class="n">callbacks</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">TensorBoard</span><span class="p">(</span><span class="n">log_dir</span><span class="o">=</span><span class="n">log_dir</span><span class="p">),</span>
+        <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">ModelCheckpoint</span><span class="p">(</span><span class="n">filepath</span><span class="o">=</span><span class="n">log_dir</span><span class="p">),</span>
+    <span class="p">]</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">input_fn</span><span class="p">(),</span> 
+        <span class="n">verbose</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">epochs</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> 
+        <span class="n">steps_per_epoch</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+        <span class="n">validation_data</span><span class="o">=</span><span class="n">input_fn</span><span class="p">(),</span>
+        <span class="n">callbacks</span><span class="o">=</span><span class="n">callbacks</span>
+    <span class="p">)</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">input_fn</span><span class="p">())</span>
+        </code></pre></div><div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="kn">from</span> <span class="nn">hops</span> <span class="kn">import</span> <span class="n">experiment</span>
+<span class="n">experiment</span><span class="o">.</span><span class="n">launch</span><span class="p">(</span><span class="n">wrapper</span><span class="p">,</span> <span class="n">local_logdir</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span></code></pre></div>
+<pre><code>Finished Experiment 
+
+('hdfs://rpc.namenode.service.consul:8020/Projects/demo/Experiments/application_1594231828166_0163_3', {'metric': None, 'log': 'Experiments/application_1594231828166_0163_3/output.log'})
+</code></pre>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"></code></pre></div>
+    </div>
+    <aside>
+      <div class="bug_reporting">
+	<h4>Find an error or bug?</h4>
+	<p>Everything on this site is available on GitHub. Head to <a href='https://github.com/chrisalbon/notes/issues/new'>and submit a suggested change</a>. Include the tutorial's URL in the issue.</p>
+      </div>
+    </aside>
+
+  </div>
+</article>
+
+
+
+
+            </div>
+
+        </div>
+    </div>
+
+    
+
+    <footer class="footer text-center">
+        <div class="container">
+            <span class="text-muted">This project contains 59 pages and is available on <a href="https://github.com/napsterinblue/notes">GitHub</a>. Copyright &copy; NapsterInBlue, <time datetime="2018">2018</time>.</span>
+        </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ"
+        crossorigin="anonymous"></script>
+
+</body>
+
+</html>

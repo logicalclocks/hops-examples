@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-66582-32"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-66582-32');
+    </script>
+
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+<meta property="og:title" content="Kafka Scala/Spark Producer/Consumer Example" />
+<meta property="og:description" content="Consuming Messages from Kafka Tour Producer Using Scala Spark To run this notebook you should have taken the Kafka tour and created the Producer and Consumer jobs. I.e your Job UI should look like this:
+In this notebook we will consume messages from Kafka that were produced by the producer-job created in the Demo. Go to the Jobs-UI in hopsworks and start the Kafka producer job:
+Imports import org.apache.kafka.clients.consumer.ConsumerRecord import org." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://examples.hopsworks.ai/spark/kafkasparkscala_consumedemoproducer/" />
+
+
+
+<meta property="article:published_time" content="2021-02-24T00:00:00&#43;00:00"/>
+
+<meta property="article:modified_time" content="2021-02-24T00:00:00&#43;00:00"/>
+
+
+
+
+
+
+
+
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Kafka Scala/Spark Producer/Consumer Example"/>
+<meta name="twitter:description" content="Consuming Messages from Kafka Tour Producer Using Scala Spark To run this notebook you should have taken the Kafka tour and created the Producer and Consumer jobs. I.e your Job UI should look like this:
+In this notebook we will consume messages from Kafka that were produced by the producer-job created in the Demo. Go to the Jobs-UI in hopsworks and start the Kafka producer job:
+Imports import org.apache.kafka.clients.consumer.ConsumerRecord import org."/>
+<meta name="generator" content="Hugo 0.40.3" />
+
+    
+<script type="application/ld+json">
+  {
+  "@context": "http://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Kafka Scala/Spark Producer/Consumer Example",
+  "url": "https://examples.hopsworks.ai/spark/kafkasparkscala_consumedemoproducer/",
+  "wordCount": "482",
+  "datePublished": "2021-02-24T00:00:00&#43;00:00",
+  "dateModified": "2021-02-24T00:00:00&#43;00:00",
+  "author": {
+  "@type": "Person",
+  "name": ""
+  }
+  }
+</script> 
+
+    <title>Kafka Scala/Spark Producer/Consumer Example</title>
+
+    
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb"
+        crossorigin="anonymous">
+
+    
+    <link href="https://examples.hopsworks.ai/css/custom.css" rel="stylesheet">
+    <link href="https://examples.hopsworks.ai/css/syntax.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Muli:400,500,700" rel="stylesheet">
+
+    <link href="" rel="alternate" type="application/rss+xml" title="Hopsworks Examples" />
+
+    <script type="text/javascript" async
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[','\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre','code'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+</script>
+
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-sm fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="https://examples.hopsworks.ai">Hopsworks Examples</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="nav navbar-nav mr-auto"></ul>
+                <ul class="nav navbar-nav">
+                    <li><a href="https://hopsworks.ai" title="Hopsworks.ai">hopsworks.ai</a></li>
+                    <li><a href="https://docs.hopsworks.ai" title="Docs">docs.hopsworks.ai</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+
+    
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+
+                 
+
+
+<article>
+  <div class="technical_note">
+    <header>
+      <div class="alert alert-warning flashcard_ad" role="alert">
+	Want to learn machine learning? Try my <a href="https://machinelearningflashcards.com" class="alert-link">machine learning flashcards</a>, <a href='https://amzn.to/2HwnWty' class="alert-link">book</a>, or <a href='https://www.youtube.com/channel/UCnd4Fi-ODvuPbxR2fO2j7kA' class="alert-link">study with me.</a>.
+      </div>
+      <h1 class="technical_note_title">Kafka Scala/Spark Producer/Consumer Example</h1>
+      <div class="technical_note_date">
+	<time datetime=" 2021-02-24T00:00:00Z "> 24 Feb 2021</time>
+      </div>
+    </header>
+    <div class="content">
+
+      
+
+<h1 id="consuming-messages-from-kafka-tour-producer-using-scala-spark">Consuming Messages from Kafka  Tour Producer Using Scala Spark</h1>
+
+<p>To run this notebook you should have taken the Kafka tour and created the Producer and Consumer jobs. I.e your Job UI should look like this:</p>
+
+<p><img src="kafka11.png" alt="kafka11.png" /></p>
+
+<p>In this notebook we will consume messages from Kafka that were produced by the producer-job created in the Demo. Go to the Jobs-UI in hopsworks and start the Kafka producer job:</p>
+
+<p><img src="kafka12.png" alt="kafka12.png" /></p>
+
+<h2 id="imports">Imports</h2>
+<div class="highlight"><pre class="chroma"><code class="language-scala" data-lang="scala"><span class="k">import</span> <span class="nn">org.apache.kafka.clients.consumer.ConsumerRecord</span>
+<span class="k">import</span> <span class="nn">org.apache.kafka.common.serialization.StringDeserializer</span>
+<span class="k">import</span> <span class="nn">org.apache.kafka.common.serialization.StringSerializer</span>
+<span class="k">import</span> <span class="nn">org.apache.spark.streaming.kafka010._</span>
+<span class="k">import</span> <span class="nn">org.apache.spark.streaming.kafka010.LocationStrategies.PreferConsistent</span>
+<span class="k">import</span> <span class="nn">org.apache.spark.streaming.kafka010.ConsumerStrategies.Subscribe</span>
+<span class="k">import</span> <span class="nn">io.hops.util.Hops</span>
+<span class="k">import</span> <span class="nn">org.apache.spark._</span>
+<span class="k">import</span> <span class="nn">org.apache.spark.streaming._</span></code></pre></div>
+<pre><code>Starting Spark application
+</code></pre>
+
+<table>
+<tr><th>ID</th><th>YARN Application ID</th><th>Kind</th><th>State</th><th>Spark UI</th><th>Driver log</th><th>Current session?</th></tr><tr><td>0</td><td>application_1538645926086_0001</td><td>spark</td><td>idle</td><td><a target="_blank" href="http://hopsworks0:8088/proxy/application_1538645926086_0001/">Link</a></td><td><a target="_blank" href="http://hopsworks0:8042/node/containerlogs/container_e01_1538645926086_0001_01_000001/KafkaPython__meb10000">Link</a></td><td>✔</td></tr></table>
+
+<pre><code>SparkSession available as 'spark'.
+import org.apache.kafka.clients.consumer.ConsumerRecord
+import org.apache.kafka.common.serialization.StringDeserializer
+import org.apache.kafka.common.serialization.StringSerializer
+import org.apache.spark.streaming.kafka010._
+import org.apache.spark.streaming.kafka010.LocationStrategies.PreferConsistent
+import org.apache.spark.streaming.kafka010.ConsumerStrategies.Subscribe
+import io.hops.util.Hops
+import org.apache.spark._
+import org.apache.spark.streaming._
+</code></pre>
+
+<h2 id="constants">Constants</h2>
+
+<p><span style="color:red">Update</span> the <code>TOPIC_NAME</code> field to reflect the name of your Kafka topic that was created in your Kafka tour (e.g &ldquo;DemoKafkaTopic_3&rdquo;)</p>
+
+<p>Update the <code>OUTPUT_PATH</code> field to where the output data should be written</p>
+<div class="highlight"><pre class="chroma"><code class="language-scala" data-lang="scala"><span class="k">val</span> <span class="n">topicName</span> <span class="k">=</span> <span class="s">&#34;test2&#34;</span>
+<span class="k">val</span> <span class="n">outputPath</span> <span class="k">=</span> <span class="s">&#34;/Projects/&#34;</span> <span class="o">+</span> <span class="nc">Hops</span><span class="o">.</span><span class="n">getProjectName</span><span class="o">()</span> <span class="o">+</span> <span class="s">&#34;/Resources/data2-txt&#34;</span>
+<span class="k">val</span> <span class="n">checkpointPath</span> <span class="k">=</span> <span class="s">&#34;/Projects/&#34;</span> <span class="o">+</span> <span class="nc">Hops</span><span class="o">.</span><span class="n">getProjectName</span><span class="o">()</span> <span class="o">+</span> <span class="s">&#34;/Resources/checkpoint2-txt&#34;</span></code></pre></div>
+<pre><code>topicName: String = test2
+outputPath: String = /Projects/KafkaPython/Resources/data2-txt
+checkpointPath: String = /Projects/KafkaPython/Resources/checkpoint2-txt
+</code></pre>
+
+<h2 id="consume-the-kafka-topic-using-spark-and-write-to-a-sink">Consume the Kafka Topic using Spark and Write to a Sink</h2>
+
+<p>The below snippet creates a streaming DataFrame with Kafka as a data source. Spark is lazy so it will not start streaming the data from Kafka into the dataframe until we specify an output sink (which we do later on in this notebook)</p>
+<div class="highlight"><pre class="chroma"><code class="language-scala" data-lang="scala"><span class="k">val</span> <span class="n">df</span> <span class="k">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">readStream</span><span class="o">.</span><span class="n">format</span><span class="o">(</span><span class="s">&#34;kafka&#34;</span><span class="o">).</span>
+      <span class="n">option</span><span class="o">(</span><span class="s">&#34;kafka.bootstrap.servers&#34;</span><span class="o">,</span> <span class="nc">Hops</span><span class="o">.</span><span class="n">getBrokerEndpoints</span><span class="o">()).</span>
+      <span class="n">option</span><span class="o">(</span><span class="s">&#34;kafka.security.protocol&#34;</span><span class="o">,</span><span class="s">&#34;SSL&#34;</span><span class="o">).</span>
+      <span class="n">option</span><span class="o">(</span><span class="s">&#34;kafka.ssl.truststore.location&#34;</span><span class="o">,</span><span class="nc">Hops</span><span class="o">.</span><span class="n">getTrustStore</span><span class="o">()).</span>
+      <span class="n">option</span><span class="o">(</span><span class="s">&#34;kafka.ssl.truststore.password&#34;</span><span class="o">,</span> <span class="nc">Hops</span><span class="o">.</span><span class="n">getKeystorePwd</span><span class="o">().</span><span class="n">filterNot</span><span class="o">(</span><span class="k">_</span><span class="o">.</span><span class="n">toInt</span> <span class="o">&lt;</span> <span class="mi">32</span><span class="o">).</span><span class="n">filterNot</span><span class="o">(</span><span class="k">_</span><span class="o">.</span><span class="n">toInt</span> <span class="o">==</span> <span class="mi">64</span><span class="o">)).</span>
+      <span class="n">option</span><span class="o">(</span><span class="s">&#34;kafka.ssl.keystore.location&#34;</span><span class="o">,</span><span class="nc">Hops</span><span class="o">.</span><span class="n">getKeyStore</span><span class="o">()).</span>
+      <span class="n">option</span><span class="o">(</span><span class="s">&#34;kafka.ssl.keystore.password&#34;</span><span class="o">,</span><span class="nc">Hops</span><span class="o">.</span><span class="n">getKeystorePwd</span><span class="o">().</span><span class="n">filterNot</span><span class="o">(</span><span class="k">_</span><span class="o">.</span><span class="n">toInt</span> <span class="o">&lt;</span> <span class="mi">32</span><span class="o">).</span><span class="n">filterNot</span><span class="o">(</span><span class="k">_</span><span class="o">.</span><span class="n">toInt</span> <span class="o">==</span> <span class="mi">64</span><span class="o">)).</span>
+      <span class="n">option</span><span class="o">(</span><span class="s">&#34;kafka.ssl.key.password&#34;</span><span class="o">,</span><span class="nc">Hops</span><span class="o">.</span><span class="n">getKeystorePwd</span><span class="o">().</span><span class="n">filterNot</span><span class="o">(</span><span class="k">_</span><span class="o">.</span><span class="n">toInt</span> <span class="o">&lt;</span> <span class="mi">32</span><span class="o">).</span><span class="n">filterNot</span><span class="o">(</span><span class="k">_</span><span class="o">.</span><span class="n">toInt</span> <span class="o">==</span> <span class="mi">64</span><span class="o">)).</span>
+      <span class="n">option</span><span class="o">(</span><span class="s">&#34;kafka.ssl.endpoint.identification.algorithm&#34;</span><span class="o">,</span><span class="s">&#34;&#34;</span><span class="o">).</span>
+      <span class="n">option</span><span class="o">(</span><span class="s">&#34;subscribe&#34;</span><span class="o">,</span> <span class="n">topicName</span><span class="o">).</span><span class="n">load</span><span class="o">();</span></code></pre></div>
+<pre><code>df: org.apache.spark.sql.DataFrame = [key: binary, value: binary ... 5 more fields]
+</code></pre>
+
+<p>When using Kafka as a data source, Spark gives us a default kafka schema as printed below</p>
+<div class="highlight"><pre class="chroma"><code class="language-scala" data-lang="scala"><span class="n">df</span><span class="o">.</span><span class="n">printSchema</span><span class="o">()</span></code></pre></div>
+<pre><code>root
+ |-- key: binary (nullable = true)
+ |-- value: binary (nullable = true)
+ |-- topic: string (nullable = true)
+ |-- partition: integer (nullable = true)
+ |-- offset: long (nullable = true)
+ |-- timestamp: timestamp (nullable = true)
+ |-- timestampType: integer (nullable = true)
+</code></pre>
+
+<p>We are using the Spark structured streaming engine, which means that we can express stream queries just as we would do in batch jobs.</p>
+
+<p>Below we filter the input stream to select only the message values</p>
+<div class="highlight"><pre class="chroma"><code class="language-scala" data-lang="scala"><span class="k">val</span> <span class="n">messages</span> <span class="k">=</span> <span class="n">df</span><span class="o">.</span><span class="n">selectExpr</span><span class="o">(</span><span class="s">&#34;CAST(value AS STRING)&#34;</span><span class="o">)</span></code></pre></div>
+<pre><code>messages: org.apache.spark.sql.DataFrame = [value: string]
+</code></pre>
+
+<p>Specify the output query and the sink of the stream job to be a CSV file in HopsFS.</p>
+
+<p>By using checkpointing and a WAL, spark gives us end-to-end exactly-once fault-tolerance</p>
+<div class="highlight"><pre class="chroma"><code class="language-scala" data-lang="scala"><span class="k">val</span> <span class="n">query</span> <span class="k">=</span> <span class="n">messages</span><span class="o">.</span>
+        <span class="n">writeStream</span><span class="o">.</span>
+        <span class="n">format</span><span class="o">(</span><span class="s">&#34;text&#34;</span><span class="o">).</span>
+        <span class="n">option</span><span class="o">(</span><span class="s">&#34;path&#34;</span><span class="o">,</span> <span class="n">outputPath</span><span class="o">).</span>
+        <span class="n">option</span><span class="o">(</span><span class="s">&#34;checkpointLocation&#34;</span><span class="o">,</span> <span class="n">checkpointPath</span><span class="o">).</span>
+        <span class="n">start</span><span class="o">()</span></code></pre></div>
+<pre><code>query: org.apache.spark.sql.streaming.StreamingQuery = org.apache.spark.sql.execution.streaming.StreamingQueryWrapper@19e5278f
+</code></pre>
+
+<p>Run the streaming job, in theory streaming jobs should run forever.</p>
+
+<p>The call below will be blocking and not terminate. To kill this job you have to restart the pyspark kernel.</p>
+<div class="highlight"><pre class="chroma"><code class="language-scala" data-lang="scala"><span class="n">query</span><span class="o">.</span><span class="n">awaitTermination</span><span class="o">()</span>
+<span class="n">query</span><span class="o">.</span><span class="n">stop</span><span class="o">()</span></code></pre></div>
+<p>While the job is running you can go to the HDFS file browser in the Hopsworks UI to preview the files:</p>
+
+<p><img src="kafka14.png" alt="kafka14.png" />
+<img src="kafka13.png" alt="kafka13.png" />
+<img src="kafka15.png" alt="kafka15.png" />
+<img src="kafka16.png" alt="kafka16.png" /></p>
+
+    </div>
+    <aside>
+      <div class="bug_reporting">
+	<h4>Find an error or bug?</h4>
+	<p>Everything on this site is available on GitHub. Head to <a href='https://github.com/chrisalbon/notes/issues/new'>and submit a suggested change</a>. Include the tutorial's URL in the issue.</p>
+      </div>
+    </aside>
+
+  </div>
+</article>
+
+
+
+
+            </div>
+
+        </div>
+    </div>
+
+    
+
+    <footer class="footer text-center">
+        <div class="container">
+            <span class="text-muted">This project contains 59 pages and is available on <a href="https://github.com/napsterinblue/notes">GitHub</a>. Copyright &copy; NapsterInBlue, <time datetime="2018">2018</time>.</span>
+        </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ"
+        crossorigin="anonymous"></script>
+
+</body>
+
+</html>

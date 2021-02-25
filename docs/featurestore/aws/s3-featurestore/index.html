@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-66582-32"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-66582-32');
+    </script>
+
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+<meta property="og:title" content="Feature Ingestion from S3" />
+<meta property="og:description" content="Get started with S3 and the Feature Store This tutorial notebook will help you get started with working with the Hopsworks feature store and S3.
+To execute this tutorial, you can use the sample data from here - and place it in a S3 bucket.
+Before starting with the execution, you should also create a S3 storage connector pointing to the bucket where you uploaded the data. You can follow the Hopsworks documentation to see how you can create the storage connector from the feature store UI." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://examples.hopsworks.ai/featurestore/aws/s3-featurestore/" />
+
+
+
+<meta property="article:published_time" content="2021-02-24T00:00:00&#43;00:00"/>
+
+<meta property="article:modified_time" content="2021-02-24T00:00:00&#43;00:00"/>
+
+
+
+
+
+
+
+
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Feature Ingestion from S3"/>
+<meta name="twitter:description" content="Get started with S3 and the Feature Store This tutorial notebook will help you get started with working with the Hopsworks feature store and S3.
+To execute this tutorial, you can use the sample data from here - and place it in a S3 bucket.
+Before starting with the execution, you should also create a S3 storage connector pointing to the bucket where you uploaded the data. You can follow the Hopsworks documentation to see how you can create the storage connector from the feature store UI."/>
+<meta name="generator" content="Hugo 0.40.3" />
+
+    
+<script type="application/ld+json">
+  {
+  "@context": "http://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Feature Ingestion from S3",
+  "url": "https://examples.hopsworks.ai/featurestore/aws/s3-featurestore/",
+  "wordCount": "1168",
+  "datePublished": "2021-02-24T00:00:00&#43;00:00",
+  "dateModified": "2021-02-24T00:00:00&#43;00:00",
+  "author": {
+  "@type": "Person",
+  "name": ""
+  }
+  }
+</script> 
+
+    <title>Feature Ingestion from S3</title>
+
+    
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb"
+        crossorigin="anonymous">
+
+    
+    <link href="https://examples.hopsworks.ai/css/custom.css" rel="stylesheet">
+    <link href="https://examples.hopsworks.ai/css/syntax.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Muli:400,500,700" rel="stylesheet">
+
+    <link href="" rel="alternate" type="application/rss+xml" title="Hopsworks Examples" />
+
+    <script type="text/javascript" async
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[','\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre','code'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+</script>
+
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-sm fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="https://examples.hopsworks.ai">Hopsworks Examples</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="nav navbar-nav mr-auto"></ul>
+                <ul class="nav navbar-nav">
+                    <li><a href="https://hopsworks.ai" title="Hopsworks.ai">hopsworks.ai</a></li>
+                    <li><a href="https://docs.hopsworks.ai" title="Docs">docs.hopsworks.ai</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+
+    
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+
+                 
+
+
+<article>
+  <div class="technical_note">
+    <header>
+      <div class="alert alert-warning flashcard_ad" role="alert">
+	Want to learn machine learning? Try my <a href="https://machinelearningflashcards.com" class="alert-link">machine learning flashcards</a>, <a href='https://amzn.to/2HwnWty' class="alert-link">book</a>, or <a href='https://www.youtube.com/channel/UCnd4Fi-ODvuPbxR2fO2j7kA' class="alert-link">study with me.</a>.
+      </div>
+      <h1 class="technical_note_title">Feature Ingestion from S3</h1>
+      <div class="technical_note_date">
+	<time datetime=" 2021-02-24T00:00:00Z "> 24 Feb 2021</time>
+      </div>
+    </header>
+    <div class="content">
+
+      
+
+<h1 id="get-started-with-s3-and-the-feature-store">Get started with S3 and the Feature Store</h1>
+
+<p>This tutorial notebook will help you get started with working with the Hopsworks feature store and S3.</p>
+
+<p>To execute this tutorial, you can use the sample data from <a href="./data/Sacramentorealestatetransactions.csv">here</a> - and place it in a S3 bucket.</p>
+
+<p>Before starting with the execution, you should also create a S3 storage connector pointing to the bucket where you uploaded the data. You can follow the <a href="https://hopsworks.readthedocs.io/en/latest/featurestore/featurestore.html#configuring-storage-connectors-for-the-feature-store">Hopsworks documentation</a> to see how you can create the storage connector from the feature store UI.</p>
+
+<p>The tutorial is divided in 3 parts:
+* <a href="#already_eng">Import already feature engineered data from S3</a>
+* <a href="#raw">Import raw data, do feature engineering and create a feature group</a>
+* <a href="#training">Export training dataset to S3</a></p>
+
+<h2 id="import-already-feature-engineered-data-from-s3-a-name-already-eng-a">Import already feature engineered data from S3<a name="already_eng"></a></h2>
+
+<p>In this section we are going to assume that the feature engineering process has already happended outside Hopsworks. In other words, the data in S3 is already feature engineered and we only want to import it into the feature store to be made available to data scientistis.</p>
+
+<p>To do that we can use the <code>featurestore</code> module of the hops python library. The Hops python library is already available in the environment and you can simply import it. You can find the documentation of the library <a href="http://hops-py.logicalclocks.com/hops.html#module-hops.featurestore">here</a>.</p>
+<div class="highlight"><pre class="chroma"><code class="language-pyspark" data-lang="pyspark">from hops import featurestore</code></pre></div>
+<p>To import the feature data into the feature store we are going to use the following method: <code>featurestore.import_featuregroup_s3</code>.</p>
+
+<p>I called my connector <code>house-bucket</code> and I located the file in the <code>fg</code> subdirectory. The sample data is in CSV format. The method will infer the schema and the feature names from the file itself. In this case, the first line of the <code>csv</code> file contains the feature names.</p>
+
+<p>We are going to store this feature group in the feature store of the project we are currently working in, and it is going to be the first version of the feature group.</p>
+
+<p>The call below will also compute statistics which will be available from the Hopsworks UI or through the <code>get_featuregroup_statistics</code> method.</p>
+<div class="highlight"><pre class="chroma"><code class="language-pyspark" data-lang="pyspark">featurestore.import_featuregroup_s3(&#34;house-bucket&#34;, &#34;fg&#34;, &#34;sacramento_houses_raw&#34;, 
+                                    description=&#34;House sale transactions in Sacramento&#34;,
+                                    featurestore=featurestore.project_featurestore(),
+                                    featuregroup_version=1,
+                                    data_format=&#34;csv&#34;)</code></pre></div>
+<pre><code>computing descriptive statistics for : sacramento_houses_raw, version: 1
+computing feature correlation for: sacramento_houses_raw, version: 1
+computing feature histograms for: sacramento_houses_raw, version: 1
+computing cluster analysis for: sacramento_houses_raw, version: 1
+Registering feature metadata...
+Registering feature metadata... [COMPLETE]
+Writing feature data to offline feature group (Hive)...
+Running sql: use demo_featurestore_admin000_featurestore against offline feature store
+Writing feature data to offline feature group (Hive)... [COMPLETE]
+Feature group created successfully
+Feature group imported successfully
+</code></pre>
+
+<p>In the feature store UI you should now be able to see that the feature group has been created, browse its schema and statistics. You can now use it to <a href="#training">build training datasets</a>.</p>
+
+<h2 id="import-raw-data-do-feature-engineering-and-create-a-feature-group-a-name-raw-a">Import raw data, do feature engineering and create a feature group<a name="raw"></a></h2>
+
+<p>In the next session we are going to assume that the data in the S3 bucket is raw data that needs to be feature engineered before it can be used by data scientists to build models.</p>
+
+<p>Hopsworks feature store relies on Apache Spark to provide a scalabale framework for feature engineering processing. Hopsworks allows users to write both PySpark and Scala code. To know more about how to work with Spark code in Hopsworks you can have a look at <a href="https://spark.apache.org/docs/latest/index.html">Apache Spark documentation</a> and at the <a href="https://hopsworks.readthedocs.io/en/1.1/user_guide/hopsworks/jupyter.html">Hopsworks Jupyter documentation</a>.</p>
+
+<p>For the sake of the tutorial, in this section we are going to read the CSV file in a dataframe, convert the <code>type</code> feature from a string to a categorical numerical feature and write the new feature group in the feature store.</p>
+
+<p>To instruct Spark to read from S3 we build the path to the file in the bucket. Please note the file system - <code>s3a://</code>.</p>
+<div class="highlight"><pre class="chroma"><code class="language-pyspark" data-lang="pyspark">import os
+
+raw_data_path = os.path.join(&#34;s3a://&#34;, featurestore.get_storage_connector(&#34;house-bucket&#34;).bucket, &#39;fg&#39;)</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-pyspark" data-lang="pyspark">raw_data = spark.read.format(&#34;csv&#34;).option(&#34;header&#34;, &#34;true&#34;).option(&#34;inferSchema&#34;, &#34;true&#34;).load(raw_data_path)
+raw_data.show(5)</code></pre></div>
+<pre><code>+----------------+----------+-----+-----+----+-----+------+-----------+--------------------+-----+---------+-----------+
+|          street|      city|  zip|state|beds|baths|sq__ft|       type|           sale_date|price| latitude|  longitude|
++----------------+----------+-----+-----+----+-----+------+-----------+--------------------+-----+---------+-----------+
+|    3526 HIGH ST|SACRAMENTO|95838|   CA|   2|    1|   836|Residential|Wed May 21 00:00:...|59222|38.631913|-121.434879|
+|     51 OMAHA CT|SACRAMENTO|95823|   CA|   3|    1|  1167|Residential|Wed May 21 00:00:...|68212|38.478902|-121.431028|
+|  2796 BRANCH ST|SACRAMENTO|95815|   CA|   2|    1|   796|Residential|Wed May 21 00:00:...|68880|38.618305|-121.443839|
+|2805 JANETTE WAY|SACRAMENTO|95815|   CA|   2|    1|   852|Residential|Wed May 21 00:00:...|69307|38.616835|-121.439146|
+| 6001 MCMAHON DR|SACRAMENTO|95824|   CA|   2|    1|   797|Residential|Wed May 21 00:00:...|81900| 38.51947|-121.435768|
++----------------+----------+-----+-----+----+-----+------+-----------+--------------------+-----+---------+-----------+
+only showing top 5 rows
+</code></pre>
+<div class="highlight"><pre class="chroma"><code class="language-pyspark" data-lang="pyspark">raw_data.printSchema()</code></pre></div>
+<pre><code>root
+ |-- street: string (nullable = true)
+ |-- city: string (nullable = true)
+ |-- zip: integer (nullable = true)
+ |-- state: string (nullable = true)
+ |-- beds: integer (nullable = true)
+ |-- baths: integer (nullable = true)
+ |-- sq__ft: integer (nullable = true)
+ |-- type: string (nullable = true)
+ |-- sale_date: string (nullable = true)
+ |-- price: integer (nullable = true)
+ |-- latitude: double (nullable = true)
+ |-- longitude: double (nullable = true)
+</code></pre>
+<div class="highlight"><pre class="chroma"><code class="language-pyspark" data-lang="pyspark">from pyspark.sql.functions import monotonically_increasing_id
+
+index_table = raw_data.select(&#34;type&#34;).distinct()\
+                    .withColumn(&#39;type_class&#39;, monotonically_increasing_id())
+
+fg_data = raw_data.join(index_table, raw_data.type == index_table.type).drop(&#34;type&#34;)</code></pre></div>
+<p>In the next cell we are passing <code>fg_data</code> to the <code>create_featuregroup</code> method of the <code>featurestore</code> module. This is going to create a new feature group based on the schema of the dataframe, insert the data in the feature group itself and compute the statistics.</p>
+
+<p>At the end of the execution, the feature group will be available in the Feature Store UI.</p>
+<div class="highlight"><pre class="chroma"><code class="language-pyspark" data-lang="pyspark">featurestore.create_featuregroup(fg_data, &#34;sacramento_houses_fgeng&#34;,
+                                 featuregroup_version=1,
+                                 description=&#34;House sale transactions in Sacramento&#34;)</code></pre></div>
+<pre><code>computing descriptive statistics for : sacramento_houses_fgeng, version: 1
+computing feature correlation for: sacramento_houses_fgeng, version: 1
+computing feature histograms for: sacramento_houses_fgeng, version: 1
+computing cluster analysis for: sacramento_houses_fgeng, version: 1
+Registering feature metadata...
+Registering feature metadata... [COMPLETE]
+Writing feature data to offline feature group (Hive)...
+Running sql: use demo_featurestore_admin000_featurestore against offline feature store
+Writing feature data to offline feature group (Hive)... [COMPLETE]
+Feature group created successfully
+</code></pre>
+
+<h2 id="export-training-dataset-to-s3-a-name-training-a">Export training dataset to S3<a name="training"></a></h2>
+
+<p>Once the feature groups have been created, you can join them together to build a training dataset to train a machine learning model.</p>
+
+<p>While Hopsworks provides <a href="https://hopsworks.readthedocs.io/en/latest/hopsml/index.html">capabilities</a> to train and serve machine learning models, traning datasets can also be exported to S3 to be used from SageMaker or other ML systems in AWS.</p>
+
+<p>To export the training dataset we are going to use the <code>create_training_dataset</code> method which accepts a Spark dataframe.
+In this tutorial we are going to create a training dataset containing features from a single feature group. In real world use cases, feature can be extracted from different feature groups by joining them. You can have a look at <a href="../FeaturestoreTourPython.ipynb">this notebook</a> for some examples.</p>
+
+<p>The data can be exported in multiple format, in this tutorial we are going to export it in CSV format, but tfrecords, parquet and other formats are available as well.</p>
+
+<p>As for feature groups, statistics are computed and recorded also for training datasets. They will be available in the Feature Store UI at the end of the execution.</p>
+<div class="highlight"><pre class="chroma"><code class="language-pyspark" data-lang="pyspark">td = featurestore.get_featuregroup(&#34;sacramento_houses_fgeng&#34;, featuregroup_version=1)
+featurestore.create_training_dataset(td, &#34;house_price_model_training_data&#34;, 
+                                     data_format=&#34;csv&#34;, sink=&#34;house-bucket&#34;,
+                                     path=&#34;house_price_model_training_data&#34;)</code></pre></div>
+<pre><code>Running sql: use demo_featurestore_admin000_featurestore against offline feature store
+SQL string for the query created successfully
+Running sql: SELECT * FROM sacramento_houses_fgeng_1 against offline feature store
+computing descriptive statistics for : house_price_model_training_data, version: 1
+computing feature correlation for: house_price_model_training_data, version: 1
+computing feature histograms for: house_price_model_training_data, version: 1
+computing cluster analysis for: house_price_model_training_data, version: 1
+Training Dataset created successfully
+</code></pre>
+<div class="highlight"><pre class="chroma"><code class="language-pyspark" data-lang="pyspark"></code></pre></div>
+    </div>
+    <aside>
+      <div class="bug_reporting">
+	<h4>Find an error or bug?</h4>
+	<p>Everything on this site is available on GitHub. Head to <a href='https://github.com/chrisalbon/notes/issues/new'>and submit a suggested change</a>. Include the tutorial's URL in the issue.</p>
+      </div>
+    </aside>
+
+  </div>
+</article>
+
+
+
+
+            </div>
+
+        </div>
+    </div>
+
+    
+
+    <footer class="footer text-center">
+        <div class="container">
+            <span class="text-muted">This project contains 59 pages and is available on <a href="https://github.com/napsterinblue/notes">GitHub</a>. Copyright &copy; NapsterInBlue, <time datetime="2018">2018</time>.</span>
+        </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ"
+        crossorigin="anonymous"></script>
+
+</body>
+
+</html>

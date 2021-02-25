@@ -1,0 +1,9 @@
+{{ define "title" }}{{ .Title | markdownify }}{{ end }} {{ define "main" }}
+<article>
+  <div class="page">
+    <div class="content">
+      {{ .Content }}
+    </div>
+  </div>
+</article>
+{{ end }}

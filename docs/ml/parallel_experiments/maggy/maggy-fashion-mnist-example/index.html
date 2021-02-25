@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-66582-32"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-66582-32');
+    </script>
+
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+<meta property="og:title" content="Maggy HParam Tuning Example - MNIST" />
+<meta property="og:description" content="maggy - MNIST Example Updated: 04/09/2020
+This notebook illustrates the usage of the maggy framework for asynchronous hyperparameter optimization on the fashion MNIST dataset.
+In this specific example we are using random search over three parameters and we are deploying the median early stopping rule in order to make use of the asynchrony of the framework. The Median Stopping Rule implements the simple strategy of stopping a trial if its performance falls below the median of other trials at similar points in time." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://examples.hopsworks.ai/ml/parallel_experiments/maggy/maggy-fashion-mnist-example/" />
+
+
+
+<meta property="article:published_time" content="2021-02-24T00:00:00&#43;00:00"/>
+
+<meta property="article:modified_time" content="2021-02-24T00:00:00&#43;00:00"/>
+
+
+
+
+
+
+
+
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Maggy HParam Tuning Example - MNIST"/>
+<meta name="twitter:description" content="maggy - MNIST Example Updated: 04/09/2020
+This notebook illustrates the usage of the maggy framework for asynchronous hyperparameter optimization on the fashion MNIST dataset.
+In this specific example we are using random search over three parameters and we are deploying the median early stopping rule in order to make use of the asynchrony of the framework. The Median Stopping Rule implements the simple strategy of stopping a trial if its performance falls below the median of other trials at similar points in time."/>
+<meta name="generator" content="Hugo 0.40.3" />
+
+    
+<script type="application/ld+json">
+  {
+  "@context": "http://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Maggy HParam Tuning Example - MNIST",
+  "url": "https://examples.hopsworks.ai/ml/parallel_experiments/maggy/maggy-fashion-mnist-example/",
+  "wordCount": "1119",
+  "datePublished": "2021-02-24T00:00:00&#43;00:00",
+  "dateModified": "2021-02-24T00:00:00&#43;00:00",
+  "author": {
+  "@type": "Person",
+  "name": ""
+  }
+  }
+</script> 
+
+    <title>Maggy HParam Tuning Example - MNIST</title>
+
+    
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb"
+        crossorigin="anonymous">
+
+    
+    <link href="https://examples.hopsworks.ai/css/custom.css" rel="stylesheet">
+    <link href="https://examples.hopsworks.ai/css/syntax.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Muli:400,500,700" rel="stylesheet">
+
+    <link href="" rel="alternate" type="application/rss+xml" title="Hopsworks Examples" />
+
+    <script type="text/javascript" async
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[','\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre','code'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+</script>
+
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-sm fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="https://examples.hopsworks.ai">Hopsworks Examples</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="nav navbar-nav mr-auto"></ul>
+                <ul class="nav navbar-nav">
+                    <li><a href="https://hopsworks.ai" title="Hopsworks.ai">hopsworks.ai</a></li>
+                    <li><a href="https://docs.hopsworks.ai" title="Docs">docs.hopsworks.ai</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+
+    
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+
+                 
+
+
+<article>
+  <div class="technical_note">
+    <header>
+      <div class="alert alert-warning flashcard_ad" role="alert">
+	Want to learn machine learning? Try my <a href="https://machinelearningflashcards.com" class="alert-link">machine learning flashcards</a>, <a href='https://amzn.to/2HwnWty' class="alert-link">book</a>, or <a href='https://www.youtube.com/channel/UCnd4Fi-ODvuPbxR2fO2j7kA' class="alert-link">study with me.</a>.
+      </div>
+      <h1 class="technical_note_title">Maggy HParam Tuning Example - MNIST</h1>
+      <div class="technical_note_date">
+	<time datetime=" 2021-02-24T00:00:00Z "> 24 Feb 2021</time>
+      </div>
+    </header>
+    <div class="content">
+
+      
+
+<h2 id="maggy-mnist-example">maggy - MNIST Example</h2>
+
+<hr />
+
+<p>Updated: 04/09/2020</p>
+
+<p>This notebook illustrates the usage of the maggy framework for asynchronous hyperparameter optimization on the fashion MNIST dataset.</p>
+
+<p>In this specific example we are using random search over three parameters and we are deploying the median early stopping rule in order to make use of the asynchrony of the framework. The Median Stopping Rule implements the simple strategy of stopping a trial if its performance falls below the median of other trials at similar points in time.</p>
+
+<p>We are using Keras for this example to build the model.</p>
+
+<p>This notebook has been tested with TensorFlow 2.4.0 and Hopsworks 2.1.
+Requires Python 3.7 or higher.</p>
+
+<h3 id="1-spark-session">1. Spark Session</h3>
+
+<p>Make sure you have a running Spark Session/Context available. On Hopsworks just execute a simple command to start the spark application.</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="k">print</span><span class="p">(</span><span class="s2">&#34;Hello World!&#34;</span><span class="p">)</span></code></pre></div>
+<pre><code>Starting Spark application
+</code></pre>
+
+<table>
+<tr><th>ID</th><th>YARN Application ID</th><th>Kind</th><th>State</th><th>Spark UI</th><th>Driver log</th></tr><tr><td>13</td><td>application_1599221100834_0013</td><td>pyspark</td><td>idle</td><td><a target="_blank" href="http://hopsworks0.logicalclocks.com:8088/proxy/application_1599221100834_0013/">Link</a></td><td><a target="_blank" href="http://hopsworks0.logicalclocks.com:8042/node/containerlogs/container_e02_1599221100834_0013_01_000001/demo_deep_learning_admin000__meb10000">Link</a></td></tr></table>
+
+<pre><code>SparkSession available as 'spark'.
+Hello World!
+</code></pre>
+
+<h3 id="2-searchspace-definition">2. Searchspace definition</h3>
+
+<p>We want to conduct random search for the MNIST example on three hyperparameters: Kernel size, pooling size and dropout rate. Hence, we have two continuous integer valued parameters and one double valued parameter.</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="kn">from</span> <span class="nn">maggy</span> <span class="kn">import</span> <span class="n">Searchspace</span>
+
+<span class="c1"># The searchspace can be instantiated with parameters</span>
+<span class="n">sp</span> <span class="o">=</span> <span class="n">Searchspace</span><span class="p">(</span><span class="n">kernel</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;INTEGER&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">8</span><span class="p">]),</span> <span class="n">pool</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;INTEGER&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">8</span><span class="p">]))</span>
+
+<span class="c1"># Or additional parameters can be added one by one</span>
+<span class="n">sp</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s1">&#39;dropout&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;DOUBLE&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.99</span><span class="p">]))</span></code></pre></div>
+<pre><code>Hyperparameter added: kernel
+Hyperparameter added: pool
+Hyperparameter added: dropout
+</code></pre>
+
+<h3 id="3-model-training-definition">3. Model training definition</h3>
+
+<p>The programming model is that you wrap the code containing the model training inside a wrapper function. Inside that wrapper function provide all imports and parts that make up your experiment.</p>
+
+<p>There are several requirements for this wrapper function:</p>
+
+<ol>
+<li>The function should take the hyperparameters as arguments, plus one additional parameter <code>reporter</code> which is needed for reporting the current metric to the experiment driver.</li>
+<li>The function should return the metric that you want to optimize for. This should coincide with the metric being reported in the Keras callback (see next point).</li>
+<li>In order to leverage on the early stopping capabilities of maggy, you need to make use of the maggy reporter API. By including the reporter in your training loop, you are telling maggy which metric to report back to the experiment driver for optimization and to check for early stopping. It is as easy as adding <code>reporter.broadcast(metric=YOUR_METRIC)</code> for example at the end of your epoch or batch training step and adding a <code>reporter</code> argument to your function signature. If you are not writing your own training loop you can use the pre-written Keras callbacks:
+
+<ul>
+<li>KerasBatchEnd</li>
+<li>KerasEpochEnd<br />
+(Please see documentation for a detailed explanation.)</li>
+</ul></li>
+</ol>
+
+<p>We are going to use the <code>KerasBatchEnd</code> callback to report back the accuracy after each batch. However, note that in the BatchEnd callback we have only access to training accuracy since validation after each batch would be too expensive.</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="kn">from</span> <span class="nn">maggy</span> <span class="kn">import</span> <span class="n">experiment</span>
+<span class="kn">from</span> <span class="nn">maggy.callbacks</span> <span class="kn">import</span> <span class="n">KerasBatchEnd</span></code></pre></div>
+<p>Definition of the training wrapper function:
+(maggy specific parts are highlighted with comments and correspond to the three points described above.)</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="c1">#########</span>
+<span class="c1">### maggy: hyperparameters as arguments and including the reporter</span>
+<span class="c1">#########</span>
+<span class="k">def</span> <span class="nf">training_function</span><span class="p">(</span><span class="n">kernel</span><span class="p">,</span> <span class="n">pool</span><span class="p">,</span> <span class="n">dropout</span><span class="p">,</span> <span class="n">reporter</span><span class="p">):</span>
+    <span class="kn">import</span> <span class="nn">tensorflow</span> <span class="kn">as</span> <span class="nn">tf</span>
+    <span class="kn">from</span> <span class="nn">tensorflow</span> <span class="kn">import</span> <span class="n">keras</span>
+    <span class="kn">from</span> <span class="nn">tensorflow.keras.models</span> <span class="kn">import</span> <span class="n">Sequential</span>
+    <span class="kn">from</span> <span class="nn">tensorflow.keras.layers</span> <span class="kn">import</span> <span class="n">Dense</span><span class="p">,</span> <span class="n">Dropout</span><span class="p">,</span> <span class="n">Flatten</span><span class="p">,</span> <span class="n">Conv2D</span><span class="p">,</span> <span class="n">MaxPooling2D</span>
+    <span class="kn">from</span> <span class="nn">tensorflow.keras.callbacks</span> <span class="kn">import</span> <span class="n">TensorBoard</span>
+    
+    <span class="kn">from</span> <span class="nn">maggy</span> <span class="kn">import</span> <span class="n">tensorboard</span>
+    <span class="kn">from</span> <span class="nn">hops</span> <span class="kn">import</span> <span class="n">hdfs</span>
+
+    <span class="n">log_dir</span> <span class="o">=</span> <span class="n">tensorboard</span><span class="o">.</span><span class="n">logdir</span><span class="p">()</span>
+    <span class="n">batch_size</span> <span class="o">=</span> <span class="mi">512</span>
+    <span class="n">num_classes</span> <span class="o">=</span> <span class="mi">10</span>
+    <span class="n">epochs</span> <span class="o">=</span> <span class="mi">10</span>
+
+    <span class="c1"># Input image dimensions</span>
+    <span class="n">img_rows</span><span class="p">,</span> <span class="n">img_cols</span> <span class="o">=</span> <span class="mi">28</span><span class="p">,</span> <span class="mi">28</span>
+    
+    <span class="n">train_filenames</span> <span class="o">=</span> <span class="p">[</span><span class="n">hdfs</span><span class="o">.</span><span class="n">project_path</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&#34;TourData/mnist/train/train.tfrecords&#34;</span><span class="p">]</span>
+    <span class="n">validation_filenames</span> <span class="o">=</span> <span class="p">[</span><span class="n">hdfs</span><span class="o">.</span><span class="n">project_path</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&#34;TourData/mnist/validation/validation.tfrecords&#34;</span><span class="p">]</span>
+    
+    <span class="c1"># Create an iterator over the dataset</span>
+    <span class="k">def</span> <span class="nf">data_input</span><span class="p">(</span><span class="n">filenames</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">repeat</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+
+        <span class="k">def</span> <span class="nf">parser</span><span class="p">(</span><span class="n">serialized_example</span><span class="p">):</span>
+            <span class="s2">&#34;&#34;&#34;Parses a single tf.Example into image and label tensors.&#34;&#34;&#34;</span>
+            <span class="n">features</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">parse_single_example</span><span class="p">(</span>
+                <span class="n">serialized_example</span><span class="p">,</span>
+                <span class="n">features</span><span class="o">=</span><span class="p">{</span>
+                    <span class="s1">&#39;image_raw&#39;</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">FixedLenFeature</span><span class="p">([],</span> <span class="n">tf</span><span class="o">.</span><span class="n">string</span><span class="p">),</span>
+                    <span class="s1">&#39;label&#39;</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">FixedLenFeature</span><span class="p">([],</span> <span class="n">tf</span><span class="o">.</span><span class="n">int64</span><span class="p">),</span>
+                <span class="p">})</span>
+            <span class="n">image</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">decode_raw</span><span class="p">(</span><span class="n">features</span><span class="p">[</span><span class="s1">&#39;image_raw&#39;</span><span class="p">],</span> <span class="n">tf</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
+            <span class="n">image</span><span class="o">.</span><span class="n">set_shape</span><span class="p">([</span><span class="mi">28</span> <span class="o">*</span> <span class="mi">28</span><span class="p">])</span>
+
+            <span class="c1"># Normalize the values of the image from the range [0, 255] to [-0.5, 0.5]</span>
+            <span class="n">image</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">tf</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span> <span class="o">/</span> <span class="mi">255</span> <span class="o">-</span> <span class="mf">0.5</span>
+            <span class="n">label</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="n">features</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">],</span> <span class="n">tf</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+            <span class="c1"># Reshape the tensor</span>
+            <span class="n">image</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="p">[</span><span class="n">img_rows</span><span class="p">,</span> <span class="n">img_cols</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+    
+            <span class="c1"># Create a one hot array for your labels</span>
+            <span class="n">label</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">one_hot</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">)</span>
+            
+            <span class="k">return</span> <span class="n">image</span><span class="p">,</span> <span class="n">label</span>
+
+        <span class="c1"># Import MNIST data</span>
+        <span class="n">dataset</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">TFRecordDataset</span><span class="p">(</span><span class="n">filenames</span><span class="p">)</span>
+        <span class="n">num_samples</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">dataset</span><span class="p">)</span>
+
+        <span class="c1"># Map the parser over dataset, and batch results by up to batch_size</span>
+        <span class="n">dataset</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="nb">map</span><span class="p">(</span><span class="n">parser</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">shuffle</span><span class="p">:</span>
+            <span class="n">dataset</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">buffer_size</span><span class="o">=</span><span class="mi">128</span><span class="p">)</span>
+        <span class="n">dataset</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">batch</span><span class="p">(</span><span class="n">batch_size</span><span class="p">)</span>
+        <span class="n">dataset</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">repeat</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">dataset</span><span class="p">,</span> <span class="n">num_samples</span>
+    
+    <span class="n">input_shape</span> <span class="o">=</span> <span class="p">(</span><span class="mi">28</span><span class="p">,</span> <span class="mi">28</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">model</span> <span class="o">=</span> <span class="n">Sequential</span><span class="p">()</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Conv2D</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="p">(</span><span class="n">kernel</span><span class="p">,</span> <span class="n">kernel</span><span class="p">),</span>
+                     <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;relu&#39;</span><span class="p">,</span>
+                     <span class="n">input_shape</span><span class="o">=</span><span class="n">input_shape</span><span class="p">))</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Conv2D</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="p">(</span><span class="n">kernel</span><span class="p">,</span> <span class="n">kernel</span><span class="p">),</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;relu&#39;</span><span class="p">))</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">MaxPooling2D</span><span class="p">(</span><span class="n">pool_size</span><span class="o">=</span><span class="p">(</span><span class="n">pool</span><span class="p">,</span> <span class="n">pool</span><span class="p">)))</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Dropout</span><span class="p">(</span><span class="n">dropout</span><span class="p">))</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Flatten</span><span class="p">())</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Dense</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;relu&#39;</span><span class="p">))</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Dropout</span><span class="p">(</span><span class="n">dropout</span><span class="p">))</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Dense</span><span class="p">(</span><span class="n">num_classes</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;softmax&#39;</span><span class="p">))</span>
+
+    <span class="n">opt</span> <span class="o">=</span> <span class="n">keras</span><span class="o">.</span><span class="n">optimizers</span><span class="o">.</span><span class="n">Adadelta</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
+
+    <span class="n">model</span><span class="o">.</span><span class="nb">compile</span><span class="p">(</span><span class="n">loss</span><span class="o">=</span><span class="n">keras</span><span class="o">.</span><span class="n">losses</span><span class="o">.</span><span class="n">categorical_crossentropy</span><span class="p">,</span>
+                  <span class="n">optimizer</span><span class="o">=</span><span class="n">opt</span><span class="p">,</span>
+                  <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;accuracy&#39;</span><span class="p">])</span>
+    
+    <span class="c1"># Setup TensorBoard</span>
+    <span class="n">tb_callback</span> <span class="o">=</span> <span class="n">TensorBoard</span><span class="p">(</span>        
+        <span class="n">log_dir</span><span class="p">,</span>
+        <span class="n">update_freq</span><span class="o">=</span><span class="s1">&#39;batch&#39;</span><span class="p">,</span>
+        <span class="n">profile_batch</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>  <span class="c1"># workaround for issue #2084</span>
+    <span class="p">)</span>
+    
+    <span class="c1">#########</span>
+    <span class="c1">### maggy: REPORTER API through keras callback</span>
+    <span class="c1">#########</span>
+    <span class="n">callbacks</span> <span class="o">=</span> <span class="p">[</span><span class="n">KerasBatchEnd</span><span class="p">(</span><span class="n">reporter</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="s1">&#39;accuracy&#39;</span><span class="p">),</span> <span class="n">tb_callback</span><span class="p">]</span>
+    
+    <span class="c1"># Initialize the datasets</span>
+    <span class="n">train_input</span><span class="p">,</span> <span class="n">num_train</span> <span class="o">=</span> <span class="n">data_input</span><span class="p">(</span><span class="n">train_filenames</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">)</span>
+    <span class="n">eval_input</span><span class="p">,</span> <span class="n">num_val</span> <span class="o">=</span> <span class="n">data_input</span><span class="p">(</span><span class="n">validation_filenames</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">)</span>
+
+    <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">train_input</span><span class="p">,</span>
+              <span class="n">steps_per_epoch</span> <span class="o">=</span> <span class="n">num_train</span><span class="o">//</span><span class="n">batch_size</span><span class="p">,</span>
+              <span class="n">callbacks</span><span class="o">=</span><span class="n">callbacks</span><span class="p">,</span> <span class="c1"># add callback</span>
+              <span class="n">epochs</span><span class="o">=</span><span class="n">epochs</span><span class="p">,</span>
+              <span class="n">verbose</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+              <span class="n">validation_data</span><span class="o">=</span><span class="n">eval_input</span><span class="p">,</span>
+              <span class="n">validation_steps</span><span class="o">=</span><span class="n">num_val</span><span class="o">//</span><span class="n">batch_size</span><span class="p">)</span>
+    
+    <span class="n">score</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">eval_input</span><span class="p">,</span> <span class="n">steps</span><span class="o">=</span><span class="n">num_val</span><span class="o">//</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    
+    <span class="c1"># Using print in the wrapper function will print underneath the Jupyter Cell with a </span>
+    <span class="c1"># prefix to indicate which prints come from the same executor</span>
+    
+    <span class="k">print</span><span class="p">(</span><span class="s1">&#39;Test loss:&#39;</span><span class="p">,</span> <span class="n">score</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="k">print</span><span class="p">(</span><span class="s1">&#39;Test accuracy:&#39;</span><span class="p">,</span> <span class="n">score</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    
+    <span class="c1">#########</span>
+    <span class="c1">### maggy: return the metric to be optimized, test accuracy in this case</span>
+    <span class="c1">#########</span>
+    <span class="k">return</span> <span class="n">score</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span></code></pre></div>
+<h3 id="4-launching-the-experiment">4. Launching the experiment</h3>
+
+<p>Finally, we are ready to launch the maggy experiment.
+There are a variety of parameters to specify, some of which are optional:
+1. <code>map_fun</code>: your previously specified training wrapper function
+2. <code>searchspace</code>: the searchspace object
+3. <code>optimizer</code>: the optimization algorithm to be used (only &lsquo;randomsearch&rsquo; available at the moment)
+4. <code>direction</code>: maximize or minimize the specified metric
+5. <code>num_trials</code>: number of different parameter combinations to be evaluated
+6. <code>name</code>: an experiment name
+7. <code>hb_interval</code>: Time in seconds between the heartbeat messages with the metric to the experiment driver. A sensible value is not much smaller than the frequency in which your training loop updates the metric. So using the KerasBatchEnd reporter callback, it does not make sense having a much smaller interval than the amount of time a batch takes to be processed.
+8. <code>es_interval</code>: Interval in steps, specifying how often the currently running trials should be checked for early stopping. Defaults to 1, e.g. if the KerasBatchCallback is used, it will check every trial after each Batch if it should be early stopped.
+9. <code>es_min</code>: Minimum number of trials to be finished before starting to check for early stopping. For example, the median stopping rule implements the simple strategy of stopping a trial if its performance falls below the median of finished trials at similar points in time. We only want to start comparing to the median once there are several trials finished.</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">result</span> <span class="o">=</span> <span class="n">experiment</span><span class="o">.</span><span class="n">lagom</span><span class="p">(</span><span class="n">train_fn</span><span class="o">=</span><span class="n">training_function</span><span class="p">,</span> 
+                           <span class="n">searchspace</span><span class="o">=</span><span class="n">sp</span><span class="p">,</span> 
+                           <span class="n">optimizer</span><span class="o">=</span><span class="s1">&#39;randomsearch&#39;</span><span class="p">,</span> 
+                           <span class="n">direction</span><span class="o">=</span><span class="s1">&#39;max&#39;</span><span class="p">,</span>
+                           <span class="n">num_trials</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> 
+                           <span class="n">name</span><span class="o">=</span><span class="s1">&#39;MNIST&#39;</span><span class="p">,</span> 
+                           <span class="n">hb_interval</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> 
+                           <span class="n">es_interval</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                           <span class="n">es_min</span><span class="o">=</span><span class="mi">5</span>
+                          <span class="p">)</span></code></pre></div>
+<p>To observe the learning curves of trials, start TensorBoard from the Experiments Service in Hopsworks.</p>
+
+    </div>
+    <aside>
+      <div class="bug_reporting">
+	<h4>Find an error or bug?</h4>
+	<p>Everything on this site is available on GitHub. Head to <a href='https://github.com/chrisalbon/notes/issues/new'>and submit a suggested change</a>. Include the tutorial's URL in the issue.</p>
+      </div>
+    </aside>
+
+  </div>
+</article>
+
+
+
+
+            </div>
+
+        </div>
+    </div>
+
+    
+
+    <footer class="footer text-center">
+        <div class="container">
+            <span class="text-muted">This project contains 59 pages and is available on <a href="https://github.com/napsterinblue/notes">GitHub</a>. Copyright &copy; NapsterInBlue, <time datetime="2018">2018</time>.</span>
+        </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ"
+        crossorigin="anonymous"></script>
+
+</body>
+
+</html>
