@@ -16,6 +16,7 @@ Install dependencies first:
 
 Generate the webpages and run the webserver:
 
+    export LC_CTYPE=en_US.UTF-8
     python3 make.py
     ./bin/hugo server
 
