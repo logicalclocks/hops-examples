@@ -13,10 +13,12 @@ before_install:
 install:
   - rm -rf public || exit 0
   - pip install jupyter
-
+  - pip install nbconvert
+  
 # Build the website
 script:
-  - python make.py
+  - export LC_CTYPE=en_US.UTF-8
+  - python3 make.py
   - binaries/hugo
 
 # Deploy to GitHub pages
