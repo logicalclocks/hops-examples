@@ -184,13 +184,13 @@ Navbar
 ---------------------------------------------------------*/
 
 .navbar {
-  background-color: #222222;
+  background-color: #1DB181;
   border-bottom: 0px;
   border-radius: 4px;
 }
 
 .navbar .navbar-brand, .navbar .navbar-brand:hover {
-  color: #9d9d9d;
+  color: #ffffff;
   font-size: 17px;
   float: left;
   margin-left: -15px;
@@ -199,7 +199,7 @@ Navbar
 }
 
 .navbar-nav > li > a {
-  color: #9d9d9d;
+  color: #ffffff;
   font-size: 15px;
   font-weight: 500;
   font-family: sans-serif;
