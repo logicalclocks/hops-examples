@@ -8,3 +8,4 @@ pygmentsUseClasses=true
 canonifyURLs=true
 publishDir="docs"
 disableKinds = ["section", "taxonomy", "taxonomyTerm"]
+baseURL=https://examples.hopsworks.ai
