@@ -1,4 +1,4 @@
-baseURL = "https://examples.hopsworks.ai/"
+#baseURL = "https://examples.hopsworks.ai/"
 languageCode = "en-us"
 title = "Hopsworks Examples"
 theme = "berbera"
@@ -8,4 +8,4 @@ pygmentsUseClasses=true
 canonifyURLs=true
 publishDir="docs"
 disableKinds = ["section", "taxonomy", "taxonomyTerm"]
-baseURL=https://examples.hopsworks.ai
+
