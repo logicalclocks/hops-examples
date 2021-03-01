@@ -345,7 +345,8 @@ p>.mjx-chtml {
 }
 
 .technical_note h1, .page h1{
-  font-size: 1.8rem;
+    font-size: 1.8rem;
+    color: #1EB382;
 }
 
 .technical_note h2{
