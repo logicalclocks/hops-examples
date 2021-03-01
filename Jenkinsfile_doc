@@ -45,13 +45,16 @@ pipeline {
                   rm -rf /opt/examples/*
                   rm -rf /opt/examples/.git
                   rm -rf /opt/examples/.nojekyll
-                  cd /opt/examples
+		  cd /tmp
+		  mkdir -p hops-examples
+		  cd hops-examples
                   git clone https://github.com/logicalclocks/hops-examples .
                   git checkout master
 		  rm -f content
 		  ln -s notebooks content
 		  pip3 make.py
 		  ./bin/hugo
+		  cp -rf docs/* /opt/examples
                 '''
             }
         }
