@@ -29,7 +29,7 @@ pipeline {
                   rm -f content
 		  ln -s notebooks content
                   chmod +x binaries/hugo		  
-		  pip3 make.py		  
+		  python3 make.py		  
 		  ./bin/hugo
 		  
                 '''
@@ -52,7 +52,7 @@ pipeline {
                   git checkout master
 		  rm -f content
 		  ln -s notebooks content
-		  pip3 make.py
+		  python3 make.py
 		  ./bin/hugo
 		  cp -rf docs/* /opt/examples
                 '''
