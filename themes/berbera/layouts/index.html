@@ -61,6 +61,23 @@
         <div class="row">
             <div class="col-sm-12">
                 <div class="card">
+                    <h4 class="card-header" id="hsfs_training">Training Data</h4>
+                    <div class="card-body">
+                        <ul>
+                            {{ range (where .Pages "File.Dir" "in" "/featurestore/hsfs/training/").ByTitle }}
+                            <li>
+                                <a href="{{.Permalink}}">{{.Title}}</a>
+                            </li>			    
+                            {{ end }}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+	
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
                     <h4 class="card-header" id="external_table_delta">External Table - Delta/S3</h4>
                     <div class="card-body">
                         <ul>
