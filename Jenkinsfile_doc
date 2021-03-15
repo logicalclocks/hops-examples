@@ -45,7 +45,6 @@ pipeline {
                   rm -rf /opt/examples/*
                   rm -rf /opt/examples/.git
                   rm -rf /opt/examples/.nojekyll
-		  cd /tmp
 		  mkdir -p hops-examples
 		  cd hops-examples
                   git clone https://github.com/logicalclocks/hops-examples .
