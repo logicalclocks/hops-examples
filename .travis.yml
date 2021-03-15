@@ -21,7 +21,6 @@ script:
   - python3 make.py
   - binaries/hugo
 
-# Deploy to GitHub pages
 deploy:
   provider: pages
   skip_cleanup: true

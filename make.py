@@ -82,6 +82,10 @@ for file in all_md_files:
         # Find all markdown link syntaxes
         md_links = re.findall('!\\[[^\\]]+\\]\\([^)]+\\)', filedata)
 
+        if "Redshift_" in file:
+            print("Replacing images in: {0}".format(file))            
+            replaceAll(file, "images/", "../images/")
+                                
         # For each markdown link
         for link in md_links:
             # Replace the full file path
@@ -89,7 +93,6 @@ for file in all_md_files:
             md_image_filename = os.path.basename(md_image_path)
             md_image_title = re.search(r'\[(.*?)\]', link).group(1)
 
-#            new_link = "!["+md_image_title+"]("+md_image_filename+")"
             new_link = "!["+md_image_title+"]("+md_image_path+")"
             new_link = new_link.replace("images","../images",1)
             print("Old link: {0}".format(link))

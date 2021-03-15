@@ -243,8 +243,8 @@ Homepage
 }
 
 .homepage h3.category_header {
-  background-color: #f7f6f6;
-  color: rgb(84, 84, 84);
+  background-color: #1DB181;
+  color: rgb(255, 255, 255);
   padding: 10px 20px 10px 20px;
   border: solid 1px #e6e6e6;
   margin-bottom: 20px;
@@ -345,7 +345,8 @@ p>.mjx-chtml {
 }
 
 .technical_note h1, .page h1{
-  font-size: 1.8rem;
+    font-size: 1.8rem;
+    color: #1EB382;
 }
 
 .technical_note h2{

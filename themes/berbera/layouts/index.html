@@ -1,12 +1,21 @@
 {{ define "main" }}
 <main>
-    <div class="homepage">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-EKVXL1ZK2D"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-EKVXL1ZK2D');
+  </script>
+  
+  <div class="homepage">    
         <div class="row">
             <div class="col-sm-12">
                 <h1>
                         <span class="minor_line">Python, PySpark, Spark, TensorFlow, Scikit-Learn, PyTorch</span>
                         <br>
-                    <span class="major_line">Example Hopsworks Feature Store Notebooks</span>
+                    <span class="major_line">Feature Store Notebooks</span>
 <!--                    <br>
                     <span class="minor_line"></span>
 -->
@@ -16,8 +25,7 @@
 
         <div class="row">
             <div class="col-sm-12 blurb">
-              <p>This page contains examples of Feature Engineering, Feature Ingestion, Training Dataset Creating,
-		Model Training, and Model Serving on the Hopsowrks platform.</p>
+              <p>This page contains example notebooks for Feature Engineering, Feature Ingestion, Feature Selection/Joining, Training Dataset Creating,	Model Training, and Model Serving on Hopsworks.</p>
             </div>
         </div>
 
@@ -50,6 +58,58 @@
             </div>
         </div>
 
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <h4 class="card-header" id="hsfs_training">Training Data</h4>
+                    <div class="card-body">
+                        <ul>
+                            {{ range (where .Pages "File.Dir" "in" "/featurestore/hsfs/training/").ByTitle }}
+                            <li>
+                                <a href="{{.Permalink}}">{{.Title}}</a>
+                            </li>			    
+                            {{ end }}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+	
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <h4 class="card-header" id="external_table_delta">External Table - Delta/S3</h4>
+                    <div class="card-body">
+                        <ul>
+                            {{ range (where .Pages "File.Dir" "in" "/featurestore/hsfs/external_table/").ByTitle }}
+                            <li>
+                                <a href="{{.Permalink}}">{{.Title}}</a>
+                            </li>			    
+                            {{ end }}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+	
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <h4 class="card-header" id="hsfs_serving">Online Feature Store</h4>
+                    <div class="card-body">
+                        <ul>
+                            {{ range (where .Pages "File.Dir" "in" "/featurestore/hsfs/serving/").ByTitle }}
+                            <li>
+                                <a href="{{.Permalink}}">{{.Title}}</a>
+                            </li>			    
+                            {{ end }}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+	
         <div class="row">
             <div class="col-sm-12">
                 <div class="card">
@@ -247,7 +307,7 @@
 	
         <div class="row" id="connectors">
             <div class="col-sm-12">
-                <h3 class="category_header">Snowflake</h3>
+                <h3 class="category_header">Snowflake ingestion into Feature Store</h3>
             </div>
         </div>
         <div class="row">
