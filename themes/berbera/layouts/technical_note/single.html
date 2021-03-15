@@ -1,0 +1,79 @@
+{{ define "title" }}{{ .Title | markdownify }}{{ end }} {{ define "schema-dot-org" }}
+<script type="application/ld+json">
+  {
+  "@context": "http://schema.org",
+  "@type": "BlogPosting",
+  {{- /* Google recommends the headline be no more than 110 characters */}}
+  "headline": "{{ substr .Title 0 110 }}",
+  {{- with .Params.images -}}{{ range first 1 . }}
+  "image": {
+  "@type": "ImageObject",
+  "url": "{{ . | absURL }}"
+  {{- /* Don't try to get imageConfig if image param is not local */ -}}
+  {{- if not (or (hasPrefix . "http://") (hasPrefix . "https://")) -}}
+  {{- with (imageConfig (printf "/static/%s" .)) -}}
+  ,
+  "height": "{{ .Height }}",
+  "width": "{{ .Width }}"
+  {{- end -}}
+  {{ end }}
+  },
+  {{- end -}}{{ end }}
+  "url": "{{ printf "%s" .Permalink }}",
+  "wordCount": "{{ .WordCount }}",
+  {{- $ISO8601 := "2006-01-02T15:04:05-07:00" }}
+  {{- if not .PublishDate.IsZero }}
+  "datePublished": "{{ .PublishDate.Format $ISO8601 }}",
+  {{- else }}
+  "datePublished": "{{ .Date.Format $ISO8601 }}",
+  {{- end }}
+  {{- if not .Lastmod.IsZero }}
+  "dateModified": "{{ .Lastmod.Format $ISO8601 }}",
+  {{- end }}
+  {{- with .Site.Social.GooglePlus }}
+  "publisher": "{{ printf "%s" . }}",
+  {{- end }}
+  "author": {
+  "@type": "Person",
+  "name": "{{ .Params.author | default .Site.Params.author }}"
+  }
+  {{- if or (.Params.categories) (.Params.tags) -}}
+  ,
+  "keywords": "{{ delimit (union .Params.categories .Params.tags) ", " }}"
+  {{- end }}
+
+  {{- with .Params.description -}}
+  ,
+  "description": "{{ . }}"
+  {{- end }}
+  }
+</script> {{ end }} {{ define "main" }} {{ $dateFormat := default " 02 Jan 2006" (index .Site.Params "date_format") }}
+
+
+<article>
+  <div class="technical_note">
+    <header>
+      <div class="alert alert-warning flashcard_ad" role="alert">
+	Do you want to try out this notebook? Get a free account (no credit-card reqd) at <a href="https://hopsworks.ai" class="alert-link">hopsworks.ai</a>.<p/> You can also install <a href='https://github.com/logicalclocks/hopsworks' class="alert-link">open-source Hopsworks</a> or view <a href='https://www.youtube.com/playlist?list=PLgN6fhzkSui8xncwOtnAd4wVtileiu5cI' class="alert-link">tutorial videos here.</a>
+      </div>
+      <h1 class="technical_note_title">{{ .Title }}</h1>
+      <div class="technical_note_date">
+	<time datetime="{{ .Date.Format " 2006-01-02T15:04:05Z07:00 " }}">{{ .Date.Format $dateFormat }}</time>
+      </div>
+    </header>
+    <div class="content">
+
+      {{ .Content }}
+    </div>
+    <aside>
+      <div class="bug_reporting">
+	<h4>Find an error or bug?</h4>
+	<p>Everything on this site is available on GitHub. Head to <a href='https://github.com/logicalclocks/hops-examples/issues/new'>and submit a suggested change</a>. Include the notebook's name in the issue.</p>
+      </div>
+    </aside>
+
+  </div>
+</article>
+<!-- /.blog-post -->
+
+{{ end }}

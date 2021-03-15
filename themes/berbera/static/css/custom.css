@@ -1,0 +1,575 @@
+﻿@charset "UTF-8";
+
+/* ---------------------------------------------------------
+/* Computer Modern font
+---------------------------------------------------------*/
+
+@font-face {
+  font-family: "Computer Modern";
+  src: url(../fonts/cmunbi.ttf);
+  font-weight: bold;
+  font-style: italic, oblique;
+}
+@font-face {
+  font-family: "Computer Modern";
+  src: url(../fonts/cmunbx.ttf);
+  font-weight: bold;
+}
+@font-face {
+  font-family: "Computer Modern";
+  src: url(../fonts/cmunti.ttf);
+  font-style: italic, oblique;
+}
+@font-face {
+  font-family: "Computer Modern";
+  src: url(../fonts/cmunrm.ttf);
+  font-weight: normal;
+  font-style: normal;
+}
+
+
+/* ---------------------------------------------------------
+/* Fontawesome
+---------------------------------------------------------*/
+
+/*!
+ *  Font Awesome 4.7.0 by @davegandy - http://fontawesome.io - @fontawesome
+ *  License - http://fontawesome.io/license (Font: SIL OFL 1.1, CSS: MIT License)
+ */
+
+@font-face {
+    font-family: FontAwesome;
+    src: url(../fonts/fontawesome-webfont.eot?v=4.7.0);
+    src: url(../fonts/fontawesome-webfont.eot?#iefix&v=4.7.0) format("embedded-opentype"), url(../fonts/fontawesome-webfont.woff2?v=4.7.0) format("woff2"), url(../fonts/fontawesome-webfont.woff?v=4.7.0) format("woff"), url(../fonts/fontawesome-webfont.ttf?v=4.7.0) format("truetype"), url(../fonts/fontawesome-webfont.svg?v=4.7.0#fontawesomeregular) format("svg");
+    font-weight: 400;
+    font-style: normal
+}
+.fa {
+    display: inline-block;
+    font: normal normal normal 14px/1 FontAwesome;
+    font-size: inherit;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale
+}
+.fa-lg {
+    font-size: 1.333333em;
+    line-height: .75em;
+    vertical-align: -15%
+}
+.fa-2x {
+    font-size: 2em
+}
+.fa-3x {
+    font-size: 3em
+}
+.fa-4x {
+    font-size: 4em
+}
+.fa-5x {
+    font-size: 5em
+}
+.fa-fw {
+    width: 1.285714em;
+    text-align: center
+}
+.fa-tag:before {
+    content: ""
+}
+.fa-folder:before {
+    content: ""
+}
+.fa-facebook:before {
+    content: ""
+}
+.fa-google-plus:before {
+    content: ""
+}
+.fa-linkedin:before {
+    content: ""
+}
+.fa-rss:before {
+    content: ""
+}
+.fa-rss-square:before {
+    content: ""
+}
+.fa-twitter:before {
+    content: ""
+}
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0
+}
+.sr-only-focusable:active,
+.sr-only-focusable:focus {
+    position: static;
+    width: auto;
+    height: auto;
+    margin: 0;
+    overflow: visible;
+    clip: auto
+}
+
+/* ---------------------------------------------------------
+/* Sticky footer styles
+---------------------------------------------------------*/
+html {
+  position: relative;
+  min-height: 100%;
+}
+body {
+  /* Margin bottom by footer height */
+  margin-bottom: 60px;
+  color: #505050;
+  font-family: 'Muli', sans-serif;
+}
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  /* Set the fixed height of the footer here */
+  height: 60px;
+  line-height: 60px; /* Vertically center the text there */
+  font-size: 15px;
+}
+
+/* ---------------------------------------------------------
+Basic page styling
+---------------------------------------------------------*/
+/* Not required for template or sticky footer method. */
+
+body > .container {
+  padding: 80px 15px 0;
+}
+
+.footer > .container {
+  padding-right: 15px;
+  padding-left: 15px;
+}
+
+a {
+  color: #0046B7;
+}
+
+a:hover {
+  color: #0056FF;
+}
+
+.container {
+  max-width: 940px;
+}
+
+.content {
+  font-size: 1.1em;
+}
+
+/* ---------------------------------------------------------
+Header
+---------------------------------------------------------*/
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Muli', sans-serif;
+  font-weight: bold;
+}
+
+/* ---------------------------------------------------------
+Navbar
+---------------------------------------------------------*/
+
+.navbar {
+  background-color: #1DB181;
+  border-bottom: 0px;
+  border-radius: 4px;
+}
+
+.navbar .navbar-brand, .navbar .navbar-brand:hover {
+  color: #ffffff;
+  font-size: 17px;
+  float: left;
+  margin-left: -15px;
+  line-height: 20px;
+  font-family: sans-serif;
+}
+
+.navbar-nav > li > a {
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 500;
+  font-family: sans-serif;
+  padding: 15px;
+}
+
+.navbar-toggler-icon {
+  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(255, 255, 255, 1)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E")
+}
+
+/* ---------------------------------------------------------
+Homepage
+---------------------------------------------------------*/
+
+.homepage h1 {
+  text-align: center;
+  margin: 0px 0px 30px 0px;
+  line-height: 1em;
+}
+
+.homepage h1 .main_line{
+  font-size: .85em;
+  font-weight: 700;
+}
+
+.homepage h1 .minor_line{
+  font-size: .75em;
+  font-weight: 400;
+}
+
+.homepage h2 {
+  text-align: center;
+  font-size: 1.85em;
+  font-weight: 700;
+  margin: 20px 0px 20px 0px
+}
+
+.homepage h3 {
+  font-size: 1.4em;
+  font-weight: 700;
+}
+
+.homepage h3.category_header {
+  background-color: #1DB181;
+  color: rgb(255, 255, 255);
+  padding: 10px 20px 10px 20px;
+  border: solid 1px #e6e6e6;
+  margin-bottom: 20px;
+}
+
+.homepage h4 {
+  font-size: 1.2em;
+  font-weight: normal;
+}
+
+.homepage h4 .card_header {
+  font-size: 1.2em;
+}
+
+.homepage p{
+  font-size: 1.1em;
+}
+
+.homepage .blurb{
+  margin-bottom: 1.5em;
+}
+
+/* ---------------------------------------------------------
+Homepage cards
+---------------------------------------------------------*/
+
+.homepage .card{
+  border-radius: 0rem;
+  margin-bottom: 20px;
+}
+
+.homepage .card-header {
+  background-color: rgba(255, 255, 255, 1);
+}
+
+.homepage .card-body ul{
+    padding-left: 20px;
+    margin-bottom: 0;
+  }
+
+  .homepage .card-body li{
+    font-size: 1.05em;
+  }
+
+@media (min-width: 480px) {
+  .homepage .card-body {
+    -webkit-columns: 384px 2;
+      -moz-columns: 384px 2;
+          columns: 384px 2;
+  }}
+
+  .homepage .article_list li{
+    font-size: 1em;
+  }
+
+  .article_list .date_published {
+    font-size: .7em;
+  }
+
+  .homepage .article_list {
+    -webkit-columns: 1;
+    -moz-columns: 1;
+    columns: 1;
+  }
+
+  @media (min-width: 480px) {
+    .homepage .article_list {
+      -webkit-columns: 1;
+      -moz-columns: 1;
+      columns: 1;
+    }
+
+    .homepage .article_list li{
+      font-size: 1.2em;
+    }
+  }
+
+
+/* ---------------------------------------------------------
+Technical Notes
+---------------------------------------------------------*/
+
+.technica_note, .page {
+  font-family: 'Muli', sans-serif;
+}
+
+.technical_note .technical_note_date{
+  margin-bottom:1em;
+}
+
+.technical_note .mjx-math{
+  font-size: 1.1em;
+}
+
+p>.mjx-chtml {
+  display: block;
+  text-align: center;
+}
+
+.technical_note h1, .page h1{
+    font-size: 1.8rem;
+    color: #1EB382;
+}
+
+.technical_note h2{
+  font-size: 1.3em;
+  font-weight: bold;
+  margin-top: 1em;
+  margin-bottom: .5em;
+}
+
+.technical_note h3{
+  font-size: 1.2em;
+  font-weight: bold;
+  margin-top: 1em;
+}
+
+.technical_note h4{
+  font-size: 1.1em;
+  font-weight: bold;
+  margin-top: 1em;
+}
+
+.technical_note h5{
+  font-size: 1.0em;
+  font-weight: bold;
+  margin-top: 1em;
+}
+
+/* ---------------------------------------------------------
+Articles
+---------------------------------------------------------*/
+
+.article h1{
+  font-weight: bold;
+  font-family: 'Muli', sans-serif;
+  text-align: center;
+  margin-bottom:10px;
+}
+
+.article header {
+  margin: 30px 0 30px 0;
+}
+
+.article .content{
+  font-family: "Computer Modern", serif;
+}
+
+.article .content p, .article .content li{
+  font-size: 1.25em;
+}
+
+.article .content p{
+  padding-top:.25em;
+  padding-bottom:.25em;
+}
+
+.article .content p .mjx-math {
+  font-size: 1em;
+}
+
+.article .content blockquote{
+  font-style: italic;
+  padding: 0 4em 0 4em;
+  line-height: 1.4em;
+  color: #776f68;
+}
+
+.article .article_date{
+  font-size: 1.4em;
+  text-align: center;
+  font-family: 'Muli', sans-serif;
+}
+
+.article h2{
+  font-size: 1.6em;
+  margin-top: 1em;
+  margin-bottom: .5em;
+  font-family: 'Muli', sans-serif;
+  font-weight: bold;
+}
+
+.article h3{
+  font-size: 1.4em;
+  font-family: 'Muli', sans-serif;
+  font-weight: bold;
+}
+
+.article h4{
+  font-size: 1.2em;
+  font-family: 'Muli', sans-serif;
+  font-weight: bold;
+}
+
+.article h5{
+  font-size: 1.1em;
+  font-family: 'Muli', sans-serif;
+  font-weight: bold;
+}
+
+/* ---------------------------------------------------------
+Biography
+---------------------------------------------------------*/
+
+.biography{
+  padding: 1em;
+  border: solid 1px #e6e6e6;
+  margin-top: 3em;
+}
+
+.biography p{
+  margin: 0;
+  font-style: italic;
+  font-family: "Computer Modern";
+  font-size: 1.2em;
+  color:#666666;
+}
+
+/* ---------------------------------------------------------
+Code
+---------------------------------------------------------*/
+
+code{
+  color:#333;
+  background-color: #EEE;
+}
+
+pre {
+  padding: .5em;
+  display: block;
+  margin-bottom: .5em;
+  font-size: .85em;
+}
+
+.highlight pre{
+  border: 1px solid #ccc;
+  line-height: 1.42857143;
+  padding: 1em;
+}
+
+/* ---------------------------------------------------------
+Images
+---------------------------------------------------------*/
+
+img{
+  max-width: 100%;
+  height: auto;
+  width: 100%\9; /* ie8 */
+  display:block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* ---------------------------------------------------------
+Bug reporting
+---------------------------------------------------------*/
+
+.bug_reporting{
+    padding: 1em;
+    border: solid 1px #e6e6e6;
+    margin-top: 3em;
+
+}
+
+.bug_reporting h4{
+    margin: 0 0 10px 0;
+    font-size: 18px;
+}
+
+.bug_reporting p{
+    margin: 0;
+    font-size: 16px;
+}
+
+
+
+/* ---------------------------------------------------------
+Flashcards
+---------------------------------------------------------*/
+
+.flashcard {
+  max-height: 400px !important;
+  -webkit-box-shadow: 8px 8px 5px -4px rgba(140,140,140,0.8);
+  -moz-box-shadow: 8px 8px 5px -4px rgba(140,140,140,0.8);
+  box-shadow: 8px 8px 5px -4px rgba(140,140,140,0.8);
+  display: block;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.flashcard_ad {
+  margin-bottom: 1.5em;
+  font-size: 1.05em;
+}
+
+/* ---------------------------------------------------------
+Tables
+---------------------------------------------------------*/
+
+table{
+  margin: 1em;
+}
+
+table,tr,th,td{
+  font-family: sans-serif;
+  border:1px solid black;
+  border-collapse:collapse;
+  padding: 5px;
+  font-size: .95em;
+}
+
+td, th{
+  text-align:left;
+  vertical-align:middle;
+  word-break:break-all;
+}
+
+th{
+  font-weight:bold;
+}
+
+/* ---------------------------------------------------------
+Render Math
+---------------------------------------------------------*/
+
+div.math{
+  font-size: 1em;
+}

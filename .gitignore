@@ -16,3 +16,9 @@
 *.ipynb_checkpoints/*
 # MacOS
 .DS_Store
+*.md
+/docs/featurestore
+/docs/ml
+/docs/kafka
+/docs/hive
+/docs/spark

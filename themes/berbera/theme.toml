@@ -1,0 +1,15 @@
+name = "Berbera"
+license = "GPL-3.0"
+description = "A bootstrap 4 Hugo theme for notes."
+tags = ["bootstrap", "blog", "font awesome"]
+features = ["responsive", "feature store"]
+min_version = 0.25
+
+[author]
+  name = "Jim Dowling"
+  homepage = "https://examples.hopsworks.ai/"
+
+[original]
+  author = "Nick Hounshell"
+  homepage = "https://napsterinblue.github.io/notes/"
+

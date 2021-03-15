@@ -1,0 +1,12 @@
+baseURL = "/"
+#"https://examples.hopsworks.ai/"
+languageCode = "en-us"
+title = "Hopsworks Examples"
+theme = "berbera"
+
+pygmentsCodeFences=true
+pygmentsUseClasses=true
+canonifyURLs=true
+publishDir="docs"
+disableKinds = ["section", "taxonomy", "taxonomyTerm"]
+

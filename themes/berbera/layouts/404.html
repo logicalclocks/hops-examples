@@ -1,0 +1,27 @@
+{{ define "title" }}404 - Page Missing{{ end }} {{ define "main" }}
+<article>
+  <div class="content">
+    <div class="row">
+      <div class="col-sm-12">
+        <div class="card">
+          <h1 class="card-header">
+            <center>
+              <h4>Error - Page Missing</h4>
+            </center>
+          </h1>
+          <div class="card-body">
+            <p>You have found a link that is broken. However, there is hope. Here is every single page on the site listed alphabetically. Use <code>control-f</code> (Windows) or <code>cmd-f</code> (MacOS) to search page titles.</p>
+            <ul>
+              {{ range (.Pages).ByTitle }}
+              <li>
+                <a href="{{.Permalink}}">{{.Title}}</a>
+              </li>
+              {{ end }}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</article>
+{{ end }}

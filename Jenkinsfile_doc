@@ -1,0 +1,61 @@
+pipeline {
+    agent {
+        node "local"
+    }
+    stages {
+        stage("build") {
+            agent {
+                docker {
+                    label "local"
+                    image "docker.hops.works/hopsworks_twine:0.0.4"
+                }
+            }
+            environment {
+              TOKEN = credentials('token')
+            }
+            steps {
+                dir("python") {
+                    sh "pip3 install python-pygments && pip3 install jupyter && pip3 install nbconvert"
+                }
+
+                sh '''
+                  git config user.name jenkins
+                  git config user.email jenkins@hops.works
+
+                  git remote set-url origin https://hopsworksjenkins:$token@github.com/logicalclocks/hops-examples
+                  git fetch --all
+		  git checkout master
+		  
+                  rm -f content
+		  ln -s notebooks content
+                  chmod +x binaries/hugo		  
+		  python3 make.py		  
+		  ./bin/hugo
+		  
+                '''
+            }
+        }
+        stage("publish") {
+            agent {
+                node "local"
+            }
+
+            steps {
+                sh '''
+                  rm -rf /opt/examples/*
+                  rm -rf /opt/examples/.git
+                  rm -rf /opt/examples/.nojekyll
+		  mkdir -p hops-examples
+		  cd hops-examples
+                  git clone https://github.com/logicalclocks/hops-examples .
+                  git checkout master
+		  rm -f content
+		  ln -s notebooks content
+		  python3 make.py
+		  ./bin/hugo
+		  cp -rf docs/* /opt/examples
+                '''
+            }
+        }
+    }
+}
