@@ -14,10 +14,13 @@ pipeline {
             steps {
                 sh "pip3 install pygments jupyter nbconvert"
                 sh '''
-		            ln -s notebooks content
+                    export PATH=/.local/bin:$PATH
+                    git clean -f -d -x
+                    rm -f content
+                    ln -s notebooks content
                     chmod +x binaries/hugo
-		            python3 make.py
-		            ./bin/hugo
+                    python3 make.py
+                    ./binaries/hugo
                 '''
             }
         }
@@ -30,7 +33,9 @@ pipeline {
             steps {
                 sh "rm -rf /opt/examples/*"
                 sh "cp -r docs/* /opt/examples/"
+                sh "git clean -f -d -x"
             }
         }
     }
 }
+
