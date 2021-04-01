@@ -8,8 +8,8 @@
     gtag('js', new Date());
     gtag('config', 'G-EKVXL1ZK2D');
   </script>
-  
-  <div class="homepage">    
+
+  <div class="homepage">
         <div class="row">
             <div class="col-sm-12">
                 <h1>
@@ -45,13 +45,13 @@
                             {{ range (where .Pages "File.Dir" "in" "/featurestore/hsfs/basics/").ByTitle }}
                             <li>
                                 <a href="{{.Permalink}}">{{.Title}}</a>
-                            </li>			    
+                            </li>
                             {{ end }}
                             {{ range (where .Pages "File.Dir" "in" "/featurestore/datasets/").ByTitle }}
                             <li>
                                 <a href="{{.Permalink}}">{{.Title}}</a>
                             </li>
-                            {{ end }}			    
+                            {{ end }}
                         </ul>
                     </div>
                 </div>
@@ -67,14 +67,13 @@
                             {{ range (where .Pages "File.Dir" "in" "/featurestore/hsfs/training/").ByTitle }}
                             <li>
                                 <a href="{{.Permalink}}">{{.Title}}</a>
-                            </li>			    
+                            </li>
                             {{ end }}
                         </ul>
                     </div>
                 </div>
             </div>
         </div>
-	
         <div class="row">
             <div class="col-sm-12">
                 <div class="card">
@@ -84,7 +83,7 @@
                             {{ range (where .Pages "File.Dir" "in" "/featurestore/hsfs/serving/").ByTitle }}
                             <li>
                                 <a href="{{.Permalink}}">{{.Title}}</a>
-                            </li>			    
+                            </li>
                             {{ end }}
                         </ul>
                     </div>
@@ -92,7 +91,7 @@
             </div>
         </div>
 
-	
+
         <div class="row">
             <div class="col-sm-12">
                 <div class="card">
@@ -109,7 +108,7 @@
                 </div>
             </div>
         </div>
-	
+
         <div class="row">
             <div class="col-sm-12">
                 <div class="card">
@@ -127,7 +126,6 @@
             </div>
         </div>
 
-	
         <div class="row" id="aws">
             <div class="col-sm-12">
                 <h3 class="category_header">AWS and the Feature Store</h3>
@@ -149,7 +147,6 @@
                                 <a href="{{.Permalink}}">{{.Title}}</a>
                             </li>
                             {{ end }}
-                            
                         </ul>
                     </div>
                 </div>
@@ -214,7 +211,6 @@
             </div>
         </div>
 
-	
         <div class="row" id="azure">
             <div class="col-sm-12">
                 <h3 class="category_header">Azure and the Feature Store</h3>
@@ -264,22 +260,6 @@
                             <li>
                                 <a href="{{.Permalink}}">{{.Title}}</a>
                             </li>
-                            {{ end }}			    
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-sm-12">
-                <div class="card">
-                    <h4 class="card-header" id="image_petastore">Petastorm and the Feature Store</h4>
-                    <div class="card-body">
-                        <ul>
-                            {{ range (where .Pages "File.Dir" "in" "/featurestore/petastorm/").ByTitle }}
-                            <li>
-                                <a href="{{.Permalink}}">{{.Title}}</a>
-                            </li>
                             {{ end }}
                         </ul>
                     </div>
@@ -287,7 +267,6 @@
             </div>
         </div>
 
-	
         <div class="row" id="connectors">
             <div class="col-sm-12">
                 <h3 class="category_header">Snowflake ingestion into Feature Store</h3>
@@ -309,7 +288,6 @@
                 </div>
             </div>
         </div>
-	
 
         <div class="row" id="ml-fs">
             <div class="col-sm-12">
@@ -338,7 +316,7 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="row">
             <div class="col-sm-12">
                 <div class="card">
@@ -508,9 +486,6 @@
                 </div>
             </div>
         </div>
-        
-        
-
     </div>
 
 </main>

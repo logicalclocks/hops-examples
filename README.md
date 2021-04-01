@@ -94,11 +94,7 @@ A sample feature engineering job that takes in raw data, transforms it into feat
 and saves the features into the featurestore is available in `featurestore/`. This job will automatically be 
 available in your project if you take the **featurestore tour** on Hopsworks. Example notebooks for interacting with 
 the featurestore are available in `notebooks/featurestore/`. More documentation about the featurestore is available 
-here: [Featurestore Documentation](https://hopsworks.readthedocs.io/en/latest/user_guide/hopsworks/featurestore.html).
-
-API documentation is available here: [Featurestore API Docs](http://hops-py.logicalclocks.com/).
-
-
+here: [Featurestore Documentation](https://docs.hopsworks.ai).
 
 # TensorFlow Extended (TFX)
 
