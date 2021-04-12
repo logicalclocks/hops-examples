@@ -44,6 +44,7 @@ object Main {
     ComputeFeatures.computeAttendanceFeatureGroup(spark, log, input)
     ComputeFeatures.computePlayersFeatureGroup(spark, log, input)
     ComputeFeatures.computeTeamsFeatureGroup(spark, log, input)
+    ComputeFeatures.computeSeasonScoresOnDemandFeatureGroup(log)
     ComputeFeatures.createTrainingDataset(log)
 
     log.info("Shutting down spark job")
