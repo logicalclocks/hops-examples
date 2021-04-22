@@ -36,16 +36,19 @@
         <div class="row">
             <div class="col-sm-12">
                 <div class="card">
-                    <h4 class="card-header" id="gcp">Try now in Colab</h4>
+                    <h4 class="card-header" id="colab_example">Try now on Colab</h4>
                     <div class="card-body">
                         <ul>
                             {{ range (where .Pages "File.Dir" "in" "/featurestore/gcp/").ByTitle }}
+                            <li>
+                                <a href="{{.Permalink}}">{{.Title}}</a>
+                            </li>
+                            {{ end }}
                         </ul>
                     </div>
                 </div>
             </div>
         </div>
-
 	
         <div class="row">
             <div class="col-sm-12">
