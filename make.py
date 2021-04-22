@@ -85,7 +85,11 @@ for file in all_md_files:
         if "Redshift_" in file:
             print("Replacing images in: {0}".format(file))            
             replaceAll(file, "images/", "../images/")
-                                
+
+        if "S3-" in file:
+            print("Replacing images in: {0}".format(file))            
+            replaceAll(file, "images/", "../images/")
+            
         # For each markdown link
         for link in md_links:
             # Replace the full file path

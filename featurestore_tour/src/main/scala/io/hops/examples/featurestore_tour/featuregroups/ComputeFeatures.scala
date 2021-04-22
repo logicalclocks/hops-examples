@@ -4,7 +4,6 @@ import com.logicalclocks.hsfs.{DataFormat, HopsworksConnection, Storage, Storage
   StatisticsConfig}
 import org.apache.log4j.Logger
 import org.apache.spark.sql.SparkSession
-import io.hops.util.Hops
 
 import scala.collection.JavaConversions._
 import org.apache.spark.sql.Row
@@ -175,7 +174,9 @@ object ComputeFeatures {
 
     log.info(s"Creating on-demand featuregroup $SEASON_FEATUREGROUP_TOUR_ON_DEMAND version $FEATUREGROUP_VERSION in " +
       s"featurestore ${fs.getName}")
+  }
 
+  def computeSeasonScoresOnDemandFeatureGroup(log: Logger): Unit = {
     val storageConnector =
       fs.getStorageConnector(System.getenv("HADOOP_USER_NAME").replace("__", "_") + "_onlinefeaturestore");
     val onDmdFg = fs.createOnDemandFeatureGroup()
@@ -310,8 +311,12 @@ object ComputeFeatures {
     */
   def createTrainingDataset(log: Logger): Unit = {
     log.info(s"Creating Training Dataset: $TOUR_TRAINING_DATASET")
-    val features = List("team_budget", "average_attendance", "average_player_age")
-    val featuresDf = Hops.getFeatures(features).read
+    val players_fg = fs.getFeatureGroup(PLAYERS_FEATUREGROUP)
+    val teams_fg = fs.getFeatureGroup(TEAMS_FEATUREGROUP)
+    val attendance_fg = fs.getFeatureGroup(ATTENDANCES_FEATUREGROUP)
+    val query = players_fg.select(List("average_player_age"))
+      .join(teams_fg.select(List("team_budget")))
+      .join(attendance_fg.select(List("average_attendance")))
     val td = fs.createTrainingDataset()
       .name("tour_training_dataset_test")
       .version(1)
@@ -319,7 +324,7 @@ object ComputeFeatures {
       .dataFormat(DataFormat.TFRECORD)
       .statisticsConfig(new StatisticsConfig(true, true, true))
       .build()
-    td.save(featuresDf)
+    td.save(query)
   }
 
 }
