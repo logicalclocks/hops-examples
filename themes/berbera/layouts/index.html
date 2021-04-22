@@ -299,7 +299,7 @@
                     <h4 class="card-header" id="snowflake_pyspark">Snowflake ingestion to the Feature Store</h4>
                     <div class="card-body">
                         <ul>
-                            {{ range (where .Pages "File.Dir" "in" "/featurestore/snowflake/").ByTitle }}
+                            {{ range (where .Pages "File.Dir" "in" "/featurestore/hsfs/snowflake/").ByTitle }}
                             <li>
                                 <a href="{{.Permalink}}">{{.Title}}</a>
                             </li>
