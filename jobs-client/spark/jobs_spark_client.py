@@ -25,6 +25,9 @@ app_file = args.main
 app_folder = args.workspace
 dependency = ntpath.basename(app_folder)
 
+if not os.path.isfile(args.apikey):
+    os.environ['API_KEY'] = args.apikey
+
 with open('job_config.json') as json_file:
     data = json_file.read()
 

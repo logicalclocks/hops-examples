@@ -2,6 +2,8 @@ package io.hops.examples.featurestore_tour.featuregroups
 
 import com.logicalclocks.hsfs.{DataFormat, HopsworksConnection, Storage, StorageConnectorType, TimeTravelFormat,
   StatisticsConfig}
+import com.logicalclocks.hsfs.metadata.validation._
+import com.logicalclocks.hsfs.metadata.Expectation
 import org.apache.log4j.Logger
 import org.apache.spark.sql.SparkSession
 
@@ -116,6 +118,16 @@ object ComputeFeatures {
     games_fg.save(rawDs.toDF)
     log.info(s"Creation of featuregroup $GAMES_FEATUREGROUP complete")
 
+    val expectationGamesScore = (fs.createExpectation()
+      .rules(Seq(
+        Rule.createRule(RuleName.HAS_MAX).min(1).max(1).level(Level.WARNING).build(),
+        Rule.createRule(RuleName.HAS_MIN).min(0).max(0).level(Level.ERROR).build()))
+      .name("games score")
+      .description("min/max score")
+      .features(Seq("score"))
+      .build())
+    expectationGamesScore.save()
+
     log.info(s"Creating hudi featuregroup $GAMES_FEATUREGROUP_TOUR_HUDI version $FEATUREGROUP_VERSION in " +
       s"featurestore ${fs.getName}")
     val partitionCols = List("score")
@@ -126,6 +138,8 @@ object ComputeFeatures {
       .timeTravelFormat(TimeTravelFormat.HUDI)
       .primaryKeys(Seq("home_team_id"))
       .partitionKeys(partitionCols)
+      .validationType(ValidationType.ALL)
+      .expectations(Seq(expectationGamesScore))
       .statisticsConfig(new StatisticsConfig(true, true, true))
       .build()
     hudi_fg.save(rawDs.toDF)
@@ -216,6 +230,26 @@ object ComputeFeatures {
         average_attendance = avgAttendance,
         sum_attendance = sumAttendance.toFloat)
     })
+    log.info(s"Creating expectations for $ATTENDANCES_FEATUREGROUP")
+    val expectationAttendance = (fs.createExpectation()
+      .rules(Seq(
+        Rule.createRule(RuleName.HAS_MAX).min(1999999).max(9999999).level(Level.WARNING).build(),
+        Rule.createRule(RuleName.IS_POSITIVE).min(1).max(1).level(Level.ERROR).build()))
+      .name("attendance")
+      .description("min/max and is_positive attendance validations")
+      .features(Seq("average_attendance", "sum_attendance"))
+      .build())
+    expectationAttendance.save()
+
+    val expectationAttendanceTeamsId = (fs.createExpectation()
+      .rules(Seq(
+        Rule.createRule(RuleName.HAS_NUMBER_OF_DISTINCT_VALUES).min(1).max(1).level(Level.ERROR).build()))
+      .name("attendance_teams")
+      .description("team id distinct values")
+      .features(Seq("team_id"))
+      .build())
+    expectationAttendanceTeamsId.save()
+
     log.info(s"Creating featuregroup $ATTENDANCES_FEATUREGROUP version $FEATUREGROUP_VERSION in featurestore ${fs.getName}")
     val attendances_fg = fs.createFeatureGroup()
       .name(ATTENDANCES_FEATUREGROUP)
@@ -224,6 +258,8 @@ object ComputeFeatures {
       .timeTravelFormat(TimeTravelFormat.NONE)
       .primaryKeys(Seq("team_id"))
       .statisticsConfig(new StatisticsConfig(true, true, true))
+      .validationType(ValidationType.ALL)
+      .expectations(Seq(expectationAttendance, expectationAttendanceTeamsId))
       .build()
     attendances_fg.save(featureDs.toDF)
     log.info(s"Creation of featuregroup $ATTENDANCES_FEATUREGROUP complete")
