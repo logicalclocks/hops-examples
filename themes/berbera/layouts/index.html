@@ -39,10 +39,11 @@
                     <h4 class="card-header" id="colab_example">Try now on Colab</h4>
                     <div class="card-body">
                         <ul>
-                            {{ range (where .Pages "File.Dir" "in" "/featurestore/gcp/").ByTitle }}
-                            <li>
-                                <a href="{{.Permalink}}">{{.Title}}</a>
-                            </li>
+                          {{ range (where .Pages "File.Dir" "in" "/featurestore/gcp/").ByTitle }}
+                            <a href="https://colab.research.google.com/github/jimdowling/hops-examples/blob/examples_missing/notebooks/featurestore/gcp/colab.ipynb">
+			      <img src="/featurestore/images/colab-64px.png" alt="Colab" width="64" height="64">
+			      Run example in Google Colab
+                            </a>			  
                             {{ end }}
                         </ul>
                     </div>
