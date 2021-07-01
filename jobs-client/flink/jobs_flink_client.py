@@ -6,7 +6,7 @@ import time
 import json
 from json.decoder import JSONDecodeError
 
-from hops import project, beam, jobs, util, constants, hdfs
+from hops import project, jobs, util, constants, hdfs
 from hops.exceptions import APIKeyFileNotFound, RestAPIError
 
 parser = argparse.ArgumentParser()
@@ -42,13 +42,18 @@ execution = jobs.get_executions(args.job,
 app_id = args.application_id
 if execution is None or execution['count'] == 0:
     # Create Flink Hopsworks job and start it. This effectively creates a Flink cluster to submit jobs to
-    beam.create_runner(args.job,
-                       args.yarnjobManagerMemory,
-                       args.task_managers,
-                       args.yarntaskManagerMemory,
-                       args.yarnslots)
+    type = "flinkJobConfiguration"
+    job_config = {"type": type,
+                  "amQueue": "default",
+                  "jobmanager.heap.size": args.yarnjobManagerMemory,
+                  "amVCores": "1",
+                  "numberOfTaskManagers": args.task_managers,
+                  "taskmanager.heap.size": args.yarntaskManagerMemory,
+                  "taskmanager.numberOfTaskSlots": args.yarnslots}
+    jobs.create_job(args.job, job_config)
+
     print("Waiting for flink cluster to start...")
-    beam.start_runner(args.job)
+    jobs.start_job(args.job)
     # Wait 90 seconds until runner is in status "RUNNING",
     wait = 90
     wait_count = 0
@@ -82,6 +87,7 @@ except:
 # Upload Flink job jar to job manager
 response = requests.post(
     base_url + "/jars/upload",
+    verify=False,
     files={
         "jarfile": (
             os.path.basename(args.jar),
@@ -100,6 +106,7 @@ print("Submitting job to: " + base_url)
 
 response = requests.post(
     base_url,
+    verify=False,
     headers={"Content-Type" : "application/json", "Authorization": "Apikey " + args.apikey}
 )
 
