@@ -154,7 +154,7 @@
     <module>spark</module>
     <module>hive</module>
     <module>featurestore_tour</module>
-    <module>flink</module>
+    <module>examples-flink</module>
   </modules>
 
 
