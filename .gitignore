@@ -3,6 +3,7 @@
 /examples-kafka/target/
 /examples-spark/target/
 /examples-flink (copy)/target/
+/examples-flink/flink/target/
 /examples-beam/target/
 /spark/target/
 /flink/target/
