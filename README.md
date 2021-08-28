@@ -18,7 +18,8 @@ Generate the webpages and run the webserver:
 
     export LC_CTYPE=en_US.UTF-8
     python3 make.py
-    ./bin/hugo server
+    ln -s notebooks content
+    ./binaries/hugo server
 
 When you add a new notebook, add it under the "notebooks" directory.
 If you want to add a new category for notebooks, put your notebook in a new directory, then edit this file to add your category:

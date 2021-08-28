@@ -17,8 +17,9 @@ all_ipynb_files = [os.path.join(root, name)
                        for name in files
                            if name.endswith((".ipynb"))]
 
-# Remove all notebooks from checkpoint folders
-ipynb_files = [ x for x in all_ipynb_files if ".ipynb_checkpoints" not in x ]
+# Remove all notebooks from checkpoint folders and excluded notebooks
+exclude_ipynb_files = [ "notebooks/ml/serving/kfserving/tensorflow/transformer.ipynb" ]
+ipynb_files = [ x for x in all_ipynb_files if ".ipynb_checkpoints" not in x and x not in exclude_ipynb_files ]
 
 # For each file
 for file in ipynb_files:
@@ -77,30 +78,30 @@ all_md_files = [os.path.join(root, name)
                if name.endswith((".md"))]
 
 for file in all_md_files:
+
+    if "Redshift_" in file:
+        print("Replacing images in: {0}".format(file))            
+        replaceAll(file, "images/", "../images/")
+
+    if "S3-" in file:
+        print("Replacing images in: {0}".format(file))            
+        replaceAll(file, "images/", "../images/")
+
     with open(file,'r', encoding="utf-8") as f:
         filedata = f.read()
         # Find all markdown link syntaxes
         md_links = re.findall('!\\[[^\\]]+\\]\\([^)]+\\)', filedata)
 
-        if "Redshift_" in file:
-            print("Replacing images in: {0}".format(file))            
-            replaceAll(file, "images/", "../images/")
+    # For each markdown link
+    for link in md_links:
+        # Replace the full file path
+        md_image_path = re.search(r'\((.*?)\)', link).group(1)
+        md_image_filename = os.path.basename(md_image_path)
+        md_image_title = re.search(r'\[(.*?)\]', link).group(1)
 
-        if "S3-" in file:
-            print("Replacing images in: {0}".format(file))            
-            replaceAll(file, "images/", "../images/")
-            
-        # For each markdown link
-        for link in md_links:
-            # Replace the full file path
-            md_image_path = re.search(r'\((.*?)\)', link).group(1)
-            md_image_filename = os.path.basename(md_image_path)
-            md_image_title = re.search(r'\[(.*?)\]', link).group(1)
+        new_link = "!["+md_image_title+"]("+md_image_path+")"
+        new_link = new_link.replace("images","../images",1)
+        print("Old link: {0}".format(link))
+        print("New link: {0}".format(new_link))
 
-            new_link = "!["+md_image_title+"]("+md_image_path+")"
-            new_link = new_link.replace("images","../images",1)
-            print("Old link: {0}".format(link))
-            print("New link: {0}".format(new_link))
-
-
-            replaceAll(file, link, new_link)
+        replaceAll(file, link, new_link)
