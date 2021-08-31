@@ -550,6 +550,29 @@
             </div>
         </div>
 
+        <div class="row" id="ml-fs">
+            <div class="col-sm-12">
+                <h3 class="category_header">Use cases</h3>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <h4 class="card-header" id="cc_fraud_detection">Credit Card Fraud Detection</h4>
+                    <div class="card-body">
+                        <ul>
+                            {{ range (where .Pages "File.Dir" "in" "/featurestore/use_cases/credit_card_fraud_detection/").ByTitle }}
+                            <li>
+                                <a href="{{.Permalink}}">{{.Title}}</a>
+                            </li>
+                            {{ end }}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="row" id="miscellaneous">
             <div class="col-sm-12">
                 <h3 class="category_header">Miscellaneous Notebooks</h3>
