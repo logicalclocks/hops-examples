@@ -6,7 +6,7 @@ class Predict(object):
 
     def __init__(self):
         """ Initializes the serving state, reads a trained model from HDFS"""
-        self.model_path = "Models/IrisFlowerClassifier/1/iris_knn.pkl"
+        self.model_path = "Models/irisflowerclassifier/1/iris_knn.pkl"
         print("Copying SKLearn model from HDFS to local directory")
         hdfs.copy_to_local(self.model_path)
         print("Reading local SkLearn model for serving")

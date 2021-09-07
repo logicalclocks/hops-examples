@@ -18,13 +18,13 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>io.hops</groupId>
   <artifactId>hops-examples</artifactId>
-  <version>2.3.0-SNAPSHOT</version>
+  <version>3.0.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <spark.version>2.4.3.2</spark.version>
-    <scala.base>2.11</scala.base>
-    <scala.version>2.11.12</scala.version>
+    <spark.version>3.1.1.0</spark.version>
+    <scala.base>2.12</scala.base>
+    <scala.version>2.12.10</scala.version>
     <hops.version>3.2.0.0-SNAPSHOT</hops.version>
   </properties>
   <name>hops-examples</name>
@@ -34,7 +34,7 @@
     <dependency>
       <groupId>io.hops</groupId>
       <artifactId>hops-util</artifactId>
-      <version>2.3.0-SNAPSHOT</version>
+      <version>3.0.0-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
