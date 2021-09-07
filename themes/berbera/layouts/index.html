@@ -440,6 +440,7 @@
                                 <a href="{{.Permalink}}">{{.Title}}</a>
                             </li>
                             {{ end }}
+                            {{ range (where .Pages "File.Dir" "in" "/featurestore/ml/Distributed_Training/multiworker_mirrored_strategy/").ByTitle }}
                         </ul>
                     </div>
                 </div>
@@ -471,15 +472,10 @@
         <div class="row">
             <div class="col-sm-12">
                 <div class="card">
-                    <h4 class="card-header" id="model-serving">Model Serving with Docker/Kubernetes</h4>
+                    <h4 class="card-header" id="inference">Inferencing (Model Serving)</h4>
                     <div class="card-body">
                         <ul>
-                            {{ range (where .Pages "File.Dir" "in" "/featurestore/ml/serving/docker_and_kubernetes/sklearn/").ByTitle }}
-                            <li>
-                                <a href="{{.Permalink}}">{{.Title}}</a>
-                            </li>
-                            {{ end }}
-                            {{ range (where .Pages "File.Dir" "in" "/featurestore/ml/serving/docker_and_kubernetes/tensorflow/").ByTitle }}
+                            {{ range (where .Pages "File.Dir" "in" "/featurestore/ml/Inference/").ByTitle }}
                             <li>
                                 <a href="{{.Permalink}}">{{.Title}}</a>
                             </li>
@@ -492,6 +488,7 @@
         <div class="row">
             <div class="col-sm-12">
                 <div class="card">
+
                     <h4 class="card-header" id="model-serving">Model Serving with KFServing</h4>
                     <div class="card-body">
                         <ul>
@@ -505,13 +502,35 @@
                 </div>
             </div>
         </div>
+
+        <div class="row" id="maggy-title">
+            <div class="col-sm-12">
+                <h3 class="category_header">Maggy - Distributed Transparent ML</h3>
+            </div>
+        </div>
+
         <div class="row">
             <div class="col-sm-12">
                 <div class="card">
-                    <h4 class="card-header" id="inference">Model Inference on Spark (with HopsFS)</h4>
+                    <h4 class="card-header" id="maggy">Maggy - Distributed Transparent ML </h4>
                     <div class="card-body">
                         <ul>
-                            {{ range (where .Pages "File.Dir" "in" "/featurestore/ml/Inference/").ByTitle }}
+                            {{ range (where .Pages "File.Dir" "in" "/featurestore/ml/Maggy/Hopsworks/").ByTitle }}
+                            <li>
+                                <a href="{{.Permalink}}">{{.Title}}</a>
+                            </li>
+                            {{ end }}
+                            {{ range (where .Pages "File.Dir" "in" "/featurestore/ml/Maggy/Hopsworks/ImageNet").ByTitle }}
+                            <li>
+                                <a href="{{.Permalink}}">{{.Title}}</a>
+                            </li>
+                            {{ end }}
+                            {{ range (where .Pages "File.Dir" "in" "/featurestore/ml/Maggy/Databricks/").ByTitle }}
+                            <li>
+                                <a href="{{.Permalink}}">{{.Title}}</a>
+                            </li>
+                            {{ end }}
+                            {{ range (where .Pages "File.Dir" "in" "/featurestore/ml/Maggy/Spark/").ByTitle }}
                             <li>
                                 <a href="{{.Permalink}}">{{.Title}}</a>
                             </li>
@@ -521,6 +540,7 @@
                 </div>
             </div>
         </div>
+
 
         <div class="row" id="ml-fs">
             <div class="col-sm-12">
