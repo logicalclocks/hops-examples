@@ -38,10 +38,10 @@
                 <div class="card">
                     <h4 class="card-header" id="colab_example">Try now on Colab</h4>
                     <div class="card-body">
+		      <!-- <img src="/featurestore/images/colab-64px.png" alt="Colab" width="64" height="64"> -->
                         <ul>
                           {{ range (where .Pages "File.Dir" "in" "/featurestore/gcp/").ByTitle }}
                             <a href="https://colab.research.google.com/github/jimdowling/hops-examples/blob/examples_missing/notebooks/featurestore/gcp/colab.ipynb">
-			      <img src="/featurestore/images/colab-64px.png" alt="Colab" width="64" height="64">
 			      Run example in Google Colab
                             </a>			  
                             {{ end }}
@@ -308,7 +308,7 @@
         <div class="row" id="what-if">
             <div class="col-sm-12">
                 <div class="card">
-                    <h4 class="card-header" id="what-if-tol">What-if-Tool Feature Analytics</h4>
+                    <h4 class="card-header" id="what-if-tol">What-if-Tool Feature Analytics (Jupyter only, not Jupyterlab)</h4>
                     <div class="card-body">
                         <ul>
                             {{ range (where .Pages "File.Dir" "in" "/featurestore/feature-bias/").ByTitle }}
@@ -440,7 +440,6 @@
                                 <a href="{{.Permalink}}">{{.Title}}</a>
                             </li>
                             {{ end }}
-                            {{ range (where .Pages "File.Dir" "in" "/featurestore/ml/Distributed_Training/multiworker_mirrored_strategy/").ByTitle }}
                         </ul>
                     </div>
                 </div>
