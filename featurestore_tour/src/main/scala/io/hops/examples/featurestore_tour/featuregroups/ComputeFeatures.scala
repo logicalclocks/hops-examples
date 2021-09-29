@@ -1,9 +1,7 @@
 package io.hops.examples.featurestore_tour.featuregroups
 
-import com.logicalclocks.hsfs.{DataFormat, HopsworksConnection, Storage, StorageConnectorType, TimeTravelFormat,
-  StatisticsConfig}
+import com.logicalclocks.hsfs.{DataFormat, HopsworksConnection, TimeTravelFormat, StatisticsConfig}
 import com.logicalclocks.hsfs.metadata.validation._
-import com.logicalclocks.hsfs.metadata.Expectation
 import org.apache.log4j.Logger
 import org.apache.spark.sql.SparkSession
 
