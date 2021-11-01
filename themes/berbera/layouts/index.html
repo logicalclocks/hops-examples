@@ -511,19 +511,33 @@
         <div class="row">
             <div class="col-sm-12">
                 <div class="card">
-                    <h4 class="card-header" id="maggy">Maggy - Distributed Transparent ML </h4>
+                    <h4 class="card-header" id="maggy-1">ML Experiments on Hopsworks using TensorFlow </h4>
                     <div class="card-body">
                         <ul>
-                            {{ range (where .Pages "File.Dir" "in" "/featurestore/ml/Maggy/Hopsworks/").ByTitle }}
+                            {{ range (where .Pages "File.Dir" "in" "/featurestore/ml/Maggy/Hopsworks/Tensorflow/").ByTitle }}
                             <li>
                                 <a href="{{.Permalink}}">{{.Title}}</a>
                             </li>
                             {{ end }}
-                            {{ range (where .Pages "File.Dir" "in" "/featurestore/ml/Maggy/Hopsworks/ImageNet").ByTitle }}
+                        </ul>
+                    </div>
+                </div>
+                <div class="card">
+                    <h4 class="card-header" id="maggy-2">Maggy Distributed Training on Hopsworks using PyTorch</h4>
+                    <div class="card-body">
+                        <ul>
+                            {{ range (where .Pages "File.Dir" "in" "/featurestore/ml/Maggy/Hopsworks/PyTorch").ByTitle }}
                             <li>
                                 <a href="{{.Permalink}}">{{.Title}}</a>
                             </li>
                             {{ end }}
+                        </ul>
+                    </div>
+                </div>
+                <div class="card">
+                    <h4 class="card-header" id="maggy-3">ML experiments on local machine</h4>
+                    <div class="card-body">
+                        <ul>
                             {{ range (where .Pages "File.Dir" "in" "/featurestore/ml/Maggy/Spark/").ByTitle }}
                             <li>
                                 <a href="{{.Permalink}}">{{.Title}}</a>
