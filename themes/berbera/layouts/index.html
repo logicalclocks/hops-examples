@@ -111,13 +111,13 @@
                 <div class="card">
                     <h4 class="card-header" id="hsfs_online_featurestore">Online Feature Store end-to-end</h4>
                     <div class="card-body">
-                        <ol start="0">
+                        <ul>
                             {{ range (where .Pages "File.Dir" "in" "/featurestore/hsfs/online_featurestore/").ByTitle }}
                             <li>
                                 <a href="{{.Permalink}}">{{.Title}}</a>
                             </li>
                             {{ end }}
-                        </ol>
+                        </ul>
                     </div>
                 </div>
             </div>
