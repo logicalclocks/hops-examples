@@ -43,14 +43,14 @@
                           {{ range (where .Pages "File.Dir" "in" "/featurestore/gcp/").ByTitle }}
                             <a href="https://colab.research.google.com/github/jimdowling/hops-examples/blob/examples_missing/notebooks/featurestore/gcp/colab.ipynb">
 			      Run example in Google Colab
-                            </a>			  
+                            </a>
                             {{ end }}
                         </ul>
                     </div>
                 </div>
             </div>
         </div>
-	
+
         <div class="row">
             <div class="col-sm-12">
                 <div class="card">
@@ -190,7 +190,7 @@
                 </div>
             </div>
         </div>
-  
+
         <div class="row" id="aws">
             <div class="col-sm-12">
                 <h3 class="category_header">AWS and the Feature Store</h3>
@@ -321,7 +321,7 @@
                 </div>
             </div>
 	</div>
-	
+
         <div class="row">
             <div class="col-sm-12">
                 <div class="card">
@@ -526,7 +526,7 @@
                     <h4 class="card-header" id="maggy-2">Maggy Distributed Training on Hopsworks using PyTorch</h4>
                     <div class="card-body">
                         <ul>
-                            {{ range (where .Pages "File.Dir" "in" "/featurestore/ml/Maggy/Hopsworks/PyTorch").ByTitle }}
+                            {{ range (where .Pages "File.Dir" "in" "/featurestore/ml/Maggy/Hopsworks/PyTorch/").ByTitle }}
                             <li>
                                 <a href="{{.Permalink}}">{{.Title}}</a>
                             </li>
