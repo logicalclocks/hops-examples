@@ -404,17 +404,22 @@
                     <h4 class="card-header" id="parallel-exp">Hyperparameter Tuning</h4>
                     <div class="card-body">
                         <ul>
-                            {{ range (where .Pages "File.Dir" "in" "/featurestore/ml/Parallel_Experiments/Maggy/").ByTitle }}
+                            {{ range (where .Pages "File.Dir" "in" "/ml/Maggy/Hopsworks/").ByTitle }}
                             <li>
                                 <a href="{{.Permalink}}">{{.Title}}</a>
                             </li>
                             {{ end }}
-                            {{ range (where .Pages "File.Dir" "in" "/featurestore/ml/Parallel_Experiments/PyTorch/").ByTitle }}
+                            {{ range (where .Pages "File.Dir" "in" "/ml/Maggy/Spark/").ByTitle }}
                             <li>
                                 <a href="{{.Permalink}}">{{.Title}}</a>
                             </li>
                             {{ end }}
-                            {{ range (where .Pages "File.Dir" "in" "/featurestore/ml/Parallel_Experiments/TensorFlow/").ByTitle }}
+                            {{ range (where .Pages "File.Dir" "in" "/ml/Parallel_Experiments/PyTorch/").ByTitle }}
+                            <li>
+                                <a href="{{.Permalink}}">{{.Title}}</a>
+                            </li>
+                            {{ end }}
+                            {{ range (where .Pages "File.Dir" "in" "/ml/Parallel_Experiments/TensorFlow/").ByTitle }}
                             <li>
                                 <a href="{{.Permalink}}">{{.Title}}</a>
                             </li>
