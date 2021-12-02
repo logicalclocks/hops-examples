@@ -296,6 +296,10 @@ Homepage cards
           columns: 384px 2;
   }}
 
+  .card-body.card-body-1-column {
+    columns: 1;
+}
+
   .homepage .article_list li{
     font-size: 1em;
   }
