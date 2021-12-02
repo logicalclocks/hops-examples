@@ -57,12 +57,12 @@
                     <h4 class="card-header" id="hsfs_basics">Basics</h4>
                     <div class="card-body">
                         <ul>
-                            {{ range (where .Pages "File.Dir" "in" "/featurestore/hsfs/basics/").ByTitle }}
+                            {{ range (where .Pages "File.Dir" "in" "/featurestore/hsfs/basics/1/").ByTitle }}
                             <li>
                                 <a href="{{.Permalink}}">{{.Title}}</a>
                             </li>
                             {{ end }}
-                            {{ range (where .Pages "File.Dir" "in" "/featurestore/datasets/").ByTitle }}
+                            {{ range (where .Pages "File.Dir" "in" "/featurestore/hsfs/basics/2/").ByTitle }}
                             <li>
                                 <a href="{{.Permalink}}">{{.Title}}</a>
                             </li>
