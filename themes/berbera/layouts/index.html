@@ -79,7 +79,7 @@
             <div class="col-sm-12">
                 <div class="card">
                     <h4 class="card-header" id="hsfs_training">Training Data</h4>
-                    <div class="card-body">
+                    <div class="card-body card-body-1-column">
                         <ul>
                             {{ range (where .Pages "File.Dir" "in" "/featurestore/hsfs/training/").ByTitle }}
                             <li>
@@ -404,7 +404,7 @@
             <div class="col-sm-12">
                 <div class="card">
                     <h4 class="card-header" id="parallel-exp">Hyperparameter Tuning</h4>
-                    <div class="card-body">
+                    <div class="card-body card-body-1-column">
                         <ul>
                             {{ range (where .Pages "File.Dir" "in" "/ml/Maggy/Hopsworks/").ByTitle }}
                             <li>
@@ -544,7 +544,7 @@
                 </div>
                 <div class="card">
                     <h4 class="card-header" id="maggy-3">ML experiments on local machine</h4>
-                    <div class="card-body">
+                    <div class="card-body card-body-1-column">
                         <ul>
                             {{ range (where .Pages "File.Dir" "in" "/featurestore/ml/Maggy/Spark/").ByTitle }}
                             <li>
