@@ -59,7 +59,7 @@
                     <h4 class="card-header" id="hsfs_basics">Create your first Features</h4>
                     <div class="card-body">
                         <ul>
-                            {{ range (where .Pages "File.Dir" "in" "/featurestore/hsfs/basics/feature_engineering/").ByTitle }}
+                            {{ range (where .Pages "File.Dir" "in" "/featurestore/hsfs/basics/").ByTitle }}
                             <li>
                                 <a href="{{.Permalink}}">{{.Title}}</a>
                             </li>
