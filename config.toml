@@ -9,4 +9,4 @@ pygmentsUseClasses=true
 canonifyURLs=true
 publishDir="docs"
 disableKinds = ["section", "taxonomy", "taxonomyTerm"]
-
+relativeURLs=true
