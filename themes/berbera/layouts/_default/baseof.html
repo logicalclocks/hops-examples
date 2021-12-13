@@ -51,6 +51,12 @@
                 <ul class="nav navbar-nav">
                     <li><a href="https://hopsworks.ai" title="Hopsworks.ai">Hopsworks</a></li>
                     <li><a href="https://docs.hopsworks.ai" title="Docs">Docs</a></li>
+                    <li>
+		      <select name="version" onchange="this.options[this.selectedIndex].value && (window.location = this.options[this.selectedIndex].value);">
+			<option value="https://examples.hopsworks.ai/master">master</option>
+			<option value="https://examples.hopsworks.ai/release-2.4">2.4</a></option>
+		      </select>
+		    </li>
                 </ul>
             </div>
         </div>

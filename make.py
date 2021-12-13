@@ -5,6 +5,7 @@ import fileinput
 import sys
 from glob import glob
 import shutil
+import re
 
 
 
@@ -65,6 +66,20 @@ for folder_name in folders:
             # delete the newly created _files folder
             shutil.rmtree(justcreated_base_folder)
 
+def regexReplace(file, searchExp, searchPostfix):
+    regex = re.compile(searchExp + "(.*)" + searchPostfix)
+    for line in fileinput.input(file, inplace=1):
+        if ".ipynb" in line:
+            m = regex.match(line)
+            if m: 
+                print("looking!!!")
+                orig = m.group(1)
+                res = m.group(2)
+                replaceStr="(../"+res+")"
+                print(res)
+                line = line.replace(orig,replaceStr)
+        sys.stdout.write(line)
+        
 def replaceAll(file,searchExp,replaceExp):
     for line in fileinput.input(file, inplace=1):
         if searchExp in line:
@@ -87,6 +102,9 @@ for file in all_md_files:
         print("Replacing images in: {0}".format(file))            
         replaceAll(file, "images/", "../images/")
 
+    print("Replacing .ipynb links in: {0}".format(file))            
+    regexReplace(file, ".*(\(\.\/", "\.ipynb\)).*")
+    
     with open(file,'r', encoding="utf-8") as f:
         filedata = f.read()
         # Find all markdown link syntaxes
