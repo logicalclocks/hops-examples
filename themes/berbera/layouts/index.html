@@ -489,11 +489,37 @@
         <div class="row">
             <div class="col-sm-12">
                 <div class="card">
-
-                    <h4 class="card-header" id="model-serving">Model Serving with KFServing</h4>
+                    <h4 class="card-header" id="model-serving-kfserving">Model Serving with KFServing</h4>
                     <div class="card-body">
                         <ul>
                             {{ range (where .Pages "File.Dir" "in" "/featurestore/ml/serving/kfserving/tensorflow/").ByTitle }}
+                            <li>
+                                <a href="{{.Permalink}}">{{.Title}}</a>
+                            </li>
+                            {{ end }}
+                            {{ range (where .Pages "File.Dir" "in" "/featurestore/ml/serving/kfserving/sklearn/").ByTitle }}
+                            <li>
+                                <a href="{{.Permalink}}">{{.Title}}</a>
+                            </li>
+                            {{ end }}
+                            {{ range (where .Pages "File.Dir" "in" "/featurestore/ml/serving/kfserving/python/").ByTitle }}
+                            <li>
+                                <a href="{{.Permalink}}">{{.Title}}</a>
+                            </li>
+                            {{ end }}
+                        </ul>
+                    </div>
+                </div>
+                <div class="card">
+                    <h4 class="card-header" id="model-serving-docker-k8s">Model Serving with Docker or Kubernetes</h4>
+                    <div class="card-body">
+                        <ul>
+                            {{ range (where .Pages "File.Dir" "in" "/featurestore/ml/serving/docker_and_kubernetes/tensorflow/").ByTitle }}
+                            <li>
+                                <a href="{{.Permalink}}">{{.Title}}</a>
+                            </li>
+                            {{ end }}
+                            {{ range (where .Pages "File.Dir" "in" "/featurestore/ml/serving/docker_and_kubernetes/python/").ByTitle }}
                             <li>
                                 <a href="{{.Permalink}}">{{.Title}}</a>
                             </li>
