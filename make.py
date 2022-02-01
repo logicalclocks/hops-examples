@@ -19,7 +19,8 @@ all_ipynb_files = [os.path.join(root, name)
                            if name.endswith((".ipynb"))]
 
 # Remove all notebooks from checkpoint folders and excluded notebooks
-exclude_ipynb_files = [ "notebooks/ml/serving/kfserving/tensorflow/transformer.ipynb" ]
+exclude_ipynb_files = [ "notebooks/ml/serving/kfserving/tensorflow/transformer.ipynb",
+                        "notebooks/ml/serving/kfserving/sklearn/transformer.ipynb" ]
 ipynb_files = [ x for x in all_ipynb_files if ".ipynb_checkpoints" not in x and x not in exclude_ipynb_files ]
 
 # For each file
