@@ -506,20 +506,20 @@
         <div class="row">
             <div class="col-sm-12">
                 <div class="card">
-                    <h4 class="card-header" id="model-serving-kfserving">Model Serving with KFServing</h4>
+                    <h4 class="card-header" id="model-serving-kserve">Model Serving with KServe</h4>
                     <div class="card-body">
                         <ul>
-                            {{ range (where .Pages "File.Dir" "in" "/featurestore/ml/serving/kfserving/tensorflow/").ByTitle }}
+                            {{ range (where .Pages "File.Dir" "in" "/featurestore/ml/serving/kserve/tensorflow/").ByTitle }}
                             <li>
                                 <a href="{{.Permalink}}">{{.Title}}</a>
                             </li>
                             {{ end }}
-                            {{ range (where .Pages "File.Dir" "in" "/featurestore/ml/serving/kfserving/sklearn/").ByTitle }}
+                            {{ range (where .Pages "File.Dir" "in" "/featurestore/ml/serving/kserve/sklearn/").ByTitle }}
                             <li>
                                 <a href="{{.Permalink}}">{{.Title}}</a>
                             </li>
                             {{ end }}
-                            {{ range (where .Pages "File.Dir" "in" "/featurestore/ml/serving/kfserving/python/").ByTitle }}
+                            {{ range (where .Pages "File.Dir" "in" "/featurestore/ml/serving/kserve/python/").ByTitle }}
                             <li>
                                 <a href="{{.Permalink}}">{{.Title}}</a>
                             </li>
