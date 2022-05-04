@@ -1,6 +1,6 @@
 class Transformer(object):
     def __init__(self):
-        print("[Transformer] Initializing...")
+        print("Initializing transformer")
         # Initialization code goes here
 
     def preprocess(self, inputs):

@@ -153,7 +153,6 @@
   <modules>
     <module>spark</module>
     <module>hive</module>
-    <module>featurestore_tour</module>
   </modules>
 
 
