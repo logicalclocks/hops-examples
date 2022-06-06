@@ -50,25 +50,6 @@
             </div>
         </div>
 
-
-        <div class="row">
-            <div class="col-sm-12">
-                <div class="card">
-                    <h4 class="card-header" id="hsfs_training">Training Data</h4>
-                    <div class="card-body card-body-1-column">
-                        <ul>
-                            {{ range (where .Pages "File.Dir" "in" "/featurestore/hsfs/training/").ByTitle }}
-                            <li>
-                                <a href="{{.Permalink}}">{{.Title}}</a>
-                            </li>
-                            {{ end }}
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-
         <div class="row">
             <div class="col-sm-12">
                 <div class="card">
@@ -171,40 +152,6 @@
                 </div>
             </div>
         </div>
-
-
-        <div class="row">
-            <div class="col-sm-12">
-                <div class="card">
-                    <h4 class="card-header" id="parallel-exp">Hyperparameter Tuning</h4>
-                    <div class="card-body card-body-1-column">
-                        <ul>
-                            {{ range (where .Pages "File.Dir" "in" "/ml/Maggy/Hopsworks/").ByTitle }}
-                            <li>
-                                <a href="{{.Permalink}}">{{.Title}}</a>
-                            </li>
-                            {{ end }}
-                            {{ range (where .Pages "File.Dir" "in" "/ml/Maggy/Spark/").ByTitle }}
-                            <li>
-                                <a href="{{.Permalink}}">{{.Title}}</a>
-                            </li>
-                            {{ end }}
-                            {{ range (where .Pages "File.Dir" "in" "/ml/Parallel_Experiments/PyTorch/").ByTitle }}
-                            <li>
-                                <a href="{{.Permalink}}">{{.Title}}</a>
-                            </li>
-                            {{ end }}
-                            {{ range (where .Pages "File.Dir" "in" "/ml/Parallel_Experiments/TensorFlow/").ByTitle }}
-                            <li>
-                                <a href="{{.Permalink}}">{{.Title}}</a>
-                            </li>
-                            {{ end }}
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-
 
         <div class="row">
             <div class="col-sm-12">
