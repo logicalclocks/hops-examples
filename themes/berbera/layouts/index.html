@@ -70,106 +70,7 @@
             </div>
         </div>
 
-      <div class="row">
-          <div class="col-sm-12">
-              <div class="card">
-                  <h4 class="card-header" id="hsfs_complex_features">Feature group with complex type of features</h4>
-                  <div class="card-body">
-                      <ul>
-                          {{ range (where .Pages "File.Dir" "in" "/featurestore/hsfs/complex_features/").ByTitle }}
-                          <li>
-                              <a href="{{.Permalink}}">{{.Title}}</a>
-                          </li>
-                          {{ end }}
-                      </ul>
-                  </div>
-              </div>
-          </div>
-      </div>
 
-        <div class="row">
-            <div class="col-sm-12">
-                <div class="card">
-                    <h4 class="card-header" id="hsfs_training">Training Data</h4>
-                    <div class="card-body card-body-1-column">
-                        <ul>
-                            {{ range (where .Pages "File.Dir" "in" "/featurestore/hsfs/training/").ByTitle }}
-                            <li>
-                                <a href="{{.Permalink}}">{{.Title}}</a>
-                            </li>
-                            {{ end }}
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-sm-12">
-                <div class="card">
-                    <h4 class="card-header" id="hsfs_serving">Online Feature Store</h4>
-                    <div class="card-body">
-                        <ul>
-                            {{ range (where .Pages "File.Dir" "in" "/featurestore/hsfs/serving/").ByTitle }}
-                            <li>
-                                <a href="{{.Permalink}}">{{.Title}}</a>
-                            </li>
-                            {{ end }}
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-sm-12">
-                <div class="card">
-                    <h4 class="card-header" id="hsfs_online_featurestore">Online Feature Store end-to-end</h4>
-                    <div class="card-body">
-                        <ul>
-                            {{ range (where .Pages "File.Dir" "in" "/featurestore/hsfs/online_featurestore/").ByTitle }}
-                            <li>
-                                <a href="{{.Permalink}}">{{.Title}}</a>
-                            </li>
-                            {{ end }}
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="row">
-          <div class="col-sm-12">
-              <div class="card">
-                  <h4 class="card-header" id="hsfs_online_transformations">Online transformations</h4>
-                  <div class="card-body">
-                      <ul>
-                          {{ range (where .Pages "File.Dir" "in" "/featurestore/hsfs/online_transformations/").ByTitle }}
-                          <li>
-                              <a href="{{.Permalink}}">{{.Title}}</a>
-                          </li>
-                          {{ end }}
-                      </ul>
-                  </div>
-              </div>
-          </div>
-        </div>
-
-        <div class="row">
-            <div class="col-sm-12">
-                <div class="card">
-                    <h4 class="card-header" id="hsfs_validation">Data Validation</h4>
-                    <div class="card-body">
-                        <ul>
-                            {{ range (where .Pages "File.Dir" "in" "/featurestore/hsfs/data_validation/").ByTitle }}
-                            <li>
-                                <a href="{{.Permalink}}">{{.Title}}</a>
-                            </li>
-                            {{ end }}
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
 
         <div class="row">
             <div class="col-sm-12">
@@ -188,22 +89,6 @@
             </div>
         </div>
 
-        <div class="row">
-            <div class="col-sm-12">
-                <div class="card">
-                    <h4 class="card-header" id="hsfs_tags">Feature Store Tags</h4>
-                    <div class="card-body">
-                        <ul>
-                            {{ range (where .Pages "File.Dir" "in" "/featurestore/hsfs/tags/").ByTitle }}
-                            <li>
-                                <a href="{{.Permalink}}">{{.Title}}</a>
-                            </li>
-                            {{ end }}
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
 
         <div class="row" id="aws">
             <div class="col-sm-12">
@@ -221,28 +106,6 @@
                                 <a href="{{.Permalink}}">{{.Title}}</a>
                             </li>
                             {{ end }}
-                            {{ range (where .Pages "File.Dir" "in" "/featurestore/aws/s3/").ByTitle }}
-                            <li>
-                                <a href="{{.Permalink}}">{{.Title}}</a>
-                            </li>
-                            {{ end }}
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-sm-12">
-                <div class="card">
-                    <h4 class="card-header" id="sagemaker_tour">Sagemaker</h4>
-                    <div class="card-body">
-                        <ul>
-                            {{ range (where .Pages "File.Dir" "in" "/featurestore/aws/sagemaker/").ByTitle }}
-                            <li>
-                                <a href="{{.Permalink}}">{{.Title}}</a>
-                            </li>
-                            {{ end }}
                         </ul>
                     </div>
                 </div>
@@ -250,91 +113,6 @@
         </div>
 
 
-        <div class="row" id="databricks">
-            <div class="col-sm-12">
-                <h3 class="category_header">Databricks and the Feature Store</h3>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-sm-12">
-                <div class="card">
-                    <h4 class="card-header" id="databricks_aws_pyspark">Databricks Ingestion with PySpark</h4>
-                    <div class="card-body">
-                        <ul>
-                            {{ range (where .Pages "File.Dir" "in" "/featurestore/databricks//").ByTitle }}
-                            <li>
-                                <a href="{{.Permalink}}">{{.Title}}</a>
-                            </li>
-                            {{ end }}
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-sm-12">
-                <div class="card">
-                    <h4 class="card-header" id="delta_featurestore">Delta Lake and the Feature Store</h4>
-                    <div class="card-body">
-                        <ul>
-                            {{ range (where .Pages "File.Dir" "in" "/featurestore/delta/").ByTitle }}
-                            <li>
-                                <a href="{{.Permalink}}">{{.Title}}</a>
-                            </li>
-                            {{ end }}
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="row" id="azure">
-            <div class="col-sm-12">
-                <h3 class="category_header">Azure and the Feature Store</h3>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-sm-12">
-                <div class="card">
-                    <h4 class="card-header" id="aml_azure">Azure Machine Learning with the Feature Store</h4>
-                    <div class="card-body">
-                        <ul>
-                            {{ range (where .Pages "File.Dir" "in" "/featurestore/azure/azure-ml-studio/").ByTitle }}
-                            <li>
-                                <a href="{{.Permalink}}">{{.Title}}</a>
-                            </li>
-                            {{ end }}
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-
-        <div class="row" id="spark-fs">
-            <div class="col-sm-12">
-                <h3 class="category_header">General Feature Store</h3>
-            </div>
-        </div>
-
-        <div class="row" id="what-if">
-            <div class="col-sm-12">
-                <div class="card">
-                    <h4 class="card-header" id="what-if-tol">What-if-Tool Feature Analytics (Jupyter only, not Jupyterlab)</h4>
-                    <div class="card-body">
-                        <ul>
-                            {{ range (where .Pages "File.Dir" "in" "/featurestore/feature-bias/").ByTitle }}
-                            <li>
-                                <a href="{{.Permalink}}">{{.Title}}</a>
-                            </li>
-                            {{ end }}
-                        </ul>
-                    </div>
-                </div>
-            </div>
-	</div>
 
         <div class="row">
             <div class="col-sm-12">
@@ -342,17 +120,17 @@
                     <h4 class="card-header" id="image_petastore">Elastic, Hive, Kafka, and Spark</h4>
                     <div class="card-body">
                         <ul>
-                            {{ range (where .Pages "File.Dir" "in" "/featurestore/spark/").ByTitle }}
+                            {{ range (where .Pages "File.Dir" "in" "/spark/").ByTitle }}
                             <li>
                                 <a href="{{.Permalink}}">{{.Title}}</a>
                             </li>
                             {{ end }}
-                            {{ range (where .Pages "File.Dir" "in" "/featurestore/kafka/").ByTitle }}
+                            {{ range (where .Pages "File.Dir" "in" "/kafka/").ByTitle }}
                             <li>
                                 <a href="{{.Permalink}}">{{.Title}}</a>
                             </li>
                             {{ end }}
-                            {{ range (where .Pages "File.Dir" "in" "/featurestore/hive/").ByTitle }}
+                            {{ range (where .Pages "File.Dir" "in" "/hive/").ByTitle }}
                             <li>
                                 <a href="{{.Permalink}}">{{.Title}}</a>
                             </li>
@@ -397,12 +175,12 @@
                     <h4 class="card-header" id="exp">Experiments</h4>
                     <div class="card-body">
                         <ul>
-                            {{ range (where .Pages "File.Dir" "in" "/featurestore/ml/Experiment/Tensorflow/").ByTitle }}
+                            {{ range (where .Pages "File.Dir" "in" "/ml/Experiment/Tensorflow/").ByTitle }}
                             <li>
                                 <a href="{{.Permalink}}">{{.Title}}</a>
                             </li>
                             {{ end }}
-                            {{ range (where .Pages "File.Dir" "in" "/featurestore/ml/Experiment/PyTorch/").ByTitle }}
+                            {{ range (where .Pages "File.Dir" "in" "/ml/Experiment/PyTorch/").ByTitle }}
                             <li>
                                 <a href="{{.Permalink}}">{{.Title}}</a>
                             </li>
@@ -418,16 +196,6 @@
                     <h4 class="card-header" id="parallel-exp">Hyperparameter Tuning</h4>
                     <div class="card-body card-body-1-column">
                         <ul>
-                            {{ range (where .Pages "File.Dir" "in" "/ml/Maggy/Hopsworks/").ByTitle }}
-                            <li>
-                                <a href="{{.Permalink}}">{{.Title}}</a>
-                            </li>
-                            {{ end }}
-                            {{ range (where .Pages "File.Dir" "in" "/ml/Maggy/Spark/").ByTitle }}
-                            <li>
-                                <a href="{{.Permalink}}">{{.Title}}</a>
-                            </li>
-                            {{ end }}
                             {{ range (where .Pages "File.Dir" "in" "/ml/Parallel_Experiments/PyTorch/").ByTitle }}
                             <li>
                                 <a href="{{.Permalink}}">{{.Title}}</a>
@@ -449,28 +217,12 @@
                     <h4 class="card-header" id="tf-dist-training">Distributed Training (TensorFlow)</h4>
                     <div class="card-body">
                         <ul>
-                            {{ range (where .Pages "File.Dir" "in" "/featurestore/ml/Distributed_Training/mirrored_strategy/").ByTitle }}
+                            {{ range (where .Pages "File.Dir" "in" "/ml/Distributed_Training/mirrored_strategy/").ByTitle }}
                             <li>
                                 <a href="{{.Permalink}}">{{.Title}}</a>
                             </li>
                             {{ end }}
-                            {{ range (where .Pages "File.Dir" "in" "/featurestore/ml/Distributed_Training/multiworker_mirrored_strategy/").ByTitle }}
-                            <li>
-                                <a href="{{.Permalink}}">{{.Title}}</a>
-                            </li>
-                            {{ end }}
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-sm-12">
-                <div class="card">
-                    <h4 class="card-header" id="plotting">Plotting</h4>
-                    <div class="card-body">
-                        <ul>
-                            {{ range (where .Pages "File.Dir" "in" "/featurestore/ml/Plotting/").ByTitle }}
+                            {{ range (where .Pages "File.Dir" "in" "/ml/Distributed_Training/multiworker_mirrored_strategy/").ByTitle }}
                             <li>
                                 <a href="{{.Permalink}}">{{.Title}}</a>
                             </li>
@@ -480,6 +232,7 @@
                 </div>
             </div>
         </div>
+
 
         <div class="row" id="ml-fs">
             <div class="col-sm-12">
@@ -493,7 +246,7 @@
                     <h4 class="card-header" id="inference">Inferencing (Model Serving)</h4>
                     <div class="card-body">
                         <ul>
-                            {{ range (where .Pages "File.Dir" "in" "/featurestore/ml/Inference/").ByTitle }}
+                            {{ range (where .Pages "File.Dir" "in" "/ml/Inference/").ByTitle }}
                             <li>
                                 <a href="{{.Permalink}}">{{.Title}}</a>
                             </li>
@@ -509,17 +262,17 @@
                     <h4 class="card-header" id="model-serving-kserve">Model Serving with KServe</h4>
                     <div class="card-body">
                         <ul>
-                            {{ range (where .Pages "File.Dir" "in" "/featurestore/ml/serving/kserve/tensorflow/").ByTitle }}
+                            {{ range (where .Pages "File.Dir" "in" "/ml/serving/kserve/tensorflow/").ByTitle }}
                             <li>
                                 <a href="{{.Permalink}}">{{.Title}}</a>
                             </li>
                             {{ end }}
-                            {{ range (where .Pages "File.Dir" "in" "/featurestore/ml/serving/kserve/sklearn/").ByTitle }}
+                            {{ range (where .Pages "File.Dir" "in" "/ml/serving/kserve/sklearn/").ByTitle }}
                             <li>
                                 <a href="{{.Permalink}}">{{.Title}}</a>
                             </li>
                             {{ end }}
-                            {{ range (where .Pages "File.Dir" "in" "/featurestore/ml/serving/kserve/python/").ByTitle }}
+                            {{ range (where .Pages "File.Dir" "in" "/ml/serving/kserve/python/").ByTitle }}
                             <li>
                                 <a href="{{.Permalink}}">{{.Title}}</a>
                             </li>
@@ -531,12 +284,12 @@
                     <h4 class="card-header" id="model-serving-docker-k8s">Model Serving with Docker or Kubernetes</h4>
                     <div class="card-body">
                         <ul>
-                            {{ range (where .Pages "File.Dir" "in" "/featurestore/ml/serving/docker_and_kubernetes/tensorflow/").ByTitle }}
+                            {{ range (where .Pages "File.Dir" "in" "/ml/serving/docker_and_kubernetes/tensorflow/").ByTitle }}
                             <li>
                                 <a href="{{.Permalink}}">{{.Title}}</a>
                             </li>
                             {{ end }}
-                            {{ range (where .Pages "File.Dir" "in" "/featurestore/ml/serving/docker_and_kubernetes/python/").ByTitle }}
+                            {{ range (where .Pages "File.Dir" "in" "/ml/serving/docker_and_kubernetes/python/").ByTitle }}
                             <li>
                                 <a href="{{.Permalink}}">{{.Title}}</a>
                             </li>
@@ -547,53 +300,7 @@
             </div>
         </div>
 
-        <div class="row" id="maggy-title">
-            <div class="col-sm-12">
-                <h3 class="category_header">Maggy - Distributed Transparent ML</h3>
-            </div>
-        </div>
 
-        <div class="row">
-            <div class="col-sm-12">
-                <div class="card">
-                    <h4 class="card-header" id="maggy-1">ML Experiments on Hopsworks using TensorFlow </h4>
-                    <div class="card-body">
-                        <ul>
-                            {{ range (where .Pages "File.Dir" "in" "/featurestore/ml/Maggy/Hopsworks/Tensorflow/").ByTitle }}
-                            <li>
-                                <a href="{{.Permalink}}">{{.Title}}</a>
-                            </li>
-                            {{ end }}
-                        </ul>
-                    </div>
-                </div>
-                <div class="card">
-                    <h4 class="card-header" id="maggy-2">Maggy Distributed Training on Hopsworks using PyTorch</h4>
-                    <div class="card-body">
-                        <ul>
-                            {{ range (where .Pages "File.Dir" "in" "/ml/Maggy/Hopsworks/PyTorch/").ByTitle }}
-                            <li>
-                                <a href="{{.Permalink}}">{{.Title}}</a>
-                            </li>
-                            {{ end }}
-
-                        </ul>
-                    </div>
-                </div>
-                <div class="card">
-                    <h4 class="card-header" id="maggy-3">ML experiments on local machine</h4>
-                    <div class="card-body card-body-1-column">
-                        <ul>
-                            {{ range (where .Pages "File.Dir" "in" "/featurestore/ml/Maggy/Spark/").ByTitle }}
-                            <li>
-                                <a href="{{.Permalink}}">{{.Title}}</a>
-                            </li>
-                            {{ end }}
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
 
 
         <div class="row" id="ml-fs">
@@ -608,35 +315,12 @@
                     <!-- <h4 class="card-header" id="e2e">End-to-End Examples</h4> -->
                     <div class="card-body">
                         <ul>
-                            {{ range (where .Pages "File.Dir" "in" "/featurestore/ml/end_to_end_pipeline/sklearn/").ByTitle }}
+                            {{ range (where .Pages "File.Dir" "in" "/ml/end_to_end_pipeline/sklearn/").ByTitle }}
                             <li>
                                 <a href="{{.Permalink}}">{{.Title}}</a>
                             </li>
                             {{ end }}
-                            {{ range (where .Pages "File.Dir" "in" "/featurestore/ml/end_to_end_pipeline/tensorflow/").ByTitle }}
-                            <li>
-                                <a href="{{.Permalink}}">{{.Title}}</a>
-                            </li>
-                            {{ end }}
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="row" id="ml-fs">
-            <div class="col-sm-12">
-                <h3 class="category_header">Use cases</h3>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-sm-12">
-                <div class="card">
-                    <h4 class="card-header" id="cc_fraud_detection">Credit Card Fraud Detection</h4>
-                    <div class="card-body">
-                        <ul>
-                            {{ range (where .Pages "File.Dir" "in" "/featurestore/use_cases/credit_card_fraud_detection/").ByTitle }}
+                            {{ range (where .Pages "File.Dir" "in" "/ml/end_to_end_pipeline/tensorflow/").ByTitle }}
                             <li>
                                 <a href="{{.Permalink}}">{{.Title}}</a>
                             </li>
@@ -647,38 +331,8 @@
             </div>
         </div>
 
-        <div class="row" id="miscellaneous">
-            <div class="col-sm-12">
-                <h3 class="category_header">Miscellaneous Notebooks</h3>
-            </div>
-        </div>
 
-        <div class="row">
-            <div class="col-sm-12">
-                <div class="card">
-                    <h4 class="card-header" id="hopsfs">Using HopsFS</h4>
-                    <div class="card-body">
-                        <ul>
-                            {{ range (where .Pages "File.Dir" "in" "/featurestore/ml/Filesystem/").ByTitle }}
-                            <li>
-                                <a href="{{.Permalink}}">{{.Title}}</a>
-                            </li>
-                            {{ end }}
-                            {{ range (where .Pages "File.Dir" "in" "/featurestore/ml/numpy/").ByTitle }}
-                            <li>
-                                <a href="{{.Permalink}}">{{.Title}}</a>
-                            </li>
-                            {{ end }}
-                            {{ range (where .Pages "File.Dir" "in" "/featurestore/ml/pandas/").ByTitle }}
-                            <li>
-                                <a href="{{.Permalink}}">{{.Title}}</a>
-                            </li>
-                            {{ end }}
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
+
 
         <div class="row">
             <div class="col-sm-12">
@@ -686,7 +340,7 @@
                     <h4 class="card-header" id="bench">Benchmarks</h4>
                     <div class="card-body">
                         <ul>
-                            {{ range (where .Pages "File.Dir" "in" "/featurestore/ml/Benchmarks/").ByTitle }}
+                            {{ range (where .Pages "File.Dir" "in" "/ml/Benchmarks/").ByTitle }}
                             <li>
                                 <a href="{{.Permalink}}">{{.Title}}</a>
                             </li>
