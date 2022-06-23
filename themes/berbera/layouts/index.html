@@ -153,6 +153,51 @@
         <div class="row">
             <div class="col-sm-12">
                 <div class="card">
+<<<<<<< HEAD
+=======
+                    <h4 class="card-header" id="exp">Experiments</h4>
+                    <div class="card-body">
+                        <ul>
+                            {{ range (where .Pages "File.Dir" "in" "/ml/Experiment/Tensorflow/").ByTitle }}
+                            <li>
+                                <a href="{{.Permalink}}">{{.Title}}</a>
+                            </li>
+                            {{ end }}
+                            {{ range (where .Pages "File.Dir" "in" "/ml/Experiment/PyTorch/").ByTitle }}
+                            <li>
+                                <a href="{{.Permalink}}">{{.Title}}</a>
+                            </li>
+                            {{ end }}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <h4 class="card-header" id="parallel-exp">Hyperparameter Tuning</h4>
+                    <div class="card-body card-body-1-column">
+                        <ul>
+                            {{ range (where .Pages "File.Dir" "in" "/ml/Parallel_Experiments/PyTorch/").ByTitle }}
+                            <li>
+                                <a href="{{.Permalink}}">{{.Title}}</a>
+                            </li>
+                            {{ end }}
+                            {{ range (where .Pages "File.Dir" "in" "/ml/Parallel_Experiments/TensorFlow/").ByTitle }}
+                            <li>
+                                <a href="{{.Permalink}}">{{.Title}}</a>
+                            </li>
+                            {{ end }}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+>>>>>>> upstream/master
                     <h4 class="card-header" id="tf-dist-training">Distributed Training (TensorFlow)</h4>
                     <div class="card-body">
                         <ul>
