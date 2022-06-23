@@ -33,25 +33,6 @@
             </div>
         </div>
 
-        <div class="row">
-            <div class="col-sm-12">
-                <div class="card">
-                    <h4 class="card-header" id="colab_example">Try now on Colab</h4>
-                    <div class="card-body">
-		      <!-- <img src="/featurestore/images/colab-64px.png" alt="Colab" width="64" height="64"> -->
-                        <ul>
-                            {{ range (where .Pages "File.Dir" "in" "/featurestore/gcp/").ByTitle }}
-                            <li>
-                              <a href="https://colab.research.google.com/github/logicalclocks/hops-examples/blob/master/notebooks/featurestore/gcp/colab.ipynb">
-			      Run example in Google Colab
-                              </a>
-                            </li>
-                            {{ end }}
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
 
         <div class="row">
             <div class="col-sm-12">
@@ -172,6 +153,7 @@
         <div class="row">
             <div class="col-sm-12">
                 <div class="card">
+
                     <h4 class="card-header" id="exp">Experiments</h4>
                     <div class="card-body">
                         <ul>
@@ -214,6 +196,7 @@
         <div class="row">
             <div class="col-sm-12">
                 <div class="card">
+
                     <h4 class="card-header" id="tf-dist-training">Distributed Training (TensorFlow)</h4>
                     <div class="card-body">
                         <ul>
