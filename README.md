@@ -89,14 +89,6 @@ Hops Example provides Jupyter notebooks for running TensorFlow applications on H
 made available to Hopsworks projects upon project creation. Detailed documentation on how tp program TensorFlow on 
 Hopsworks, is available [here](https://hopsworks.readthedocs.io/en/latest/user_guide/hopsworks/tensorflow.html).
 
-# Feature Store
-
-A sample feature engineering job that takes in raw data, transforms it into features suitable for machine learning 
-and saves the features into the featurestore is available in `featurestore/`. This job will automatically be 
-available in your project if you take the **featurestore tour** on Hopsworks. Example notebooks for interacting with 
-the featurestore are available in `notebooks/featurestore/`. More documentation about the featurestore is available 
-here: [Featurestore Documentation](https://docs.hopsworks.ai).
-
 # TensorFlow Extended (TFX)
 
 This repo comes with notebooks demonstrating how to implement horizontally scalable TFX pipelines. The 
@@ -141,4 +133,3 @@ keystore_pw=[keystore_password]
 
 Users can export their project's certificates by navigating to the *Settings* page in Hopsworks. An email is then sent
  with the password for the truststore and keystore.
-
