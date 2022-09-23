@@ -1,4 +1,3 @@
-from torchvision import transforms
 from ts.torch_handler.image_classifier import ImageClassifier
 from torch.profiler import ProfilerActivity
 
@@ -10,11 +9,6 @@ class MNISTDigitClassifier(ImageClassifier):
 
     Here method postprocess() has been overridden while others are reused from parent class.
     """
-
-    image_processing = transforms.Compose([
-        transforms.ToTensor(),
-        transforms.Normalize((0.1307,), (0.3081,))
-    ])
 
     def __init__(self):
         super(MNISTDigitClassifier, self).__init__()
