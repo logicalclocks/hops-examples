@@ -40,7 +40,7 @@
     <dependency>
       <groupId>com.logicalclocks</groupId>
       <artifactId>hsfs</artifactId>
-      <version>${project.version}</version>
+      <version>${project.version}-RC0</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
